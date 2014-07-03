@@ -4,7 +4,7 @@ import grails.plugins.rest.client.RestBuilder
 
 import com.serena.radar.Settings
 
-class HomeController {
+class DashboardController {
 
     def index() {
         if (Settings.settingsIsEmpty())

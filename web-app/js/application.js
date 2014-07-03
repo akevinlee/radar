@@ -1,9 +1,13 @@
-if (typeof jQuery !== 'undefined') {
-	(function($) {
-		$('#spinner').ajaxStart(function() {
-			$(this).fadeIn();
-		}).ajaxStop(function() {
-			$(this).fadeOut();
-		});
-	})(jQuery);
-}
+
+//
+// Settings object to be passed to any SRA Javascript
+//
+var sraSettings = {
+    sraUrl: "${settingsInstance.sraUrl}",
+    sraUsername: "${settingsInstance.sraUsername}",
+    sraPassword: "${settingsInstance.sraPassword}",
+    useProxy: "${settingsInstance.useProxy}",
+    refreshInterval: "${settingsInstance.refreshInterval}"
+};
+
+moment().format();

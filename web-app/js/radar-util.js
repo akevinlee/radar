@@ -37,12 +37,34 @@ RADAR.Util = {
             return (store && JSON.parse(store)) || [];
         }
     },
+    getBaseURL: function() {
+        var url = location.href;  // entire url including querystring - also: window.location.href;
+        var baseURL = url.substring(0, url.indexOf('/', 14));
+
+        if (baseURL.indexOf('http://localhost') != -1) {
+            // Base Url for localhost
+            var url = location.href;  // window.location.href;
+            var pathname = location.pathname;  // window.location.pathname;
+            var index1 = url.indexOf(pathname);
+            var index2 = url.indexOf("/", index1 + 1);
+            var baseLocalUrl = url.substr(0, index2);
+            return baseLocalUrl + "/";
+        }
+        else {
+            // Root Url for domain name
+            return baseURL + "/";
+        }
+    },
+    getSiteRoot: function() {
+        var path1 = location.pathname.substr(1);
+        var path2 = path1.substr(0, path1.indexOf("/"));
+        return "/" + path2;
+    },
     makeBasicAuth: function (username, password) {
         var tok = username + ':' + password;
         var hash = btoa(tok);
         return "Basic " + hash;
     },
-
     ssoToken: null,
     getSsoToken: function() {
         if (util.ssoToken == null || util.ssoToken.ssoToken == "") {

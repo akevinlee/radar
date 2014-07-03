@@ -3,8 +3,6 @@ package com.serena.radar
 import grails.plugins.rest.client.RestBuilder
 import grails.transaction.Transactional
 
-import com.serena.radar.Settings
-
 @Transactional(readOnly = true)
 class SettingsController {
 
@@ -65,14 +63,14 @@ class SettingsController {
 
         flash.message = message(code: 'setting.validate.success')
         //respond settingsInstance, view:'edit'
-        redirect(controller: "home", action: "index")
+        redirect(controller: "dashboard", action: "index")
     }
 
     static validateSRAConnection(Settings settingsInstance) throws Exception {
         RestBuilder rest = new RestBuilder()
         def resp = rest.get(settingsInstance.sraUrl + "/rest/state") {
             auth(settingsInstance.sraUsername, settingsInstance.sraPassword)
-            header 'DirectSsoInteraction', settingsInstance.useSSO.toString()
+            header 'DirectSsoInteraction', 'true'
             accept("application/json")
             contentType("application/json")
         }

@@ -27,6 +27,7 @@
     <script src="${resource(dir: 'js/lib', file: 'jquery.flot.pie.min.js')}" type="text/javascript"></script>
 
     <script src="${resource(dir: 'js', file: 'radar-util.js')}" type="text/javascript"></script>
+    <script src="${resource(dir: 'js', file: 'application.js')}" type="text/javascript"></script>
 
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}" type="text/css">
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'mobile.css')}" type="text/css">
@@ -62,13 +63,12 @@
     <g:layoutBody/>
 </div>
 
-<div id="footer">
+<!--div id="footer">
     <div class="container-fluid">
         <p class="text-muted">Serena RAdaR - &copy; Serena Software 2014.</p>
     </div>
-</div>
+</div-->
 
-<g:javascript library="application"/>
 <r:layoutResources/>
 
 </body>

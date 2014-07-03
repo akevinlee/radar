@@ -81,9 +81,9 @@
                 <div class="row">
                     <div class="form-group col-xs-8">
                         <div class="col-xs-3 col-xs-push-3">
-                            <div class="checkbox ${hasErrors(bean: settingsInstance, field: 'useSSO', 'error')} ">
+                            <div class="checkbox ${hasErrors(bean: settingsInstance, field: 'useProxy', 'error')} ">
                                 <label>
-                                    <g:checkBox name="useSSO" value="${settingsInstance?.useSSO}"/> <g:message code="setting.useSSO.label" default="Use SSO"/>
+                                    <g:checkBox name="useProxy" value="${settingsInstance?.useProxy}"/> <g:message code="setting.useProxy.label" default="Use Proxy"/>
                                 </label>
                             </div>
                         </div>

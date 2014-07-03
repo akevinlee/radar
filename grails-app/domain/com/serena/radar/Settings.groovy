@@ -3,8 +3,9 @@ package com.serena.radar
 class Settings {
     String sraUrl = "http://localhost:8080/serena_ra"
     String sraUsername = "admin"
-    String sraPassword
-    Boolean useSSO = false
+    String sraPassword = "admin"
+    Boolean useProxy = false
+    //Boolean useSSO = false
     Integer refreshInterval = 10
 
     boolean singleEntry = true
