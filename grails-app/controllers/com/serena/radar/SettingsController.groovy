@@ -2,6 +2,7 @@ package com.serena.radar
 
 import grails.plugins.rest.client.RestBuilder
 import grails.transaction.Transactional
+import net.edwardstx.ProxyServlet
 
 @Transactional(readOnly = true)
 class SettingsController {

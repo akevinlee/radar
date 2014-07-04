@@ -9,8 +9,6 @@
           <root url="file://$MODULE_DIR$/target/work/plugins/twitter-bootstrap-3.1.1/web-app" relative="/" />
           <root url="file://$MODULE_DIR$/target/work/plugins/fields-1.3/grails-app/views" relative="/" />
           <root url="file://$MODULE_DIR$/target/work/plugins/jquery-1.11.0.2/web-app" relative="/" />
-          <root url="file://$MODULE_DIR$/target/work/plugins/angularjs-resources-1.2.17/web-app" relative="/" />
-          <root url="file://$MODULE_DIR$/target/work/plugins/angularjs-resources-1.2.17/grails-app/views" relative="/" />
           <root url="file://$MODULE_DIR$/target/work/plugins/jquery-ui-1.10.3/web-app" relative="/" />
         </webroots>
         <sourceRoots />
@@ -29,9 +27,6 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$/target/work/plugins/ajax-proxy-0.1.1">
       <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/ajax-proxy-0.1.1/src/java" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/target/work/plugins/angularjs-resources-1.2.17">
-      <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/angularjs-resources-1.2.17/grails-app/controllers" isTestSource="false" />
     </content>
     <content url="file://$MODULE_DIR$/target/work/plugins/cache-1.1.7">
       <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/cache-1.1.7/src/java" isTestSource="false" />

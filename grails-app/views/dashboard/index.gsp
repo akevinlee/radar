@@ -94,6 +94,7 @@
                     <span class="text-muted">Deployment Status</span>
                 </div>
                 <div class="col-xs-6 col-sm-3 placeholder">
+                    <div id="myStat" data-dimension="200" data-text="35%" data-info="New Clients" data-width="30" data-fontsize="38" data-percent="35" data-fgcolor="#7ea568" data-bgcolor="#eee" data-type="half" data-fill="#ddd"></div>
                 </div>
                 <div class="col-xs-6 col-sm-3 placeholder">
                 </div>
@@ -152,6 +153,7 @@
             $(document).ready(function () {
 
                 RADAR.Dashboard.init(sraSettings);
+                $('#myStat').circliful();
 
             });
         </script>

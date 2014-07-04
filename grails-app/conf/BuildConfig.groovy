@@ -61,7 +61,6 @@ grails.project.dependency.resolution = {
         // plugins for the compile step
         compile ":scaffolding:2.0.2"
         compile ':cache:1.1.7'
-        compile ":angularjs-resources:1.2.17"
         compile ":fields:1.3"
         compile ":ajax-proxy:0.1.1"
         compile ":rest-client-builder:2.0.0"
