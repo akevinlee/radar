@@ -7,8 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
-    <link rel="apple-touch-icon" href="${resource(dir: 'images', file: 'apple-touch-icon.png')}">
-    <link rel="apple-touch-icon" sizes="114x114" href="${resource(dir: 'images', file: 'apple-touch-icon-retina.png')}">
+    <!--link rel="apple-touch-icon" href="${resource(dir: 'images', file: 'apple-touch-icon.png')}">
 
     <title><g:layoutTitle default="Grails"/></title>
 
@@ -44,12 +43,17 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="${createLink(uri: '/')}">Serena RA<i>daR</i></a>
+            <div class="logo">
+                <a href="http://www.serena.com/index.php/en/" class="navbar-brand" style="">
+                    <img src="${resource(dir: 'images', file: 'serena-logo.png')}" class="brand">
+                </a>
+            </div>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li class="active"><a href="${createLink(uri: '/')}">Dashboard</a></li>
-                <li><a href="${createLink(uri: '/applications')}">App Inventory</a></li>
+                <li><a href="${createLink(uri: '/applications')}">Applications</a></li>
+                <li><a href="${createLink(uri: '/resources')}">Resources</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="${createLink(uri: '/settings')}">Settings</a></li>
@@ -63,11 +67,12 @@
     <g:layoutBody/>
 </div>
 
-<!--div id="footer">
+<footer id="radar-footer">
     <div class="container-fluid">
-        <p class="text-muted">Serena RAdaR - &copy; Serena Software 2014.</p>
+        <span class="pull-right" id="version">Serena RAdaR</span>
+        <p class="ng-binding">© 2014 Serena Software Inc., All Rights Reserved.</p>
     </div>
-</div-->
+</footer>
 
 <r:layoutResources/>
 

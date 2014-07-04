@@ -9,6 +9,83 @@
 	</head>
 	<body>
 		<div id="dashboard" role="main">
+            <h2 class="sub-header">Statistics</small></h2>
+
+            <div class="row placeholders">
+                <div id="appStats" class="col-xs-6 col-sm-3 placeholder">
+                    <div class="small-box bg-aqua">
+                        <div class="inner">
+                            <h3 id="app-count">
+                                0
+                            </h3>
+                            <p>
+                                Applications
+                            </p>
+                        </div>
+                        <div class="icon">
+                            <span class="glyphicon glyphicon-phone"></span>
+                        </div>
+                        <a href="#" class="small-box-footer">
+                            More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
+                        </a>
+                    </div>
+                </div>
+                <div id="envStats" class="col-xs-6 col-sm-3 placeholder">
+                    <div class="small-box bg-red">
+                        <div class="inner">
+                            <h3 id="env-count">
+                                0
+                            </h3>
+                            <p>
+                                Environments
+                            </p>
+                        </div>
+                        <div class="icon">
+                            <span class="glyphicon glyphicon-hdd"></span>
+                        </div>
+                        <a href="#" class="small-box-footer">
+                            More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
+                        </a>
+                    </div>
+                </div>
+                <div id="resourceStats" class="col-xs-6 col-sm-3 placeholder">
+                    <div class="small-box bg-yellow">
+                        <div class="inner">
+                            <h3 id="resource-count">
+                                0
+                            </h3>
+                            <p>
+                                Resources
+                            </p>
+                        </div>
+                        <div class="icon">
+                            <span class="glyphicon glyphicon-tasks"></span>
+                        </div>
+                        <a href="#" class="small-box-footer">
+                            More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
+                        </a>
+                    </div>
+                </div>
+                <div id="userStats" class="col-xs-6 col-sm-3 placeholder">
+                    <div class="small-box bg-green">
+                        <div class="inner">
+                            <h3 id="user-count">
+                                0
+                            </h3>
+                            <p>
+                                Users
+                            </p>
+                        </div>
+                        <div class="icon">
+                            <span class="glyphicon glyphicon-user"></span>
+                        </div>
+                        <a href="#" class="small-box-footer">
+                            More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
             <h2 class="sub-header">Recent Activity <small>(last 30 days)</small></h2>
 
             <div class="row placeholders">
