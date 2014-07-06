@@ -1,4 +1,4 @@
-package sra.radar
+package com.serena.radar
 
 import grails.test.mixin.TestFor
 import spock.lang.Specification
@@ -6,8 +6,8 @@ import spock.lang.Specification
 /**
  * See the API for {@link grails.test.mixin.web.ControllerUnitTestMixin} for usage instructions
  */
-@TestFor(HomeController)
-class HomeControllerSpec extends Specification {
+@TestFor(ApplicationsController)
+class ApplicationsControllerSpec extends Specification {
 
     def setup() {
     }

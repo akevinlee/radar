@@ -89,9 +89,9 @@
             $(this).width(customSettingsObj.dimension + 'px');
 
             var canvas = $('<canvas></canvas>').attr({
-			                width: customSettingsObj.dimension,
-			                height: customSettingsObj.dimension
-			            }).appendTo($(this)).get(0);
+                width: customSettingsObj.dimension,
+                height: customSettingsObj.dimension
+            }).appendTo($(this)).get(0);
 
             var context = canvas.getContext('2d');
             var x = canvas.width / 2;
@@ -122,7 +122,7 @@
 
             /**
              * adds text to circle
-             * 
+             *
              * @param obj
              * @param cssClass
              * @param lineHeight
@@ -141,7 +141,7 @@
 
             /**
              * adds info text to circle
-             * 
+             *
              * @param obj
              * @param factor
              */
@@ -149,6 +149,7 @@
                 $('<span></span>')
                     .appendTo(obj)
                     .addClass('circle-info-half')
+                    .text(info)
                     .css(
                     'line-height', (customSettingsObj.dimension * factor) + 'px'
                 );
@@ -168,7 +169,7 @@
 
                     if (attribute == 'fill' && obj.data('fill') != undefined) {
                         fill = true;
-                    } 
+                    }
                 });
             }
 
@@ -183,7 +184,7 @@
                 context.arc(x, y, radius, endAngle, startAngle, false);
 
                 context.lineWidth = customSettingsObj.width + 1;
-                
+
                 context.strokeStyle = customSettingsObj.bgcolor;
                 context.stroke();
 
@@ -196,10 +197,10 @@
                 context.arc(x, y, radius, -(quart), ((circ) * current) - quart, false);
 
                 if (customSettingsObj.border == 'outline') {
-                	context.lineWidth = customSettingsObj.width + 13;
+                    context.lineWidth = customSettingsObj.width + 13;
                 } else if(customSettingsObj.border == 'inline') {
-                	context.lineWidth = customSettingsObj.width - 13;
-                } 
+                    context.lineWidth = customSettingsObj.width - 13;
+                }
 
                 context.strokeStyle = customSettingsObj.fgcolor;
                 context.stroke();
@@ -212,11 +213,11 @@
                 }
 
                 if(curPerc == endPercent && fireCallback && typeof(options) != "undefined") {
-                	if($.isFunction( options.complete )) {
-		            	options.complete();
+                    if($.isFunction( options.complete )) {
+                        options.complete();
 
-		            	fireCallback = false;
-		            }
+                        fireCallback = false;
+                    }
                 }
             }
 

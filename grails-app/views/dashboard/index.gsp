@@ -89,14 +89,13 @@
             <h2 class="sub-header">Recent Activity <small>(last 30 days)</small></h2>
 
             <div class="row placeholders">
+                <div id="successStatus" class="col-xs-6 col-sm-3 placeholder">
+                </div>
+                <div id="failureStatus" class="col-xs-6 col-sm-3 placeholder">
+                </div>
                 <div id="pieStatus" class="col-xs-6 col-sm-3 placeholder">
                     <h4>Status</h4>
                     <span class="text-muted">Deployment Status</span>
-                </div>
-                <div class="col-xs-6 col-sm-3 placeholder">
-                    <div id="myStat" data-dimension="200" data-text="35%" data-info="New Clients" data-width="30" data-fontsize="38" data-percent="35" data-fgcolor="#7ea568" data-bgcolor="#eee" data-type="half" data-fill="#ddd"></div>
-                </div>
-                <div class="col-xs-6 col-sm-3 placeholder">
                 </div>
                 <div class="col-xs-6 col-sm-3 placeholder">
                 </div>
@@ -131,7 +130,7 @@
                     <td>{{resource.name}}</td>
                     <td>{{version.name}}</td>
                     <td>{{componentProcess.name}}</td>
-                    <td>{{componentProcessRequest.submittedTime}}</td>
+                    <td><span data-livestamp="{componentProcessRequest.submittedTime}}.000"></span></td>
                     <td>{{componentProcessRequest.userName}}</td>
                 {{/if}}
                 {{#if applicationProcess}}
@@ -140,21 +139,31 @@
                     <td>{{environment.name}}</td>
                     <td>{{snapshot.name}}</td>
                     <td>{{applicationProcess.name}}</td>
-                    <td>{{applicationProcessRequest.submittedTime}}</td>
+                    <td><span data-livestamp="{{applicationProcessRequest.submittedTime}}.000"></span></td>
                     <td>{{applicationProcessRequest.userName}}</td>
                 {{/if}}
             </tr>
             {{/this}}
         </script>
 
+        <script id="dep-template" type="text/x-handlebars-template">
+            <div id="{{id}}" data-dimension="200" data-text="{{text}}%" data-info="{{info}}"
+            data-width="30" data-fontsize="30" data-total="{{total}}" data-part="{{part}}"
+            data-fgcolor="{{fgcolor}}" data-bgcolor="{{bgcolor}}" data-type="full" data-fill="{{fillcolor}}"></div>
+        </script>
+
         <script src="${resource(dir: 'js', file: 'radar-dashboard.js')}" type="text/javascript"></script>
         <script>
 
             $(document).ready(function () {
-
+                var sraSettings = {
+                    sraUrl: "${settingsInstance.sraUrl}",
+                    sraUsername: "${settingsInstance.sraUsername}",
+                    sraPassword: "${settingsInstance.sraPassword}",
+                    useProxy: ${settingsInstance.useProxy},
+                    refreshInterval: ${settingsInstance.refreshInterval}
+                };
                 RADAR.Dashboard.init(sraSettings);
-                $('#myStat').circliful();
-
             });
         </script>
 	</body>

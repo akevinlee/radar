@@ -9,7 +9,7 @@
     <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
     <!--link rel="apple-touch-icon" href="${resource(dir: 'images', file: 'apple-touch-icon.png')}">
 
-    <title><g:layoutTitle default="Grails"/></title>
+    <title><g:layoutTitle default="Serena RAdaR"/></title>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -24,7 +24,8 @@
     <script src="${resource(dir: 'js/lib', file: 'moment.min.js')}" type="text/javascript"></script>
     <script src="${resource(dir: 'js/lib', file: 'jquery.flot.min.js')}" type="text/javascript"></script>
     <script src="${resource(dir: 'js/lib', file: 'jquery.flot.pie.min.js')}" type="text/javascript"></script>
-    <script src="${resource(dir: 'js/lib', file: 'jquery.circliful.min.js')}" type="text/javascript"></script>
+    <script src="${resource(dir: 'js/lib', file: 'jquery.circliful.js')}" type="text/javascript"></script>
+    <script src="${resource(dir: 'js/lib', file: 'livestamp.min.js')}" type="text/javascript"></script>
 
     <script src="${resource(dir: 'js', file: 'radar-util.js')}" type="text/javascript"></script>
     <script src="${resource(dir: 'js', file: 'application.js')}" type="text/javascript"></script>
