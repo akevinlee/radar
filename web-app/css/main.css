@@ -87,13 +87,17 @@ div.logo img.brand {
  */
 
 .placeholders {
-    margin-bottom: 30px;
+    margin-bottom: 10px;
     text-align: center;
 }
 .placeholder h4 {
     margin-bottom: 0;
 }
-.placeholder {
+.placeholder-s {
+    min-height: 100px;
+    margin-bottom: 20px;
+}
+.placeholder-m {
     min-height: 200px;
     margin-bottom: 20px;
 }
@@ -243,6 +247,28 @@ div.logo img.brand {
 }
 .text-maroon {
     color: #85144b !important;
+}
+
+/*
+ * full screen modals
+ */
+.modal {
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+.modal-dialog {
+    width: 98%;
+    height: 90%;
+    padding: 0;
+    margin: 10px auto;
+}
+.modal-content {
+    height: 100%;
+    border-radius: 0;
+}
+.modal-body {
+    height: 98%;
 }
 
 /*

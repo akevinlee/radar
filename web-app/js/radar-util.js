@@ -3,6 +3,10 @@ Handlebars.registerHelper('eq', function(a, b, options) {
     return a === b ? options.fn(this) : options.inverse(this);
 });
 
+Handlebars.registerHelper("prettifyDate", function(timestamp) {
+    return moment(new Date(timestamp)).fromNow();
+});
+
 var ENTER_KEY = 13;
 var ESCAPE_KEY = 27;
 

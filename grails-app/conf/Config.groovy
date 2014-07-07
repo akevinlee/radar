@@ -5,7 +5,11 @@
 grails.config.locations = [ "classpath:${appName}-config.properties",
                             "classpath:${appName}-config.groovy",
                             "file:${userHome}/.grails/${appName}-config.properties",
-                            "file:${userHome}/.grails/${appName}-config.groovy"]
+                            "file:${userHome}/.grails/${appName}-config.groovy",
+                            "file:C:\\ProgramData\\Grails\\${appName}-config.properties",
+                            "file:C:\\ProgramData\\Grails\\${appName}-config.groovy",
+                            "file:/opt/grails/${appName}-config.properties",
+                            "file:/opt/grails/${appName}-config.groovy"]
 
 if (System.properties["${appName}.config.location"]) {
     grails.config.locations << "file:" + System.properties["${appName}.config.location"]
@@ -88,7 +92,7 @@ grails.hibernate.pass.readonly = false
 // configure passing read-only to OSIV session by default, requires "singleSession = false" OSIV mode
 grails.hibernate.osiv.readonly = false
 
-// example setup for proxy
+// example setup for proxy, it is recommended to setup in external config file
 /*
 plugins {
     proxy {

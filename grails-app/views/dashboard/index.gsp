@@ -9,10 +9,10 @@
 	</head>
 	<body>
 		<div id="dashboard" role="main">
-            <h2 class="sub-header">Statistics</small></h2>
+            <h3 class="sub-header">Statistics</small></h3>
 
             <div class="row placeholders">
-                <div id="appStats" class="col-xs-6 col-sm-3 placeholder">
+                <div id="appStats" class="col-xs-6 col-sm-3 placeholder-s">
                     <div class="small-box bg-aqua">
                         <div class="inner">
                             <h3 id="app-count">
@@ -30,7 +30,7 @@
                         </a>
                     </div>
                 </div>
-                <div id="envStats" class="col-xs-6 col-sm-3 placeholder">
+                <div id="envStats" class="col-xs-6 col-sm-3 placeholder-s">
                     <div class="small-box bg-red">
                         <div class="inner">
                             <h3 id="env-count">
@@ -48,7 +48,7 @@
                         </a>
                     </div>
                 </div>
-                <div id="resourceStats" class="col-xs-6 col-sm-3 placeholder">
+                <div id="resourceStats" class="col-xs-6 col-sm-3 placeholder-s">
                     <div class="small-box bg-yellow">
                         <div class="inner">
                             <h3 id="resource-count">
@@ -66,7 +66,7 @@
                         </a>
                     </div>
                 </div>
-                <div id="userStats" class="col-xs-6 col-sm-3 placeholder">
+                <div id="userStats" class="col-xs-6 col-sm-3 placeholder-s">
                     <div class="small-box bg-green">
                         <div class="inner">
                             <h3 id="user-count">
@@ -86,22 +86,22 @@
                 </div>
             </div>
 
-            <h2 class="sub-header">Recent Activity <small>(last 30 days)</small></h2>
+            <h3 class="sub-header">Recent Activity <small>(last 30 days)</small></h3>
 
             <div class="row placeholders">
-                <div id="successStatus" class="col-xs-6 col-sm-3 placeholder">
+                <div id="successStatus" class="col-xs-6 col-sm-3 placeholder-m">
                 </div>
-                <div id="failureStatus" class="col-xs-6 col-sm-3 placeholder">
+                <div id="failureStatus" class="col-xs-6 col-sm-3 placeholder-m">
                 </div>
-                <div id="pieStatus" class="col-xs-6 col-sm-3 placeholder">
+                <div id="pieStatus" class="col-xs-6 col-sm-3 placeholder-m">
                     <h4>Status</h4>
                     <span class="text-muted">Deployment Status</span>
                 </div>
-                <div class="col-xs-6 col-sm-3 placeholder">
+                <div class="col-xs-6 col-sm-3 placeholder-m">
                 </div>
             </div>
 
-            <h2 class="sub-header">Current Activity</h2>
+            <h3 class="sub-header">Current Activity</h3>
             <div class="table-responsive">
                 <table id="activity" class="table table-striped">
                     <thead>
@@ -113,6 +113,7 @@
                         <th>Process</th>
                         <th>Started On</th>
                         <th>By</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody id="activity-rows">
@@ -120,6 +121,17 @@
                 </table>
             </div>
         </div>
+
+        <div class="modal sraModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    </div>
+                    <div class="modal-body sraContent"></div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
 
         <script id="activity-template" type="text/x-handlebars-template">
             {{#this}}
@@ -130,8 +142,13 @@
                     <td>{{resource.name}}</td>
                     <td>{{version.name}}</td>
                     <td>{{componentProcess.name}}</td>
-                    <td><span data-livestamp="{componentProcessRequest.submittedTime}}.000"></span></td>
+                    <td>{{prettifyDate componentProcessRequest.submittedTime}}</td>
                     <td>{{componentProcessRequest.userName}}</td>
+                    <td>
+                        <a class="sraMore small-box-footer" data-toggle="modal" data-target=".sraModal" href="${settingsInstance.sraUrl}/#componentProcessRequest/{{componentProcessRequest.id}}">
+                            More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
+                        </a>
+                    </td>
                 {{/if}}
                 {{#if applicationProcess}}
                     <td>Application</td>
@@ -139,15 +156,20 @@
                     <td>{{environment.name}}</td>
                     <td>{{snapshot.name}}</td>
                     <td>{{applicationProcess.name}}</td>
-                    <td><span data-livestamp="{{applicationProcessRequest.submittedTime}}.000"></span></td>
+                    <td>{{prettifyDate applicationProcessRequest.submittedTime}}</td>
                     <td>{{applicationProcessRequest.userName}}</td>
+                    <td>
+                        <a class="sraMore" data-toggle="modal" data-target=".sraModal" href="${settingsInstance.sraUrl}/#applicationProcessRequest/{{applicationProcessRequest.id}}">
+                            More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
+                        </a>
+                    </td>
                 {{/if}}
             </tr>
             {{/this}}
         </script>
 
         <script id="dep-template" type="text/x-handlebars-template">
-            <div id="{{id}}" data-dimension="200" data-text="{{text}}%" data-info="{{info}}"
+            <div id="{{id}}" data-dimension="200" data-text="{{text}}" data-info="{{info}}"
             data-width="30" data-fontsize="30" data-total="{{total}}" data-part="{{part}}"
             data-fgcolor="{{fgcolor}}" data-bgcolor="{{bgcolor}}" data-type="full" data-fill="{{fillcolor}}"></div>
         </script>
