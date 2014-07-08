@@ -90,14 +90,20 @@
 
             <div class="row placeholders">
                 <div id="successStatus" class="col-xs-6 col-sm-3 placeholder-m">
+                    <h4>Successful Deployments</h4>
+                    <span class="text-muted">loading...</span>
                 </div>
                 <div id="failureStatus" class="col-xs-6 col-sm-3 placeholder-m">
+                    <h4>Failed Deployments</h4>
+                    <span class="text-muted">loading...</span>
                 </div>
-                <div id="pieStatus" class="col-xs-6 col-sm-3 placeholder-m">
-                    <h4>Status</h4>
-                    <span class="text-muted">Deployment Status</span>
+                <div id="appStatus" class="col-xs-6 col-sm-3 placeholder-m">
+                    <h4>Top Applications</h4>
+                    <span class="text-muted">loading...</span>
                 </div>
-                <div class="col-xs-6 col-sm-3 placeholder-m">
+                <div id="userStatus" class="col-xs-6 col-sm-3 placeholder-m">
+                    <h4>Top Users</h4>
+                    <span class="text-muted">loading...</span>
                 </div>
             </div>
 

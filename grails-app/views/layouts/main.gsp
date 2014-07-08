@@ -23,10 +23,9 @@
     <script src="${resource(dir: 'js/lib', file: 'handlebars.min.js')}" type="text/javascript"></script>
     <script src="${resource(dir: 'js/lib', file: 'moment.min.js')}" type="text/javascript"></script>
     <script src="${resource(dir: 'js/lib', file: 'underscore.min.js')}" type="text/javascript"></script>
-    <script src="${resource(dir: 'js/lib', file: 'Chart.min.js')}" type="text/javascript"></script>
     <script src="${resource(dir: 'js/lib', file: 'jquery.flot.min.js')}" type="text/javascript"></script>
     <script src="${resource(dir: 'js/lib', file: 'jquery.flot.pie.min.js')}" type="text/javascript"></script>
-    <script src="${resource(dir: 'js/lib', file: 'jquery.circliful.js')}" type="text/javascript"></script>
+    <script src="${resource(dir: 'js/lib', file: 'jquery.circliful.min.js')}" type="text/javascript"></script>
 
     <script src="${resource(dir: 'js', file: 'radar-util.js')}" type="text/javascript"></script>
     <script src="${resource(dir: 'js', file: 'application.js')}" type="text/javascript"></script>

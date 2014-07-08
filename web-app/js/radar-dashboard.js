@@ -33,13 +33,14 @@ RADAR.Dashboard = {
     },
     cacheElements: function () {
         this.activityTemplate = Handlebars.compile($('#activity-template').html());
+        this.depTemplate = Handlebars.compile($('#dep-template').html());
         this.$dashboard = $('#dashboard');
         this.$activity = this.$dashboard.find('#activity');
         this.$activityRows = this.$activity.find('#activity-rows');
-        this.$pieStatus = $('#pieStatus');
-        this.depTemplate = Handlebars.compile($('#dep-template').html());
         this.$depSuccess = $('#successStatus');
         this.$depFailure = $('#failureStatus');
+        this.$appStatus = $('#appStatus');
+        this.$userStatus = $('#userStatus');
     },
     render: function (el) {
         var self = this;
@@ -54,30 +55,18 @@ RADAR.Dashboard = {
         });
         this.sraReq.url = this.sraDepReportUrl;
         $.ajax(this.sraReq).then(function(data) {
-            var statusJson = _.chain(data.items[0]).sortBy("status").countBy("status").value();
-            var environmentJson = _.chain(data.items[0]).sortBy("environment").countBy("environment").value();
-            var appJson = _.chain(data.items[0]).sortBy("application").countBy("application").value();
-            var userJson = _.chain(data.items[0]).sortBy("user").countBy("user").value();
-            console.log(JSON.stringify(statusJson));
-            console.log(JSON.stringify(appJson));
-            console.log(JSON.stringify(environmentJson));
-            console.log(JSON.stringify(userJson));
-            var success = 0, running = 0, failed = 0, cancelled = 0;
-            $.each(data.items[0], function(i, item) {
-                switch (item.status) {
-                    case "SUCCESS":     success++;      break;
-                    case "RUNNING":     running++;      break;
-                    case "FAILURE":     failed++;       break;
-                    case "CANCELLED":   cancelled++;    break;
-                }
-            });
-            // ignore running
-            numDeps = data.items[0].length - running;
-            if (self.debug) console.log("Found " + numDeps + " deployments in range");
-            if (self.debug) console.log("Found " + success + " successful deployments, " + failed + " failed deployments");
+            var status = _.chain(data.items[0]).sortBy("status").countBy("status").value();
+            //var envs = _.chain(data.items[0]).sortBy("environment").countBy("environment").value();
+            var apps = _.chain(data.items[0]).sortBy("application").countBy("application").value();
+            var users = _.chain(data.items[0]).sortBy("user").countBy("user").value();
+            var totalDeps = _.size(data.items[0]) - status.RUNNING;
 
-            self.drawCircles(success, failed, numDeps);
-            self.plotChart(self.$pieStatus, success, running, failed, cancelled);
+            if (self.debug) console.log("Found " + totalDeps + " deployments in range");
+            if (self.debug) console.log("Found " + status.SUCCESS + " successful deployments, " + status.FAILURE + " failed deployments");
+
+            self.drawCircles(status.SUCCESS, status.FAILURE, totalDeps);
+            self.plotChart(self.$appStatus, apps);
+            self.plotChart(self.$userStatus, users);
         });
 
         this.update();
@@ -103,22 +92,17 @@ RADAR.Dashboard = {
             setTimeout(function(){
                 self.sraReq.url = self.sraDepReportUrl;
                 $.ajax(self.sraReq).done(function(data) {
-                    var success = 0, running = 0, failed = 0, cancelled = 0;
-                    $.each(data.items[0], function(i, item) {
-                        switch (item.status) {
-                            case "SUCCESS":     success++;      break;
-                            case "RUNNING":     running++;      break;
-                            case "FAILURE":     failed++;       break;
-                            case "CANCELLED":   cancelled++;    break;
-                        }
-                    });
-                    // ignore running
-                    numDeps = data.items[0].length - running;
-                    if (self.debug) console.log("Found " + numDeps + " deployments in range");
-                    if (self.debug) console.log("Found " + success + " successful deployments, " + failed + " failed deployments");
+                    var status = _.chain(data.items[0]).sortBy("status").countBy("status").value();
+                    var apps = _.chain(data.items[0]).sortBy("application").countBy("application").value();
+                    var users = _.chain(data.items[0]).sortBy("user").countBy("user").value();
+                    var totalDeps = _.size(data.items[0]) - status.RUNNING;
 
-                    self.drawCircles(success, failed, numDeps);
-                    self.plotChart(self.$pieStatus, success, running, failed, cancelled);
+                    if (self.debug) console.log("Found " + totalDeps + " deployments in range");
+                    if (self.debug) console.log("Found " + status.SUCCESS + " successful deployments, " + status.FAILURE + " failed deployments");
+
+                    self.drawCircles(status.SUCCESS, status.FAILURE, totalDeps);
+                    self.plotChart(self.$appStatus, apps);
+                    self.plotChart(self.$userStatus, users);
                     // TODO: error handling to decide if we can loop
                     statusUpdate();
                 });
@@ -152,23 +136,26 @@ RADAR.Dashboard = {
         $('#depSuccess').circliful();
         $('#depFailure').circliful();
     },
-    drawChart: function(el, data) {
-        var data = {
-
-        }
+    labelFormatter: function (label, series) {
+        return "<div style='font-size:8pt; text-align:center; padding:2px; color:white;'>" + label + "<br/>" + Math.round(series.percent) + "%</div>";
     },
-    plotChart: function(el, success, running, failed, cancelled) {
-        var statusData = [
-            { label: "Success",     data: success},
-            { label: "Running",     data: running},
-            { label: "Failed",      data: failed},
-            { label: "Cancelled",   data: cancelled}
-        ];
-        $.plot(el, statusData, {
+    plotChart: function(el, json) {
+        var data = [];
+        $.each(json, function(i, val) {
+            data.push({ label: i, data: val});
+        });
+        $.plot(el, data, {
             series: {
                 pie: {
-                    innerRadius: 0.5,
-                    show: true
+                    show: true,
+                    radius: 1,
+                    label: {
+                        show: true,
+                        formatter: this.labelFormatter,
+                        background: {
+                            opacity: 0.5
+                        },
+                    }
                 }
             },
             grid: {
@@ -178,8 +165,7 @@ RADAR.Dashboard = {
             legend: {
                 show: false
             },
-            colors: ["#78CD51", "#2FABE9", "#FA5833", "#FABB3D"]
+            colors: ["#003399", "#006600", "#6685C2", "#338533", "#CCD6EB"]
         });
-
     }
 };
