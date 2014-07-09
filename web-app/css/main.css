@@ -154,6 +154,9 @@ div.logo img.brand {
 }
 
 /* Background colors */
+.bg-white {
+    background-color: #ffffff !important;
+}
 .bg-gray {
     background-color: #eaeaec !important;
 }
@@ -259,7 +262,7 @@ div.logo img.brand {
 }
 .modal-dialog {
     width: 98%;
-    height: 90%;
+    height: 94%;
     padding: 0;
     margin: 10px auto;
 }

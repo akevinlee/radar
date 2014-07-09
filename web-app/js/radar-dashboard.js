@@ -20,14 +20,31 @@ RADAR.Dashboard = {
                 "Authorization": RADAR.Util.makeBasicAuth(this.username, this.password)
             },
             url: this.sraPath
-        }
+        };
+        this.sraAppsUrl = this.sraPath +
+            "/rest/deploy/application?sortType=asc";
+        this.sraCompsUrl = this.sraPath +
+            "/rest/deploy/component?sortType=asc";
+        this.sraEnvsUrl = this.sraPath +
+            "/rest/deploy/globalEnvironment?sortType=asc";
+        this.sraResourcesUrl = this.sraPath +
+            "/rest/resource/resource/tree?orderField=name&sortType=asc";
+        this.sraAgentsUrl = this.sraPath +
+            "/rest/agent?&orderField=name&sortType=desc";
+        this.sraUsersUrl = this.sraPath +
+            "/rest/security/authenticationRealm/20000000000000000000000000000001/users?sortType=asc";
         this.sraActivityUrl = this.sraPath +
             "/rest/workflow/currentActivity?orderField=startDate&sortType=desc";
         this.sraDepReportUrl = this.sraPath + "/rest/report/adHoc?dateRange=custom" +
             "&date_low=" + moment().subtract(30, 'd').valueOf() +
             "&date_hi=" + moment().valueOf() +
             "&orderField=application&sortType=asc&type=com.urbancode.ds.subsys.report.domain.deployment_report.DeploymentReport";
-
+        this.countOptions = {
+            useEasing : true,
+            useGrouping : false,
+            separator : ',',
+            decimal : '.'
+        }
         this.cacheElements();
         this.render();
     },
@@ -35,28 +52,119 @@ RADAR.Dashboard = {
         this.activityTemplate = Handlebars.compile($('#activity-template').html());
         this.depTemplate = Handlebars.compile($('#dep-template').html());
         this.$dashboard = $('#dashboard');
+        this.$stats = this.$dashboard.find('#stats');
+        this.$appStats = this.$stats.find('#app-stats');
+        this.$compStats = this.$stats.find('#comp-stats');
+        this.$resStats = this.$stats.find('#resource-stats');
+        this.$agentStats = this.$stats.find('#agent-stats');
+        this.$appCount = this.$appStats.find('#app-count');
+        this.$compCount = this.$compStats.find('#comp-count');
+        this.$envCount = this.$stats.find('#env-count');
+        this.$onResCount = this.$stats.find('#online-resource-count');
+        this.$offResCount = this.$stats.find('#offline-resource-count');
+        this.$onAgentCount = this.$stats.find('#online-agent-count');
+        this.$offAgentCount = this.$stats.find('#offline-agent-count');
+        this.$userCount = this.$stats.find('#user-count');
         this.$activity = this.$dashboard.find('#activity');
         this.$activityRows = this.$activity.find('#activity-rows');
-        this.$depSuccess = $('#successStatus');
-        this.$depFailure = $('#failureStatus');
-        this.$appStatus = $('#appStatus');
-        this.$userStatus = $('#userStatus');
+        this.$depSuccess = this.$dashboard.find('#successStatus');
+        this.$depFailure = this.$dashboard.find('#failureStatus');
+        this.$appStatus = this.$dashboard.find('#appStatus');
+        this.$userStatus = this.$dashboard.find('#userStatus');
     },
     render: function (el) {
+        this._updateCounts(el);
+        this._updateActivity(el);
+        this._updateStatus(el);
+        this.update();
+        this.$stats.find('a.sraMore').on('click', function(e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+            $(".sraContent").html('<iframe width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency="true" src="'+url+'"></iframe>');
+        });
+    },
+    update: function (el) {
+        var self = this;
+        (function dashboardUpdate(){
+            setTimeout(function(){
+                self._updateCounts(self.el);
+                self._updateActivity(self.el);
+                self._updateStatus(self.el);
+                dashboardUpdate();
+            }, self.refreshInterval*1000);
+        })();
+    },
+    destroy: function (el) {
+
+    },
+    _updateCounts: function(el) {
+        var self = this;
+        this.$compStats.toggleClass('hidden'); this.$agentStats.toggleClass('hidden');
+        this.$appStats.toggleClass('hidden'); this.$resStats.toggleClass('hidden');
+        if (this.$appStats.hasClass("hidden")) {
+            this.sraReq.url = this.sraCompsUrl;
+            $.ajax(this.sraReq).then(function(data) {
+                // TODO: count only active components
+                if (self.debug) console.log("Found " + _.size(data) + " components");
+                new countUp("comp-count", self.$compCount.text(), _.size(data), 0, 2, 1.5, self.countOptions).start();
+            });
+        } else {
+            this.sraReq.url = this.sraAppsUrl;
+            $.ajax(this.sraReq).then(function(data) {
+                // TODO: count only active apps
+                if (self.debug) console.log("Found " + _.size(data) + " applications");
+                new countUp("app-count", self.$appCount.text(), _.size(data), 0, 2, 1.5, self.countOptions).start();
+            });
+        }
+        this.sraReq.url = this.sraEnvsUrl;
+        $.ajax(this.sraReq).then(function(data) {
+            // TODO: show application environments
+            if (self.debug) console.log("Found " + _.size(data) + " environments");
+            new countUp("env-count", self.$envCount.text(), _.size(data), 0, 2, 1.5, self.countOptions).start();
+        });
+        if (this.$resStats.hasClass("hidden")) {
+            this.sraReq.url = self.sraAgentsUrl;
+            $.ajax(this.sraReq).then(function(data) {
+                var agentStats = _.chain(data).sortBy("status").countBy("status").value();
+                if (self.debug) console.log("Found " + agentStats.ONLINE + " online / " + agentStats.OFFLINE + " offline agents");
+                new countUp("online-agent-count", self.$onAgentCount.text(), agentStats.ONLINE, 0, 2, 1.5, self.countOptions).start();
+                new countUp("offline-agent-count", self.$offAgentCount.text(), agentStats.OFFLINE, 0, 2, 1.5, self.countOptions).start();
+            });
+        } else {
+            this.sraReq.url = this.sraResourcesUrl;
+            $.ajax(this.sraReq).then(function(data) {
+                var resStats = _.chain(data).sortBy("status").countBy("status").value();
+                if (self.debug) console.log("Found " + resStats.ONLINE + " online / " + resStats.OFFLINE + " offline resources");
+                new countUp("online-resource-count", self.$onResCount.text(), resStats.ONLINE, 0, 2, 1.5, self.countOptions).start();
+                new countUp("offline-resource-count", self.$offResCount.text(), resStats.OFFLINE, 0, 2, 1.5, self.countOptions).start();
+            });
+        }
+        this.sraReq.url = this.sraUsersUrl;
+        $.ajax(this.sraReq).then(function(data) {
+            // TODO: show approvals/tasks
+            if (self.debug) console.log("Found " + _.size(data) + " users");
+            new countUp("user-count", self.$userCount.text(), _.size(data), 0, 2, 1.5, self.countOptions).start();
+        });
+    },
+    _updateActivity: function(el) {
         var self = this;
         this.sraReq.url = this.sraActivityUrl;
-        $.ajax(this.sraReq).then(function(data) {
-            self.$activityRows.html(self.activityTemplate(data));
+        $.ajax(this.sraReq).done(function(data) {
+            if (self.debug) console.log("Found " + _.size(data) + " active deployments");
+            self.$activityRows.empty().html(self.activityTemplate(data));
             self.$activityRows.find('a.sraMore').on('click', function(e) {
                 e.preventDefault();
                 var url = $(this).attr('href');
                 $(".sraContent").html('<iframe width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency="true" src="'+url+'"></iframe>');
             });
         });
+    },
+    _updateStatus: function(el) {
+        var self = this;
         this.sraReq.url = this.sraDepReportUrl;
-        $.ajax(this.sraReq).then(function(data) {
+        $.ajax(this.sraReq).done(function(data) {
+            // TODO: extract top 5 only
             var status = _.chain(data.items[0]).sortBy("status").countBy("status").value();
-            //var envs = _.chain(data.items[0]).sortBy("environment").countBy("environment").value();
             var apps = _.chain(data.items[0]).sortBy("application").countBy("application").value();
             var users = _.chain(data.items[0]).sortBy("user").countBy("user").value();
             var totalDeps = _.size(data.items[0]) - status.RUNNING;
@@ -64,55 +172,12 @@ RADAR.Dashboard = {
             if (self.debug) console.log("Found " + totalDeps + " deployments in range");
             if (self.debug) console.log("Found " + status.SUCCESS + " successful deployments, " + status.FAILURE + " failed deployments");
 
-            self.drawCircles(status.SUCCESS, status.FAILURE, totalDeps);
-            self.plotChart(self.$appStatus, apps);
-            self.plotChart(self.$userStatus, users);
+            self._drawStatusCircles(status.SUCCESS, status.FAILURE, totalDeps);
+            self._drawPieChart(self.$appStatus, apps);
+            self._drawPieChart(self.$userStatus, users);
         });
-
-        this.update();
     },
-    update: function (el) {
-        var self = this;
-        (function activityUpdate(){
-            setTimeout(function(){
-                self.sraReq.url = self.sraActivityUrl;
-                $.ajax(self.sraReq).done(function(data) {
-                    self.$activityRows.empty().html(self.activityTemplate(data));
-                    self.$activityRows.find('a.sraMore').on('click', function(e) {
-                        e.preventDefault();
-                        var url = $(this).attr('href');
-                        $(".sraContent").html('<iframe width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency="true" src="'+url+'"></iframe>');
-                    });
-                    // TODO: error handling to decide if we can loop
-                    activityUpdate();
-                });
-            }, self.refreshInterval*1000);
-        })();
-        (function statusUpdate(){
-            setTimeout(function(){
-                self.sraReq.url = self.sraDepReportUrl;
-                $.ajax(self.sraReq).done(function(data) {
-                    var status = _.chain(data.items[0]).sortBy("status").countBy("status").value();
-                    var apps = _.chain(data.items[0]).sortBy("application").countBy("application").value();
-                    var users = _.chain(data.items[0]).sortBy("user").countBy("user").value();
-                    var totalDeps = _.size(data.items[0]) - status.RUNNING;
-
-                    if (self.debug) console.log("Found " + totalDeps + " deployments in range");
-                    if (self.debug) console.log("Found " + status.SUCCESS + " successful deployments, " + status.FAILURE + " failed deployments");
-
-                    self.drawCircles(status.SUCCESS, status.FAILURE, totalDeps);
-                    self.plotChart(self.$appStatus, apps);
-                    self.plotChart(self.$userStatus, users);
-                    // TODO: error handling to decide if we can loop
-                    statusUpdate();
-                });
-            }, self.refreshInterval*1000);
-        })();
-    },
-    destroy: function (el) {
-
-    },
-    drawCircles: function(success, failed, numDeps) {
+    _drawStatusCircles: function(success, failed, numDeps) {
         this.$depSuccess.html(this.depTemplate({
             id: "depSuccess",
             text: success,
@@ -136,10 +201,10 @@ RADAR.Dashboard = {
         $('#depSuccess').circliful();
         $('#depFailure').circliful();
     },
-    labelFormatter: function (label, series) {
+    _labelFormatter: function (label, series) {
         return "<div style='font-size:8pt; text-align:center; padding:2px; color:white;'>" + label + "<br/>" + Math.round(series.percent) + "%</div>";
     },
-    plotChart: function(el, json) {
+    _drawPieChart: function(el, json) {
         var data = [];
         $.each(json, function(i, val) {
             data.push({ label: i, data: val});
@@ -151,21 +216,21 @@ RADAR.Dashboard = {
                     radius: 1,
                     label: {
                         show: true,
-                        formatter: this.labelFormatter,
+                        formatter: this._labelFormatter,
                         background: {
                             opacity: 0.5
-                        },
+                        }
                     }
                 }
             },
             grid: {
                 hoverable: true,
-                clickable: true
+                clickable: false
             },
             legend: {
                 show: false
             },
-            colors: ["#003399", "#006600", "#6685C2", "#338533", "#CCD6EB"]
+            colors: ["#00c0ef", "#00a65a", "#f39c12", "#f56954", "#f012be"]
         });
     }
 };

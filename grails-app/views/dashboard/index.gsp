@@ -11,9 +11,9 @@
 		<div id="dashboard" role="main">
             <h3 class="sub-header">Statistics</small></h3>
 
-            <div class="row placeholders">
-                <div id="appStats" class="col-xs-6 col-sm-3 placeholder-s">
-                    <div class="small-box bg-aqua">
+            <div id="stats" class="row placeholders">
+                <div class="col-xs-6 col-sm-3 placeholder-s">
+                    <div id="app-stats" class="hidden small-box bg-aqua">
                         <div class="inner">
                             <h3 id="app-count">
                                 0
@@ -25,49 +25,81 @@
                         <div class="icon">
                             <span class="glyphicon glyphicon-phone"></span>
                         </div>
-                        <a href="#" class="small-box-footer">
+                        <a href="${settingsInstance.sraUrl}/#main/applications" class="sraMore small-box-footer">
+                            More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
+                        </a>
+                    </div>
+                    <div id="comp-stats" class="small-box bg-blue">
+                        <div class="inner">
+                            <h3 id="comp-count">
+                                0
+                            </h3>
+                            <p>
+                                Components
+                            </p>
+                        </div>
+                        <div class="icon">
+                            <span class="glyphicon glyphicon-phone"></span>
+                        </div>
+                        <a href="${settingsInstance.sraUrl}/#main/components" class="sraMore small-box-footer">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </div>
                 </div>
-                <div id="envStats" class="col-xs-6 col-sm-3 placeholder-s">
-                    <div class="small-box bg-red">
+                <div class="col-xs-6 col-sm-3 placeholder-s">
+                    <div id="global-env-stats" class="small-box bg-yellow">
                         <div class="inner">
                             <h3 id="env-count">
                                 0
                             </h3>
                             <p>
-                                Environments
+                                Global Environments
                             </p>
                         </div>
                         <div class="icon">
                             <span class="glyphicon glyphicon-hdd"></span>
                         </div>
-                        <a href="#" class="small-box-footer">
+                        <a href="${settingsInstance.sraUrl}/#main/globalEnvironments" class="sraMore small-box-footer">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </div>
                 </div>
-                <div id="resourceStats" class="col-xs-6 col-sm-3 placeholder-s">
-                    <div class="small-box bg-yellow">
+                <div class="col-xs-6 col-sm-3 placeholder-s">
+                    <div id="resource-stats" class="hidden small-box bg-red">
                         <div class="inner">
-                            <h3 id="resource-count">
-                                0
+                            <h3>
+                                <span id="online-resource-count">0</span> / <span id="offline-resource-count" class="bg-white text-red">0</span>
                             </h3>
                             <p>
-                                Resources
+                                Online / <span class="bg-white text-red">Offline</span> Resources
                             </p>
                         </div>
                         <div class="icon">
                             <span class="glyphicon glyphicon-tasks"></span>
                         </div>
-                        <a href="#" class="small-box-footer">
+                        <a href="${settingsInstance.sraUrl}/#resources" class="sraMore small-box-footer">
+                            More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
+                        </a>
+                    </div>
+                    <div id="agent-stats" class="small-box bg-maroon">
+                        <div class="inner">
+                            <h3>
+                                <span id="online-agent-count">0</span> / <span id="offline-agent-count" class="bg-white text-red">0</span>
+                            </h3>
+                            <p>
+                                Online / <span class="bg-white text-red">Offline</span> Agents
+                            </p>
+                        </div>
+                        <div class="icon">
+                            <span class="glyphicon glyphicon-tasks"></span>
+                        </div>
+                        <a href="${settingsInstance.sraUrl}/#agents" class="sraMore small-box-footer">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </div>
                 </div>
-                <div id="userStats" class="col-xs-6 col-sm-3 placeholder-s">
-                    <div class="small-box bg-green">
+                <div class="col-xs-6 col-sm-3 placeholder-s">
+                    <div id="user-stats" class="small-box bg-green">
                         <div class="inner">
                             <h3 id="user-count">
                                 0
@@ -79,7 +111,7 @@
                         <div class="icon">
                             <span class="glyphicon glyphicon-user"></span>
                         </div>
-                        <a href="#" class="small-box-footer">
+                        <a href="${settingsInstance.sraUrl}/#security/authentication" class="sraMore small-box-footer">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </div>
@@ -177,7 +209,8 @@
         <script id="dep-template" type="text/x-handlebars-template">
             <div id="{{id}}" data-dimension="200" data-text="{{text}}" data-info="{{info}}"
             data-width="30" data-fontsize="30" data-total="{{total}}" data-part="{{part}}"
-            data-fgcolor="{{fgcolor}}" data-bgcolor="{{bgcolor}}" data-type="full" data-fill="{{fillcolor}}"></div>
+            data-fgcolor="{{fgcolor}}" data-bgcolor="{{bgcolor}}" data-type="full"
+            data-fill="{{fillcolor}}" data-animationstep="0"></div>
         </script>
 
         <script src="${resource(dir: 'js', file: 'radar-dashboard.js')}" type="text/javascript"></script>
