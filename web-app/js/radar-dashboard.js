@@ -213,6 +213,7 @@ RADAR.Dashboard = {
         });
     },
     _drawStatusCircles: function(success, failed, numDeps) {
+        this.$depSuccess.empty();
         this.$depSuccess.html(this.depTemplate({
             id: "depSuccess",
             text: success,
@@ -223,6 +224,7 @@ RADAR.Dashboard = {
             bgcolor: "#eee",
             fillcolor: "#ddd"
         }));
+        this.$depFailure.empty();
         this.$depFailure.html(this.depTemplate({
             id: "depFailure",
             text: failed,
@@ -244,6 +246,7 @@ RADAR.Dashboard = {
         $.each(json, function(i, val) {
             data.push({ label: i, data: val});
         });
+        el.empty();
         $.plot(el, data, {
             series: {
                 pie: {
