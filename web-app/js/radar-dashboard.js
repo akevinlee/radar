@@ -104,46 +104,72 @@ RADAR.Dashboard = {
         if (this.$appStats.hasClass("hidden")) {
             this.sraReq.url = this.sraCompsUrl;
             $.ajax(this.sraReq).then(function(data) {
-                // TODO: count only active components
-                if (self.debug) console.log("Found " + _.size(data) + " components");
-                new countUp("comp-count", self.$compCount.text(), _.size(data), 0, 2, 1.5, self.countOptions).start();
+                var numComps = _.size(data);
+                if (self.debug) console.log("Found " + numComps + " components");
+                if (numComps > 0)
+                    new countUp("comp-count", self.$compCount.text(), numComps, 0, 2, 1.5, self.countOptions).start();
+                else
+                    self.$compCount.text("0");
             });
         } else {
             this.sraReq.url = this.sraAppsUrl;
             $.ajax(this.sraReq).then(function(data) {
-                // TODO: count only active apps
-                if (self.debug) console.log("Found " + _.size(data) + " applications");
-                new countUp("app-count", self.$appCount.text(), _.size(data), 0, 2, 1.5, self.countOptions).start();
+                var numApps = _.size(data);
+                if (self.debug) console.log("Found " + numApps + " applications");
+                if (numApps > 0)
+                    new countUp("app-count", self.$appCount.text(), numApps, 0, 2, 1.5, self.countOptions).start();
+                else
+                    self.$appCount.text("0");
             });
         }
         this.sraReq.url = this.sraEnvsUrl;
         $.ajax(this.sraReq).then(function(data) {
             // TODO: show application environments
-            if (self.debug) console.log("Found " + _.size(data) + " environments");
-            new countUp("env-count", self.$envCount.text(), _.size(data), 0, 2, 1.5, self.countOptions).start();
+            var numGlobEnvs = _.size(data);
+            if (self.debug) console.log("Found " + numGlobEnvs + " global environments");
+            if (numGlobEnvs > 0)
+                new countUp("env-count", self.$envCount.text(), numGlobEnvs, 0, 2, 1.5, self.countOptions).start();
+            else
+                self.$envCount.text("0");
         });
         if (this.$resStats.hasClass("hidden")) {
             this.sraReq.url = self.sraAgentsUrl;
             $.ajax(this.sraReq).then(function(data) {
                 var agentStats = _.chain(data).sortBy("status").countBy("status").value();
                 if (self.debug) console.log("Found " + agentStats.ONLINE + " online / " + agentStats.OFFLINE + " offline agents");
-                new countUp("online-agent-count", self.$onAgentCount.text(), agentStats.ONLINE, 0, 2, 1.5, self.countOptions).start();
-                new countUp("offline-agent-count", self.$offAgentCount.text(), agentStats.OFFLINE, 0, 2, 1.5, self.countOptions).start();
+                if (agentStats.ONLINE > 0)
+                    new countUp("online-agent-count", self.$onAgentCount.text(), agentStats.ONLINE, 0, 2, 1.5, self.countOptions).start();
+                else
+                    self.$onAgentCount.text("0");
+                if (agentStats.OFFLINE > 0)
+                    new countUp("offline-agent-count", self.$offAgentCount.text(), agentStats.OFFLINE, 0, 2, 1.5, self.countOptions).start();
+                else
+                    self.$offAgentCount.text("0");
             });
         } else {
             this.sraReq.url = this.sraResourcesUrl;
             $.ajax(this.sraReq).then(function(data) {
                 var resStats = _.chain(data).sortBy("status").countBy("status").value();
                 if (self.debug) console.log("Found " + resStats.ONLINE + " online / " + resStats.OFFLINE + " offline resources");
-                new countUp("online-resource-count", self.$onResCount.text(), resStats.ONLINE, 0, 2, 1.5, self.countOptions).start();
-                new countUp("offline-resource-count", self.$offResCount.text(), resStats.OFFLINE, 0, 2, 1.5, self.countOptions).start();
+                if (resStats.ONLINE > 0)
+                    new countUp("online-resource-count", self.$onResCount.text(), resStats.ONLINE, 0, 2, 1.5, self.countOptions).start();
+                else
+                    self.$onResCount.text("0");
+                if (resStats.OFFLINE > 0)
+                    new countUp("offline-resource-count", self.$offResCount.text(), resStats.OFFLINE, 0, 2, 1.5, self.countOptions).start();
+                else
+                    self.$offResCount.text("0");
             });
         }
         this.sraReq.url = this.sraUsersUrl;
         $.ajax(this.sraReq).then(function(data) {
             // TODO: show approvals/tasks
-            if (self.debug) console.log("Found " + _.size(data) + " users");
-            new countUp("user-count", self.$userCount.text(), _.size(data), 0, 2, 1.5, self.countOptions).start();
+            var numUsers = _.size(data);
+            if (self.debug) console.log("Found " + numUsers + " users");
+            if (numUsers > 0)
+                new countUp("user-count", self.$userCount.text(), _.size(data), 0, 2, 1.5, self.countOptions).start();
+            else
+                self.$userCount.text("0");
         });
     },
     _updateActivity: function(el) {
@@ -169,12 +195,21 @@ RADAR.Dashboard = {
             var users = _.chain(data.items[0]).sortBy("user").countBy("user").value();
             var totalDeps = _.size(data.items[0]) - status.RUNNING;
 
-            if (self.debug) console.log("Found " + totalDeps + " deployments in range");
-            if (self.debug) console.log("Found " + status.SUCCESS + " successful deployments, " + status.FAILURE + " failed deployments");
+            if (totalDeps > 0) {
+                if (self.debug) console.log("Found " + totalDeps + " deployments in range");
+                if (self.debug) console.log("Found " + status.SUCCESS + " successful deployments, " + status.FAILURE + " failed deployments");
 
-            self._drawStatusCircles(status.SUCCESS, status.FAILURE, totalDeps);
-            self._drawPieChart(self.$appStatus, apps);
-            self._drawPieChart(self.$userStatus, users);
+                self._drawStatusCircles(status.SUCCESS, status.FAILURE, totalDeps);
+                self._drawPieChart(self.$appStatus, apps);
+                self._drawPieChart(self.$userStatus, users);
+            } else {
+                if (self.debug) console.log("Found no deployments in range");
+                self.$depSuccess.find(".text-muted").text("none in range");
+                self.$depFailure.find(".text-muted").text("none in range");
+                self.$appStatus.find(".text-muted").text("none in range");
+                self.$userStatus.find(".text-muted").text("none in range");
+                self.$activityRows.html('<tr><td align="center" colspan="7">no deployments in range</td></tr>');
+            }
         });
     },
     _drawStatusCircles: function(success, failed, numDeps) {
