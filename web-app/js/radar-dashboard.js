@@ -3,7 +3,7 @@ var RADAR = RADAR || {};
 
 RADAR.Dashboard = {
     init: function (options) {
-        this.debug = options.debug || true;
+        this.debug = options.debug || false;
         this.sraUrl = options.sraUrl || "http://localhost:8080/serena_ra"
         this.username = options.sraUsername || "admin";
         this.password = options.sraPassword;
@@ -39,6 +39,14 @@ RADAR.Dashboard = {
             "&date_low=" + moment().subtract(30, 'd').valueOf() +
             "&date_hi=" + moment().valueOf() +
             "&orderField=application&sortType=asc&type=com.urbancode.ds.subsys.report.domain.deployment_report.DeploymentReport";
+        this.sraDepSuccessUrl = this.sraPath + "/rest/report/adHoc?statusCriteria=SUCCESS&time_unit=TIME_UNIT_MONTH" +
+            "&dateRange=custom&startDate=" + moment().subtract(30, 'd').valueOf() +
+            "&endDate=" + moment().valueOf() +
+            "&type=com.urbancode.ds.subsys.report.domain.deployment_count.DeploymentCountReport";
+        this.sraDepFailureUrl = this.sraPath + "/rest/report/adHoc?statusCriteria=FAILURE&time_unit=TIME_UNIT_MONTH" +
+            "&dateRange=custom&startDate=" + moment().subtract(30, 'd').valueOf() +
+            "&endDate=" + moment().valueOf() +
+            "&type=com.urbancode.ds.subsys.report.domain.deployment_count.DeploymentCountReport";
         this.countOptions = {
             useEasing : true,
             useGrouping : false,
@@ -67,21 +75,21 @@ RADAR.Dashboard = {
         this.$userCount = this.$stats.find('#user-count');
         this.$activity = this.$dashboard.find('#activity');
         this.$activityRows = this.$activity.find('#activity-rows');
-        this.$depSuccess = this.$dashboard.find('#successStatus');
-        this.$depFailure = this.$dashboard.find('#failureStatus');
-        this.$appStatus = this.$dashboard.find('#appStatus');
-        this.$userStatus = this.$dashboard.find('#userStatus');
+        this.$depSuccess = this.$dashboard.find('#success-status');
+        this.$depFailure = this.$dashboard.find('#failure-status');
+        this.$appStatus = this.$dashboard.find('#app-status');
+        this.$userStatus = this.$dashboard.find('#user-status');
     },
     render: function (el) {
         this._updateCounts(el);
         this._updateActivity(el);
         this._updateStatus(el);
         this.update();
-        this.$stats.find('a.sraMore').on('click', function(e) {
+        /*this.$stats.find('a.sraMore').on('click', function(e) {
             e.preventDefault();
             var url = $(this).attr('href');
             $(".sraContent").html('<iframe width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency="true" src="'+url+'"></iframe>');
-        });
+        });*/
     },
     update: function (el) {
         var self = this;
@@ -187,56 +195,65 @@ RADAR.Dashboard = {
     },
     _updateStatus: function(el) {
         var self = this;
+        var curMonth = moment().format("MMM YYYY");
+        this.sraReq.url = this.sraDepSuccessUrl;
+        $.ajax(this.sraReq).done(function(data) {
+           var parent = this;
+            parent.successCount = _.reduce(_.pluck(data.items[0], curMonth),
+                function(memo, num) { return +memo + +num; }, 0);
+            self.sraReq.url = self.sraDepFailureUrl;
+            $.ajax(self.sraReq).done(function(data) {
+                var successCount = parent.successCount;
+                var failureCount = _.reduce(_.pluck(data.items[0], curMonth),
+                    function(memo, num) { return +memo + +num; }, 0);
+                if (self.debug) console.log("Found " + successCount + " successful deployments, " + failureCount + " failed deployments");
+                var depCount = parent.successCount + failureCount;
+                if (successCount > 0) {
+                    self.$depSuccess.empty();
+                    self.$depSuccess.html(self.depTemplate({
+                        id: "dep-success",
+                        text: successCount,
+                        info: "Successful",
+                        total: depCount,
+                        part: successCount,
+                        fgcolor: "#339933", bgcolor: "#eee", fillcolor: "#ddd"
+                    }));
+                    $('#dep-success').circliful();
+                } else {
+                    self.$depSuccess.find(".text-muted").text("none in range");
+                }
+                if (failureCount > 0) {
+                    self.$depFailure.empty();
+                    self.$depFailure.html(self.depTemplate({
+                        id: "dep-failure",
+                        text: failureCount,
+                        info: "Failed",
+                        total: depCount,
+                        part: failureCount,
+                        fgcolor: "#FF0000", bgcolor: "#eee", fillcolor: "#ddd"
+                    }));
+                    $('#dep-failure').circliful();
+                } else {
+                    self.$depFailure.find(".text-muted").text("none in range");
+                }
+            });
+        });
         this.sraReq.url = this.sraDepReportUrl;
         $.ajax(this.sraReq).done(function(data) {
             // TODO: extract top 5 only
-            var status = _.chain(data.items[0]).sortBy("status").countBy("status").value();
             var apps = _.chain(data.items[0]).sortBy("application").countBy("application").value();
             var users = _.chain(data.items[0]).sortBy("user").countBy("user").value();
-            var totalDeps = _.size(data.items[0]) - status.RUNNING;
 
-            if (totalDeps > 0) {
-                if (self.debug) console.log("Found " + totalDeps + " deployments in range");
-                if (self.debug) console.log("Found " + status.SUCCESS + " successful deployments, " + status.FAILURE + " failed deployments");
-
-                self._drawStatusCircles(status.SUCCESS, status.FAILURE, totalDeps);
+            if (_.size(data.items[0]) > 0) {
                 self._drawPieChart(self.$appStatus, apps);
                 self._drawPieChart(self.$userStatus, users);
             } else {
                 if (self.debug) console.log("Found no deployments in range");
-                self.$depSuccess.find(".text-muted").text("none in range");
-                self.$depFailure.find(".text-muted").text("none in range");
                 self.$appStatus.find(".text-muted").text("none in range");
                 self.$userStatus.find(".text-muted").text("none in range");
                 self.$activityRows.html('<tr><td align="center" colspan="7">no deployments in range</td></tr>');
             }
         });
-    },
-    _drawStatusCircles: function(success, failed, numDeps) {
-        this.$depSuccess.empty();
-        this.$depSuccess.html(this.depTemplate({
-            id: "depSuccess",
-            text: success,
-            info: "Successful",
-            total: numDeps,
-            part: success,
-            fgcolor: "#339933",
-            bgcolor: "#eee",
-            fillcolor: "#ddd"
-        }));
-        this.$depFailure.empty();
-        this.$depFailure.html(this.depTemplate({
-            id: "depFailure",
-            text: failed,
-            info: "Failed",
-            total: numDeps,
-            part: failed,
-            fgcolor: "#FF0000",
-            bgcolor: "#eee",
-            fillcolor: "#ddd"
-        }));
-        $('#depSuccess').circliful();
-        $('#depFailure').circliful();
     },
     _labelFormatter: function (label, series) {
         return "<div style='font-size:8pt; text-align:center; padding:2px; color:white;'>" + label + "<br/>" + Math.round(series.percent) + "%</div>";

@@ -55,13 +55,23 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="${createLink(uri: '/')}">Dashboard</a></li>
-                <li><a href="${createLink(uri: '/applications')}">Applications</a></li>
-                <li><a href="${createLink(uri: '/resources')}">Resources</a></li>
+                <li class="${controllerName.equals('dashboard') ? 'active' : '' }"}>
+                    <a href="${createLink(uri: '/')}">Dashboard</a>
+                </li>
+                <li class="${controllerName.equals('applications') ? 'active' : '' }"}>
+                    <a href="${createLink(uri: '/applications')}">Applications</a>
+                </li>
+                <li class="${controllerName.equals('resources') ? 'active' : '' }"}>
+                    <a href="${createLink(uri: '/resources')}">Resources</a>
+                </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="${createLink(uri: '/settings')}">Settings</a></li>
-                <li><a href="${createLink(uri: '/help')}">Help</a></li>
+                <li class="${controllerName.equals('settings') ? 'active' : '' }"}>
+                    <a href="${createLink(uri: '/settings')}">Settings</a>
+                </li>
+                <li class="${controllerName.equals('help') ? 'active' : '' }"}>
+                    <a href="${createLink(uri: '/help')}">Help</a>
+                </li>
             </ul>
         </div>
     </div>
