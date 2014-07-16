@@ -99,19 +99,19 @@
                     </div>
                 </div>
                 <div class="col-xs-6 col-sm-3 placeholder-s">
-                    <div id="user-stats" class="small-box bg-green">
+                    <div id="approval-stats" class="small-box bg-green">
                         <div class="inner">
-                            <h3 id="user-count">
-                                0
+                            <h3>
+                                <span id="approval-count">0</span> / <span id="rejected-count" class="bg-white text-red">0</span>
                             </h3>
                             <p>
-                                Users
+                                Approvals Waiting / <span class="bg-white text-red">Rejected</span>
                             </p>
                         </div>
                         <div class="icon">
-                            <span class="glyphicon glyphicon-user"></span>
+                            <span class="glyphicon glyphicon-tasks"></span>
                         </div>
-                        <a target="_blank" href="${settingsInstance.sraUrl}/#security/authentication" class="sraMore small-box-footer">
+                        <a target="_blank" href="${settingsInstance.sraUrl}/#" class="sraMore small-box-footer">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </div>

@@ -5,12 +5,13 @@ RADAR.Dashboard = {
     init: function (options) {
         this.debug = options.debug || false;
         this.sraUrl = options.sraUrl || "http://localhost:8080/serena_ra"
-        this.username = options.sraUsername || "admin";
+        this.username = options.sraUsername || "read_only"; // a read only user should be used for security
         this.password = options.sraPassword;
         this.useProxy = options.useProxy || false;
         this.sraPath = (this.useProxy ? RADAR.Util.getSiteRoot() + "/proxy" : "") + "/serena_ra";
-        this.useSSO = options.useSSO || false;
+        this.useSSO = options.useSSO || true; // assume SSO is enabled
         this.refreshInterval = parseInt(options.refreshInterval) || 10;
+        // default options for SRA rest query
         this.sraReq = {
             cache: false,
             contentType: "application/json",
@@ -21,32 +22,28 @@ RADAR.Dashboard = {
             },
             url: this.sraPath
         };
+        // get all applications
         this.sraAppsUrl = this.sraPath +
             "/rest/deploy/application?sortType=asc";
+        // get all components
         this.sraCompsUrl = this.sraPath +
             "/rest/deploy/component?sortType=asc";
+        // get all global environments
         this.sraEnvsUrl = this.sraPath +
             "/rest/deploy/globalEnvironment?sortType=asc";
+        // get all resources
         this.sraResourcesUrl = this.sraPath +
             "/rest/resource/resource/tree?orderField=name&sortType=asc";
+        // get all agents
         this.sraAgentsUrl = this.sraPath +
             "/rest/agent?&orderField=name&sortType=desc";
-        this.sraUsersUrl = this.sraPath +
-            "/rest/security/authenticationRealm/20000000000000000000000000000001/users?sortType=asc";
         this.sraActivityUrl = this.sraPath +
             "/rest/workflow/currentActivity?orderField=startDate&sortType=desc";
-        this.sraDepReportUrl = this.sraPath + "/rest/report/adHoc?dateRange=custom" +
+        // get all recent deployments (last 30 days)
+        this.sraDepReportUrl = this.sraPath + "/rest/report/adHoc?dateRange=custom&status=" +
             "&date_low=" + moment().subtract(30, 'd').valueOf() +
             "&date_hi=" + moment().valueOf() +
             "&orderField=application&sortType=asc&type=com.urbancode.ds.subsys.report.domain.deployment_report.DeploymentReport";
-        this.sraDepSuccessUrl = this.sraPath + "/rest/report/adHoc?statusCriteria=SUCCESS&time_unit=TIME_UNIT_MONTH" +
-            "&dateRange=custom&startDate=" + moment().subtract(30, 'd').valueOf() +
-            "&endDate=" + moment().valueOf() +
-            "&type=com.urbancode.ds.subsys.report.domain.deployment_count.DeploymentCountReport";
-        this.sraDepFailureUrl = this.sraPath + "/rest/report/adHoc?statusCriteria=FAILURE&time_unit=TIME_UNIT_MONTH" +
-            "&dateRange=custom&startDate=" + moment().subtract(30, 'd').valueOf() +
-            "&endDate=" + moment().valueOf() +
-            "&type=com.urbancode.ds.subsys.report.domain.deployment_count.DeploymentCountReport";
         this.countOptions = {
             useEasing : true,
             useGrouping : false,
@@ -72,7 +69,8 @@ RADAR.Dashboard = {
         this.$offResCount = this.$stats.find('#offline-resource-count');
         this.$onAgentCount = this.$stats.find('#online-agent-count');
         this.$offAgentCount = this.$stats.find('#offline-agent-count');
-        this.$userCount = this.$stats.find('#user-count');
+        this.$approvalCount = this.$stats.find('#approval-count');
+        this.$rejectedCount = this.$stats.find('#rejected-count');
         this.$activity = this.$dashboard.find('#activity');
         this.$activityRows = this.$activity.find('#activity-rows');
         this.$depSuccess = this.$dashboard.find('#success-status');
@@ -85,11 +83,6 @@ RADAR.Dashboard = {
         this._updateActivity(el);
         this._updateStatus(el);
         this.update();
-        /*this.$stats.find('a.sraMore').on('click', function(e) {
-            e.preventDefault();
-            var url = $(this).attr('href');
-            $(".sraContent").html('<iframe width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency="true" src="'+url+'"></iframe>');
-        });*/
     },
     update: function (el) {
         var self = this;
@@ -169,16 +162,6 @@ RADAR.Dashboard = {
                     self.$offResCount.text("0");
             });
         }
-        this.sraReq.url = this.sraUsersUrl;
-        $.ajax(this.sraReq).then(function(data) {
-            // TODO: show approvals/tasks
-            var numUsers = _.size(data);
-            if (self.debug) console.log("Found " + numUsers + " users");
-            if (numUsers > 0)
-                new countUp("user-count", self.$userCount.text(), _.size(data), 0, 2, 1.5, self.countOptions).start();
-            else
-                self.$userCount.text("0");
-        });
     },
     _updateActivity: function(el) {
         var self = this;
@@ -195,54 +178,63 @@ RADAR.Dashboard = {
     },
     _updateStatus: function(el) {
         var self = this;
-        var curMonth = moment().format("MMM YYYY");
-        this.sraReq.url = this.sraDepSuccessUrl;
-        $.ajax(this.sraReq).done(function(data) {
-           var parent = this;
-            parent.successCount = _.reduce(_.pluck(data.items[0], curMonth),
-                function(memo, num) { return +memo + +num; }, 0);
-            self.sraReq.url = self.sraDepFailureUrl;
-            $.ajax(self.sraReq).done(function(data) {
-                var successCount = parent.successCount;
-                var failureCount = _.reduce(_.pluck(data.items[0], curMonth),
-                    function(memo, num) { return +memo + +num; }, 0);
-                if (self.debug) console.log("Found " + successCount + " successful deployments, " + failureCount + " failed deployments");
-                var depCount = parent.successCount + failureCount;
-                if (successCount > 0) {
-                    self.$depSuccess.empty();
-                    self.$depSuccess.html(self.depTemplate({
-                        id: "dep-success",
-                        text: successCount,
-                        info: "Successful",
-                        total: depCount,
-                        part: successCount,
-                        fgcolor: "#339933", bgcolor: "#eee", fillcolor: "#ddd"
-                    }));
-                    $('#dep-success').circliful();
-                } else {
-                    self.$depSuccess.find(".text-muted").text("none in range");
-                }
-                if (failureCount > 0) {
-                    self.$depFailure.empty();
-                    self.$depFailure.html(self.depTemplate({
-                        id: "dep-failure",
-                        text: failureCount,
-                        info: "Failed",
-                        total: depCount,
-                        part: failureCount,
-                        fgcolor: "#FF0000", bgcolor: "#eee", fillcolor: "#ddd"
-                    }));
-                    $('#dep-failure').circliful();
-                } else {
-                    self.$depFailure.find(".text-muted").text("none in range");
-                }
-            });
-        });
         this.sraReq.url = this.sraDepReportUrl;
         $.ajax(this.sraReq).done(function(data) {
+
+            var results = data.items[0];
+            var successCount = _.size(_.uniq(_.where(results, { "status": "SUCCESS"}), "applicationRequestId"));
+            var failureCount = _.size(_.uniq(_.where(results, { "status": "FAILURE"}), "applicationRequestId"));
+            var runningCount = _.size(_.uniq(_.where(results, { "status": "RUNNING"}), "applicationRequestId"));
+            var scheduledCount = _.size(_.uniq(_.where(results, { "status": "SCHEDULED"}), "applicationRequestId"));
+            var approvalCount = _.size(_.uniq(_.where(results, { "status": "AWAITING_APPROVAL"}), "applicationRequestId"));
+            var rejectedCount = _.size(_.uniq(_.where(results, { "status": "APPROVAL_REJECTED"}), "applicationRequestId"));
+
+            if (self.debug) console.log("Found " + successCount + " successful, " + failureCount + " failed deployments");
+
+            var depCount = successCount + failureCount + runningCount + approvalCount;
+            if (successCount > 0) {
+                self.$depSuccess.empty();
+                self.$depSuccess.html(self.depTemplate({
+                    id: "dep-success",
+                    text: successCount,
+                    info: "Successful",
+                    total: depCount,
+                    part: successCount,
+                    fgcolor: "#339933", bgcolor: "#eee", fillcolor: "#ddd"
+                }));
+                $('#dep-success').circliful();
+            } else {
+                self.$depSuccess.find(".text-muted").text("none in range");
+            }
+            if (failureCount > 0) {
+                self.$depFailure.empty();
+                self.$depFailure.html(self.depTemplate({
+                    id: "dep-failure",
+                    text: failureCount,
+                    info: "Failed",
+                    total: depCount,
+                    part: failureCount,
+                    fgcolor: "#FF0000", bgcolor: "#eee", fillcolor: "#ddd"
+                }));
+                $('#dep-failure').circliful();
+            } else {
+                self.$depFailure.find(".text-muted").text("none in range");
+            }
+
+            if (self.debug) console.log("Found " + approvalCount + " waiting approval, " + rejectedCount + " rejected");
+
+            if (approvalCount > 0)
+                new countUp("approval-count", self.$approvalCount.text(), approvalCount, 0, 2, 1.5, self.countOptions).start();
+            else
+                self.$approvalCount.text("0");
+            if (rejectedCount > 0)
+                new countUp("rejected-count", self.$rejectedCount.text(), rejectedCount, 0, 2, 1.5, self.countOptions).start();
+            else
+                self.$rejectedCount.text("0");
+
             // TODO: extract top 5 only
-            var apps = _.chain(data.items[0]).sortBy("application").countBy("application").value();
-            var users = _.chain(data.items[0]).sortBy("user").countBy("user").value();
+            var apps = _.chain(results).sortBy("application").countBy("application").value();
+            var users = _.chain(results).sortBy("user").countBy("user").value();
 
             if (_.size(data.items[0]) > 0) {
                 self._drawPieChart(self.$appStatus, apps);

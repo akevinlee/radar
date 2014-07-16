@@ -95,11 +95,11 @@ div.logo img.brand {
 }
 .placeholder-s {
     min-height: 100px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 .placeholder-m {
     min-height: 200px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 .placeholder img {
     display: inline-block;

@@ -22,7 +22,7 @@
 
     <script src="${resource(dir: 'js/lib', file: 'handlebars.min.js')}" type="text/javascript"></script>
     <script src="${resource(dir: 'js/lib', file: 'moment.min.js')}" type="text/javascript"></script>
-    <script src="${resource(dir: 'js/lib', file: 'underscore.min.js')}" type="text/javascript"></script>
+    <script src="${resource(dir: 'js/lib', file: 'lodash.min.js')}" type="text/javascript"></script>
     <script src="${resource(dir: 'js/lib', file: 'jquery.flot.min.js')}" type="text/javascript"></script>
     <script src="${resource(dir: 'js/lib', file: 'jquery.flot.pie.min.js')}" type="text/javascript"></script>
     <script src="${resource(dir: 'js/lib', file: 'jquery.circliful.min.js')}" type="text/javascript"></script>
