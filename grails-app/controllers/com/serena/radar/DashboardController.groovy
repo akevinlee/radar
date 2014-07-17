@@ -6,12 +6,12 @@ import com.serena.radar.Settings
 
 class DashboardController {
 
-    def index() {
+    def view() {
         if (Settings.settingsIsEmpty())
             redirect(controller: "settings", action: "setup")
         else {
             Settings settingsInstance = Settings.getSettings()
-            render(view: "index", model: [settingsInstance: settingsInstance])
+            render(view: "view", model: [settingsInstance: settingsInstance])
         }
     }
 

@@ -222,10 +222,6 @@
             $(document).ready(function () {
                 var sraSettings = {
                     debug: true,
-                    sraUrl: "${settingsInstance.sraUrl}",
-                    sraUsername: "${settingsInstance.sraUsername}",
-                    sraPassword: "${settingsInstance.sraPassword}",
-                    useProxy: ${settingsInstance.useProxy},
                     refreshInterval: ${settingsInstance.refreshInterval}
                 };
                 RADAR.Dashboard.init(sraSettings);

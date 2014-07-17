@@ -2,7 +2,6 @@ package com.serena.radar
 
 import grails.plugins.rest.client.RestBuilder
 import grails.transaction.Transactional
-import net.edwardstx.ProxyServlet
 
 @Transactional(readOnly = true)
 class SettingsController {
@@ -36,11 +35,11 @@ class SettingsController {
 
         // validate connectivity
        try {
-           validateSRAConnection(settingsInstance)
+           validateAutomationConnection(settingsInstance)
            flash.message = message(code: 'setting.validate.success')
            respond settingsInstance, view:'edit'
        } catch (Exception ex) {
-           log.error "Error: failed to validate SRA connection - ${ex.message}"
+           log.error "Error: failed to validate Automation connection - ${ex.message}"
            flash.error = message(code: 'setting.validate.failure', args: [ex.message])
            respond settingsInstance, view:'edit'
        }
@@ -63,11 +62,11 @@ class SettingsController {
         settingsInstance.save flush:true
 
         flash.message = message(code: 'setting.validate.success')
-        //respond settingsInstance, view:'edit'
-        redirect(controller: "dashboard", action: "index")
+
+        redirect(controller: "dashboard", action: "view")
     }
 
-    static validateSRAConnection(Settings settingsInstance) throws Exception {
+    static validateAutomationConnection(Settings settingsInstance) throws Exception {
         RestBuilder rest = new RestBuilder()
         def resp = rest.get(settingsInstance.sraUrl + "/rest/state") {
             auth(settingsInstance.sraUsername, settingsInstance.sraPassword)

@@ -4,52 +4,43 @@ var RADAR = RADAR || {};
 RADAR.Dashboard = {
     init: function (options) {
         this.debug = options.debug || false;
-        this.sraUrl = options.sraUrl || "http://localhost:8080/serena_ra"
-        this.username = options.sraUsername || "read_only"; // a read only user should be used for security
-        this.password = options.sraPassword;
-        this.useProxy = options.useProxy || false;
-        this.sraPath = (this.useProxy ? RADAR.Util.getSiteRoot() + "/proxy" : "") + "/serena_ra";
-        this.useSSO = options.useSSO || true; // assume SSO is enabled
+        this.useSSO = options.useSSO || true; // assume SSO is enabled?
         this.refreshInterval = parseInt(options.refreshInterval) || 10;
+
+        // all REST queries go through proxy
+        this.sraPath = RADAR.Util.getBaseURL();
+
         // default options for SRA rest query
         this.sraReq = {
             cache: false,
             contentType: "application/json",
             dataType: "json",
             headers: {
-                "DirectSsoInteraction": true,
-                "Authorization": RADAR.Util.makeBasicAuth(this.username, this.password)
+                "DirectSsoInteraction": (this.useSSO ? true : false)
             },
             url: this.sraPath
         };
-        // get all applications
-        this.sraAppsUrl = this.sraPath +
-            "/rest/deploy/application?sortType=asc";
-        // get all components
-        this.sraCompsUrl = this.sraPath +
-            "/rest/deploy/component?sortType=asc";
-        // get all global environments
-        this.sraEnvsUrl = this.sraPath +
-            "/rest/deploy/globalEnvironment?sortType=asc";
-        // get all resources
-        this.sraResourcesUrl = this.sraPath +
-            "/rest/resource/resource/tree?orderField=name&sortType=asc";
-        // get all agents
-        this.sraAgentsUrl = this.sraPath +
-            "/rest/agent?&orderField=name&sortType=desc";
-        this.sraActivityUrl = this.sraPath +
-            "/rest/workflow/currentActivity?orderField=startDate&sortType=desc";
+
+        this.sraAppsUrl = this.sraPath + "proxy/all-applications";
+        this.sraCompsUrl = this.sraPath + "proxy/all-components";
+        this.sraEnvsUrl = this.sraPath + "proxy/all-global-environments";
+        this.sraResourcesUrl = this.sraPath + "proxy/all-resources";
+        this.sraAgentsUrl = this.sraPath + "proxy/all-agents";
+        this.sraActivityUrl = this.sraPath + "proxy/current-activity";
         // get all recent deployments (last 30 days)
-        this.sraDepReportUrl = this.sraPath + "/rest/report/adHoc?dateRange=custom&status=" +
+        this.sraDepReportUrl = this.sraPath + "proxy?url=" +
+            encodeURIComponent("/rest/report/adHoc?dateRange=custom&status=" +
             "&date_low=" + moment().subtract(30, 'd').valueOf() +
             "&date_hi=" + moment().valueOf() +
-            "&orderField=application&sortType=asc&type=com.urbancode.ds.subsys.report.domain.deployment_report.DeploymentReport";
+            "&orderField=application&sortType=asc&type=com.urbancode.ds.subsys.report.domain.deployment_report.DeploymentReport");
+
         this.countOptions = {
             useEasing : true,
             useGrouping : false,
             separator : ',',
             decimal : '.'
-        }
+        };
+
         this.cacheElements();
         this.render();
     },
