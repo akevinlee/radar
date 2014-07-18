@@ -52,33 +52,6 @@
                 </div>
 
                 <div class="row">
-                    <div class="form-group col-xs-8 ${hasErrors(bean: settingsInstance, field: 'sraUsername', 'error')} ">
-                        <div class="col-xs-3">
-                            <label for="sraUsername">
-                                <g:message code="setting.sraUsername.label" default="SRA Username"/>
-                                <span class="required-indicator">*</span>
-                            </label>
-                        </div>
-                        <div class="col-xs-4">
-                            <g:textField name="sraUsername" value="${settingsInstance?.sraUsername}" class="form-control" required="" placeholder="Username"/>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="form-group col-xs-8 ${hasErrors(bean: settingsInstance, field: 'sraPassword', 'error')} ">
-                        <div class="col-xs-3">
-                            <label for="sraPassword">
-                                <g:message code="setting.sraPassword.label" default="SRA Password"/>
-                            </label>
-                        </div>
-                        <div class="col-xs-4 ">
-                            <g:passwordField name="sraPassword" value="${settingsInstance?.sraPassword}" class="form-control" placeholder="Password"/>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
                     <div class="form-group col-xs-8 ${hasErrors(bean: settingsInstance, field: 'refreshInterval', 'error')} required">
                         <div class="col-xs-3">
                             <label for="refreshInterval">
@@ -96,8 +69,6 @@
                     <div class="col-xs-4">
                         <g:actionSubmit action="update" class="save btn btn-success"
                             value="${message(code: 'default.button.save.label', default: 'Save')}"/>
-                        <g:actionSubmit action="validate" class="save btn btn-info"
-                                        value="${message(code: 'default.button.validate.label', default: 'Validate')}"/>
                     </div>
                 </div>
             </g:form>

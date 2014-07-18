@@ -16,10 +16,10 @@ class AutomationProxyController {
             restQuery = URLDecoder.decode(url, "UTF-8")
         if (restQuery == "")
             render([error: "invalid or empty REST query: ${restQuery}"] as JSON)
-        Settings settingsInstance = Settings.getSettings()
+
         RestBuilder rest = new RestBuilder()
-        def resp = rest.get(settingsInstance.getSraUrl() + restQuery) {
-            auth(settingsInstance.sraUsername, settingsInstance.sraPassword)
+        def resp = rest.get(session.sraUrl + restQuery) {
+            auth(session.user.login, session.user.password)
             header 'DirectSsoInteraction', 'true'
             accept("application/json")
             contentType("application/json")
@@ -36,17 +36,14 @@ class AutomationProxyController {
     }
 
     def put() {
-        Settings settingsInstance = Settings.getSettings()
 
     }
 
     def post() {
-        Settings settingsInstance = Settings.getSettings()
 
     }
 
     def delete() {
-        Settings settingsInstance = Settings.getSettings()
 
     }
 

@@ -55,23 +55,28 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li class="${controllerName.equals('dashboard') ? 'active' : '' }"}>
+                <li class="${controllerName.equals('dashboard') ? 'active' : '' }">
                     <a href="${createLink(uri: '/')}">Dashboard</a>
                 </li>
-                <li class="${controllerName.equals('applications') ? 'active' : '' }"}>
+                <li class="${controllerName.equals('applications') ? 'active' : '' }">
                     <a href="${createLink(uri: '/applications')}">Applications</a>
                 </li>
-                <li class="${controllerName.equals('resources') ? 'active' : '' }"}>
+                <li class="${controllerName.equals('resources') ? 'active' : '' }}">
                     <a href="${createLink(uri: '/resources')}">Resources</a>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li class="${controllerName.equals('settings') ? 'active' : '' }"}>
-                    <a href="${createLink(uri: '/settings')}">Settings</a>
-                </li>
-                <li class="${controllerName.equals('help') ? 'active' : '' }"}>
+                <li class="${controllerName.equals('help') ? 'active' : '' }">
                     <a href="${createLink(uri: '/help')}">Help</a>
                 </li>
+                <li class="${controllerName.equals('settings') ? 'active' : '' }">
+                    <a href="${createLink(uri: '/settings')}">Settings</a>
+                </li>
+                <% if (session.user) { %>
+                    <li><a href="${createLink(action:"logout", controller:"user")}">Logout</a></li>
+                <% } else { %>
+                    <li><a href="${createLink(action:"login", controller:"user")}">Login</a></li>
+                <% } %>
             </ul>
         </div>
     </div>

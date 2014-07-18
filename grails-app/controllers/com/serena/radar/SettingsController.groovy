@@ -12,13 +12,13 @@ class SettingsController {
         redirect(action: 'edit')
     }
 
-    def setup() {
+    /*def setup() {
         Settings settingsInstance = Settings.getSettings()
         render(view: "edit", model: [settingsInstance: settingsInstance])
-    }
+    }*/
 
     def edit() {
-        respond Settings.getSettings()
+        respond Settings.findByUsername(session.user.name)
     }
 
     def validate(Settings settingsInstance) {
@@ -33,6 +33,7 @@ class SettingsController {
             return
         }
 
+        /*
         // validate connectivity
        try {
            validateAutomationConnection(settingsInstance)
@@ -42,7 +43,7 @@ class SettingsController {
            log.error "Error: failed to validate Automation connection - ${ex.message}"
            flash.error = message(code: 'setting.validate.failure', args: [ex.message])
            respond settingsInstance, view:'edit'
-       }
+       }*/
 
     }
 
@@ -60,6 +61,9 @@ class SettingsController {
         }
 
         settingsInstance.save flush:true
+
+        session.refreshInterval = settingsInstance.refreshInterval
+        session.sraUrl = settingsInstance.sraUrl
 
         flash.message = message(code: 'setting.validate.success')
 

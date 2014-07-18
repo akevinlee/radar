@@ -1,5 +1,3 @@
-<%@ page import="com.serena.radar.Settings" %>
-
 <!DOCTYPE html>
 <html>
 	<head>
@@ -25,7 +23,7 @@
                         <div class="icon">
                             <span class="glyphicon glyphicon-phone"></span>
                         </div>
-                        <a target="_blank" href="${settingsInstance.sraUrl}/#main/applications" class="sraMore small-box-footer">
+                        <a target="_blank" href="${session.sraUrl}/#main/applications" class="sraMore small-box-footer">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </div>
@@ -41,7 +39,7 @@
                         <div class="icon">
                             <span class="glyphicon glyphicon-phone"></span>
                         </div>
-                        <a target="_blank" href="${settingsInstance.sraUrl}/#main/components" class="sraMore small-box-footer">
+                        <a target="_blank" href="${session.sraUrl}/#main/components" class="sraMore small-box-footer">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </div>
@@ -59,7 +57,7 @@
                         <div class="icon">
                             <span class="glyphicon glyphicon-hdd"></span>
                         </div>
-                        <a target="_blank" href="${settingsInstance.sraUrl}/#main/globalEnvironments" class="sraMore small-box-footer">
+                        <a target="_blank" href="${session.sraUrl}/#main/globalEnvironments" class="sraMore small-box-footer">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </div>
@@ -77,7 +75,7 @@
                         <div class="icon">
                             <span class="glyphicon glyphicon-tasks"></span>
                         </div>
-                        <a target="_blank" href="${settingsInstance.sraUrl}/#resources" class="sraMore small-box-footer">
+                        <a target="_blank" href="${session.sraUrl}/#resources" class="sraMore small-box-footer">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </div>
@@ -93,7 +91,7 @@
                         <div class="icon">
                             <span class="glyphicon glyphicon-tasks"></span>
                         </div>
-                        <a target="_blank" href="${settingsInstance.sraUrl}/#agents" class="sraMore small-box-footer">
+                        <a target="_blank" href="${session.sraUrl}/#agents" class="sraMore small-box-footer">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </div>
@@ -111,7 +109,7 @@
                         <div class="icon">
                             <span class="glyphicon glyphicon-tasks"></span>
                         </div>
-                        <a target="_blank" href="${settingsInstance.sraUrl}/#" class="sraMore small-box-footer">
+                        <a target="_blank" href="${session.sraUrl}/#" class="sraMore small-box-footer">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </div>
@@ -185,7 +183,7 @@
                     <td>{{prettifyDate componentProcessRequest.submittedTime}}</td>
                     <td>{{componentProcessRequest.userName}}</td>
                     <td>
-                        <a class="sraMore small-box-footer" data-toggle="modal" data-target=".sraModal" href="${settingsInstance.sraUrl}/#componentProcessRequest/{{componentProcessRequest.id}}">
+                        <a class="sraMore small-box-footer" data-toggle="modal" data-target=".sraModal" href="${session.sraUrl}/#componentProcessRequest/{{componentProcessRequest.id}}">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </td>
@@ -199,7 +197,7 @@
                     <td>{{prettifyDate applicationProcessRequest.submittedTime}}</td>
                     <td>{{applicationProcessRequest.userName}}</td>
                     <td>
-                        <a class="sraMore" data-toggle="modal" data-target=".sraModal" href="${settingsInstance.sraUrl}/#applicationProcessRequest/{{applicationProcessRequest.id}}">
+                        <a class="sraMore" data-toggle="modal" data-target=".sraModal" href="${session.sraUrl}/#applicationProcessRequest/{{applicationProcessRequest.id}}">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </td>
@@ -222,7 +220,7 @@
             $(document).ready(function () {
                 var sraSettings = {
                     debug: true,
-                    refreshInterval: ${settingsInstance.refreshInterval}
+                    refreshInterval: ${session.refreshInterval}
                 };
                 RADAR.Dashboard.init(sraSettings);
             });
