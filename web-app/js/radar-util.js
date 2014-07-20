@@ -73,14 +73,6 @@ RADAR.Util = {
     pluralize: function (count, word) {
         return count === 1 ? word : word + 's';
     },
-    store: function (namespace, data) {
-        if (arguments.length > 1) {
-            return localStorage.setItem(namespace, JSON.stringify(data));
-        } else {
-            var store = localStorage.getItem(namespace);
-            return (store && JSON.parse(store)) || [];
-        }
-    },
     getBaseURL: function() {
         var url = location.href;  // entire url including querystring - also: window.location.href;
         var baseURL = url.substring(0, url.indexOf('/', 14));
@@ -111,7 +103,7 @@ RADAR.Util = {
     },
     ssoToken: null,
     getSsoToken: function() {
-        if (util.ssoToken == null || util.ssoToken.ssoToken == "") {
+        if (RADAR.Util.ssoToken == null || RADAR.Util.ssoToken.ssoToken == "") {
             $.ajax({
                 url: "/tmtrack/tmtrack.dll?JSONPage&Command=getssotoken",
                 dataType: 'json',

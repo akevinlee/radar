@@ -9,7 +9,7 @@
     <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
     <!--link rel="apple-touch-icon" href="${resource(dir: 'images', file: 'apple-touch-icon.png')}">
 
-    <title><g:layoutTitle default="Serena RAdaR"/></title>
+    <title><g:layoutTitle default="Serena Radar"/></title>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -59,24 +59,44 @@
                     <a href="${createLink(uri: '/')}">Dashboard</a>
                 </li>
                 <li class="${controllerName.equals('applications') ? 'active' : '' }">
-                    <a href="${createLink(uri: '/applications')}">Applications</a>
+                    <a href="${createLink(action:"view", controller:"applications")}">Applications</a>
                 </li>
-                <li class="${controllerName.equals('resources') ? 'active' : '' }}">
-                    <a href="${createLink(uri: '/resources')}">Resources</a>
+                <li class="${controllerName.equals('resources') ? 'active' : '' }">
+                    <a href="${createLink(action:"view", controller:"resources")}">Resources</a>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li class="${controllerName.equals('help') ? 'active' : '' }">
-                    <a href="${createLink(uri: '/help')}">Help</a>
-                </li>
-                <li class="${controllerName.equals('settings') ? 'active' : '' }">
-                    <a href="${createLink(uri: '/settings')}">Settings</a>
-                </li>
                 <% if (session.user) { %>
-                    <li><a href="${createLink(action:"logout", controller:"user")}">Logout</a></li>
+                    <li>
+                        <a href="${createLink(action:"view", controller:"workitems")}">
+                            <span id="my-tasks" class="badge">0</span>
+                            <span class="glyphicon glyphicon-flag"></span>
+                        </a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-user"></span>
+                            <%= "${session.user.name}" %> <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li>
+                                <a href="${createLink(uri: '/settings')}">Settings</a>
+                            </li>
+                            <li>
+                                <a href="${createLink(uri: '/help')}">Help</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="${createLink(action:"logout", controller:"user")}">Logout</a>
+                            </li>
+                        </ul>
+                    </li>
                 <% } else { %>
-                    <li><a href="${createLink(action:"login", controller:"user")}">Login</a></li>
+                    <button type="button" class="btn btn-default navbar-btn">
+                        <a href="${createLink(action:"login", controller:"user")}">Login</a>
+                    </button>
                 <% } %>
+
             </ul>
         </div>
     </div>
@@ -88,7 +108,7 @@
 
 <footer id="radar-footer">
     <div class="container-fluid">
-        <span class="pull-right" id="version">Serena RAdaR</span>
+        <span class="pull-right" id="version">Serena Radar</span>
         <p class="ng-binding">© 2014 Serena Software Inc., All Rights Reserved.</p>
     </div>
 </footer>

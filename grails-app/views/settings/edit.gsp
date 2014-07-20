@@ -38,15 +38,15 @@
                 <g:hiddenField name="version" value="${settingsInstance?.version}"/>
 
                 <div class="row">
-                    <div class="form-group col-xs-8 ${hasErrors(bean: settingsInstance, field: 'sraUrl', 'error')} ">
+                    <div class="form-group col-xs-8 ${hasErrors(bean: settingsInstance, field: 'autoUrl', 'error')} ">
                         <div class="col-xs-3">
-                            <label for="sraUrl">
-                                <g:message code="setting.sraUrl.label" default="SRA URL"/>
+                            <label for="autoUrl">
+                                <g:message code="setting.autoUrl.label" default="Automation Server URL"/>
                                 <span class="required-indicator">*</span>
                             </label>
                         </div>
                         <div class="col-xs-4">
-                            <g:textField name="sraUrl" value="${settingsInstance?.sraUrl}" class="form-control" required="" placeholder="URL"/>
+                            <g:textField name="autoUrl" value="${settingsInstance?.autoUrl}" class="form-control" required="" placeholder="URL"/>
                         </div>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 
 var RADAR = RADAR || {};
 
-RADAR.Applications = {
+RADAR.Resources = {
     init: function (options) {
         this.debug = options.debug || false;
         this.useSSO = options.useSSO || true; // assume SSO is enabled
@@ -21,8 +21,8 @@ RADAR.Applications = {
             url: this.autoPath
         };
 
-        this.autoAppsUrl = this.autoPath + "proxy/all-applications";
-        this.autoCompsUrl = this.autoPath + "proxy/all-components";
+        this.autoResourcesUrl = this.autoPath + "proxy/all-resources";
+        this.autoAgentsUrl = this.autoPath + "proxy/all-agents";
         // get all recent deployments (last 30 days)
         this.autoDepReportUrl = this.autoPath + "proxy?url=" +
             encodeURIComponent("/rest/report/adHoc?dateRange=custom&status=" +
@@ -41,46 +41,46 @@ RADAR.Applications = {
         this.render();
     },
     cacheElements: function () {
-        this.applicationTemplate = Handlebars.compile($('#application-template').html());
+        this.resourceTemplate = Handlebars.compile($('#resource-template').html());
         this.$dashboard = $('#app-dashboard');
-        this.$applications = this.$dashboard.find('#applications');
-        this.$applicationRows = this.$applications.find('#application-rows');
-        this.$successCount = this.$dashboard.find('#success-count');
-        this.$failureCount = this.$dashboard.find('#failure-count');
+        this.$resources = this.$dashboard.find('#resources');
+        this.$resourceRows = this.$resources.find('#resource-rows');
+        this.$onResCount = this.$dashboard.find('#online-resource-count');
+        this.$offResCount = this.$dashboard.find('#offline-resource-count');
         this.$runningCount = this.$dashboard.find('#running-count');
         this.$scheduledCount = this.$dashboard.find('#scheduled-count');
     },
     render: function (el) {
-        this._updateApplications(el);
+        this._updateResources(el);
         this._updateActivity(el);
         this._updateCounts(el);
         this.update();
     },
     update: function (el) {
         var self = this;
-        (function applicationsUpdate(){
+        (function resourcesUpdate(){
             setTimeout(function(){
-                self._updateApplications(self.el);
+                self._updateResources(self.el);
                 self._updateActivity(self.el);
                 self._updateCounts(self.el);
-                applicationsUpdate();
+                resourcesUpdate();
             }, self.refreshInterval*1000);
         })();
     },
     destroy: function (el) {
 
     },
-    _updateApplications: function(el) {
+    _updateResources: function(el) {
         var self = this;
-        this.autoReq.url = this.autoAppsUrl;
+        this.autoReq.url = this.autoResourcesUrl;
         $.ajax(this.autoReq).then(function(data) {
-            var numApps = _.size(data);
-            if (numApps > 0) {
-                if (self.debug) console.log("Found " + numApps + " applications");
-                self.$applicationRows.empty().html(self.applicationTemplate(data));
+            var numResources = _.size(data);
+            if (numResources > 0) {
+                if (self.debug) console.log("Found " + numResources + " resources");
+                self.$resourceRows.empty().html(self.resourceTemplate(data));
             }
             else
-                if (self.debug) console.log("Found no applications");
+                if (self.debug) console.log("Found no resources");
         });
 
     },
@@ -99,6 +99,21 @@ RADAR.Applications = {
     },
     _updateCounts: function(el) {
         var self = this;
+        this.autoReq.url = this.autoResourcesUrl;
+        $.ajax(this.autoReq).then(function(data) {
+            var resStats = _.chain(data).sortBy("status").countBy("status").value();
+            if (self.debug) console.log("Found " + resStats.ONLINE + " online / " + resStats.OFFLINE + " offline resources");
+            if (resStats.ONLINE > 0)
+                new countUp("online-resource-count", self.$onResCount.text(), resStats.ONLINE, 0, 2, 1.5, self.countOptions).start();
+            else
+                self.$onResCount.text("0");
+            if (resStats.OFFLINE > 0)
+                new countUp("offline-resource-count", self.$offResCount.text(), resStats.OFFLINE, 0, 2, 1.5, self.countOptions).start();
+            else
+                self.$offResCount.text("0");
+        });
+
+        /*
         this.autoReq.url = this.autoDepReportUrl;
         $.ajax(this.autoReq).done(function(data) {
 
@@ -134,6 +149,6 @@ RADAR.Applications = {
                 self.$scheduledCount.text("0");
             }
 
-        });
+        });*/
     }
 };

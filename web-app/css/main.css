@@ -52,18 +52,30 @@ a.navbar-brand {
     font-size: 16px;
     line-height: 25px;
 }
-.navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus {
-    background-color: #5dbff0;
-}
-ul.navbar-nav > li:hover {
+.navbar-inverse .navbar.nav > a:hover,
+.navbar-inverse .navbar.nav > a:focus
+{
     background-color: #1b94c1;
     color: #1D5C8D;
-    text-shadow: 0px 0px 2px #59B4D6, 0 0 0 #215470;
+}
+.navbar-inverse .navbar-nav > .active > a,
+.navbar-inverse .navbar-nav > .active > a:hover,
+.navbar-inverse .navbar-nav > .active > a:focus,
+.navbar-inverse .navbar-nav > .open > a,
+.navbar-inverse .navbar-nav > .open > a:hover,
+.navbar-inverse .navbar-nav > .open > a:focus
+{
+    background-color: #5dbff0;
+}
+
+.navbar-inverse .navbar-nav > li > a > .badge {
+    color: #428bca;
+    background-color: #fff;
 }
 
 code {
     font-size: 80%;
-}*/
+}
 
 /*
  * logos
@@ -82,39 +94,7 @@ div.logo img.brand {
     margin-right: 10px;
 }
 
-/*
- * login form
-  */
-.form-login {
-    max-width: 330px;
-    padding: 15px;
-    margin: 0 auto;
-}
-.form-login .form-login-heading,
-.form-login .checkbox {
-    margin-bottom: 10px;
-}
-.form-login .checkbox {
-    font-weight: normal;
-}
-.form-login .form-control {
-    position: relative;
-    height: auto;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    padding: 10px;
-    font-size: 16px;
-}
-.form-login .form-control:focus {
-    z-index: 2;
-}
-.form-login input[type="text"] {
-    margin-bottom: 20px;
-}
-.form-login input[type="password"] {
 
-}
 /*
  * Placeholders
  */

@@ -1,6 +1,6 @@
 package com.serena.radar
 
-class ApplicationsController {
+class ResourcesController {
 
     def view() {
         render(view: "view")

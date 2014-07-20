@@ -3,7 +3,7 @@
 	<head>
 		<meta name="layout" content="main"/>
         <r:require modules="bootstrap"/>
-		<title>Serena RAdAR</title>
+		<title>Serena Radar</title>
 	</head>
 	<body>
 		<div id="dashboard" role="main">

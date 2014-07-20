@@ -12,7 +12,7 @@ class UserController {
     def login() {}
 
     def authenticate() {
-        session.sraUrl = params.url
+        session.autoUrl = params.url
         if (validateAutomationConnection(params.url, params.username, params.password, params.rememberMe)) {
             // if user doesn't exist
             def user = User.findByLogin(params.username)
@@ -27,10 +27,10 @@ class UserController {
             def settings = Settings.findByUsername(params.username)
             if (settings == null) {
                 // create them
-                settings = new Settings(username: params.username, sraUrl: params.url, refreshInterval: 10)
+                settings = new Settings(username: params.username, autoUrl: params.url, refreshInterval: 10)
                 settings.save()
             }
-            session.sraUrl = settings.sraUrl
+            session.autoUrl = settings.autoUrl
             session.refreshInterval = settings.refreshInterval
 
             flash.message = message(code: 'login.success', args: [params.username])
@@ -78,7 +78,7 @@ class UserController {
         form.add("Log In", "login")
         form.add("requestedHash", "")
 
-        def resp = rest.post("http://localhost:8080/serena_ra/tasks/LoginTasks/login") {
+        def resp = rest.post(url + "/tasks/LoginTasks/login") {
             contentType("application/x-www-form-urlencoded")
             body(form)
         }

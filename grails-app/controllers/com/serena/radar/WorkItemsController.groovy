@@ -1,9 +1,8 @@
 package com.serena.radar
 
-class ApplicationsController {
+class WorkItemsController {
 
     def view() {
         render(view: "view")
     }
-
 }

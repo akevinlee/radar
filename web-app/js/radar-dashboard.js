@@ -8,27 +8,27 @@ RADAR.Dashboard = {
         this.refreshInterval = parseInt(options.refreshInterval) || 10;
 
         // all REST queries go through proxy
-        this.sraPath = RADAR.Util.getBaseURL();
+        this.autoPath = RADAR.Util.getBaseURL();
 
-        // default options for SRA rest query
-        this.sraReq = {
+        // default options for SDA rest query
+        this.autoReq = {
             cache: false,
             contentType: "application/json",
             dataType: "json",
             headers: {
                 "DirectSsoInteraction": (this.useSSO ? true : false)
             },
-            url: this.sraPath
+            url: this.autoPath
         };
 
-        this.sraAppsUrl = this.sraPath + "proxy/all-applications";
-        this.sraCompsUrl = this.sraPath + "proxy/all-components";
-        this.sraEnvsUrl = this.sraPath + "proxy/all-global-environments";
-        this.sraResourcesUrl = this.sraPath + "proxy/all-resources";
-        this.sraAgentsUrl = this.sraPath + "proxy/all-agents";
-        this.sraActivityUrl = this.sraPath + "proxy/current-activity";
+        this.autoAppsUrl = this.autoPath + "proxy/all-applications";
+        this.autoCompsUrl = this.autoPath + "proxy/all-components";
+        this.autoEnvsUrl = this.autoPath + "proxy/all-global-environments";
+        this.autoResourcesUrl = this.autoPath + "proxy/all-resources";
+        this.autoAgentsUrl = this.autoPath + "proxy/all-agents";
+        this.autoActivityUrl = this.autoPath + "proxy/current-activity";
         // get all recent deployments (last 30 days)
-        this.sraDepReportUrl = this.sraPath + "proxy?url=" +
+        this.autoDepReportUrl = this.autoPath + "proxy?url=" +
             encodeURIComponent("/rest/report/adHoc?dateRange=custom&status=" +
             "&date_low=" + moment().subtract(30, 'd').valueOf() +
             "&date_hi=" + moment().valueOf() +
@@ -94,8 +94,8 @@ RADAR.Dashboard = {
         this.$compStats.toggleClass('hidden'); this.$agentStats.toggleClass('hidden');
         this.$appStats.toggleClass('hidden'); this.$resStats.toggleClass('hidden');
         if (this.$appStats.hasClass("hidden")) {
-            this.sraReq.url = this.sraCompsUrl;
-            $.ajax(this.sraReq).then(function(data) {
+            this.autoReq.url = this.autoCompsUrl;
+            $.ajax(this.autoReq).then(function(data) {
                 var numComps = _.size(data);
                 if (self.debug) console.log("Found " + numComps + " components");
                 if (numComps > 0)
@@ -104,8 +104,8 @@ RADAR.Dashboard = {
                     self.$compCount.text("0");
             });
         } else {
-            this.sraReq.url = this.sraAppsUrl;
-            $.ajax(this.sraReq).then(function(data) {
+            this.autoReq.url = this.autoAppsUrl;
+            $.ajax(this.autoReq).then(function(data) {
                 var numApps = _.size(data);
                 if (self.debug) console.log("Found " + numApps + " applications");
                 if (numApps > 0)
@@ -114,8 +114,8 @@ RADAR.Dashboard = {
                     self.$appCount.text("0");
             });
         }
-        this.sraReq.url = this.sraEnvsUrl;
-        $.ajax(this.sraReq).then(function(data) {
+        this.autoReq.url = this.autoEnvsUrl;
+        $.ajax(this.autoReq).then(function(data) {
             // TODO: show application environments
             var numGlobEnvs = _.size(data);
             if (self.debug) console.log("Found " + numGlobEnvs + " global environments");
@@ -125,8 +125,8 @@ RADAR.Dashboard = {
                 self.$envCount.text("0");
         });
         if (this.$resStats.hasClass("hidden")) {
-            this.sraReq.url = self.sraAgentsUrl;
-            $.ajax(this.sraReq).then(function(data) {
+            this.autoReq.url = self.autoAgentsUrl;
+            $.ajax(this.autoReq).then(function(data) {
                 var agentStats = _.chain(data).sortBy("status").countBy("status").value();
                 if (self.debug) console.log("Found " + agentStats.ONLINE + " online / " + agentStats.OFFLINE + " offline agents");
                 if (agentStats.ONLINE > 0)
@@ -139,8 +139,8 @@ RADAR.Dashboard = {
                     self.$offAgentCount.text("0");
             });
         } else {
-            this.sraReq.url = this.sraResourcesUrl;
-            $.ajax(this.sraReq).then(function(data) {
+            this.autoReq.url = this.autoResourcesUrl;
+            $.ajax(this.autoReq).then(function(data) {
                 var resStats = _.chain(data).sortBy("status").countBy("status").value();
                 if (self.debug) console.log("Found " + resStats.ONLINE + " online / " + resStats.OFFLINE + " offline resources");
                 if (resStats.ONLINE > 0)
@@ -156,21 +156,21 @@ RADAR.Dashboard = {
     },
     _updateActivity: function(el) {
         var self = this;
-        this.sraReq.url = this.sraActivityUrl;
-        $.ajax(this.sraReq).done(function(data) {
+        this.autoReq.url = this.autoActivityUrl;
+        $.ajax(this.autoReq).done(function(data) {
             if (self.debug) console.log("Found " + _.size(data) + " active deployments");
             self.$activityRows.empty().html(self.activityTemplate(data));
-            self.$activityRows.find('a.sraMore').on('click', function(e) {
+            self.$activityRows.find('a.autoMore').on('click', function(e) {
                 e.preventDefault();
                 var url = $(this).attr('href');
-                $(".sraContent").html('<iframe width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency="true" src="'+url+'"></iframe>');
+                $(".autoContent").html('<iframe width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency="true" src="'+url+'"></iframe>');
             });
         });
     },
     _updateStatus: function(el) {
         var self = this;
-        this.sraReq.url = this.sraDepReportUrl;
-        $.ajax(this.sraReq).done(function(data) {
+        this.autoReq.url = this.autoDepReportUrl;
+        $.ajax(this.autoReq).done(function(data) {
 
             var results = data.items[0];
             var successCount = _.size(_.uniq(_.where(results, { "status": "SUCCESS"}), "applicationRequestId"));

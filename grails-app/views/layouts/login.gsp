@@ -27,6 +27,7 @@
     <script src="${resource(dir: 'js', file: 'application.js')}" type="text/javascript"></script>
 
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}" type="text/css">
+    <link rel="stylesheet" href="${resource(dir: 'css', file: 'login.css')}" type="text/css">
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'mobile.css')}" type="text/css">
 </head>
 
