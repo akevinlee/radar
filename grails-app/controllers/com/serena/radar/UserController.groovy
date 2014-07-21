@@ -3,13 +3,58 @@ package com.serena.radar
 import grails.plugins.rest.client.RestBuilder
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
+import org.apache.commons.codec.digest.DigestUtils
 import grails.transaction.Transactional
+import sun.misc.BASE64Decoder
+import sun.misc.BASE64Encoder
+
+import javax.servlet.http.Cookie
 
 @Transactional(readOnly = true)
 class UserController {
     def scaffold = User
 
-    def login() {}
+    def login() {
+        // check if we have a cookie for we remember me authentication
+        /*def cookieName = "${grailsApplication.metadata['app.name']}-${grailsApplication.metadata['app.version']}"
+        String rememberMeHash = g.cookie(name: cookieName)
+        println rememberMeHash
+        if (rememberMeHash != null) {
+            def (username, expiration, password) = decrypt(rememberMeHash).toString().split(':')
+            println username
+            println expiration
+            println password
+            def user = User.findByLogin(username)
+            if (user != null) {
+                session.user = user
+                if (user.password != password) {
+                    flash.message = message(code: 'login.authentication.error', args: [username])
+                    redirect(action: "login")
+                }
+                def settings = Settings.findByUsername(username)
+                if (settings != null) {
+                    session.autoUrl = settings.autoUrl
+                    session.refreshInterval = settings.refreshInterval
+
+                    flash.message = message(code: 'login.success', args: [username])
+                    redirect(controller: "dashboard", action: "view")
+                } else {
+                    flash.message = message(code: 'login.authentication.error', args: [username])
+                    redirect(action: "login")
+                }
+            } else {
+                println "in here"
+                // delete cookie
+
+                flash.message = message(code: 'login.authentication.error', args: [username])
+                redirect(action: "login")
+            }
+        }*/
+
+        // set default Automation Server URL
+        if (session.autoUrl == null)
+            session.autoUrl = "http://localhost:8080/serena_ra"
+    }
 
     def authenticate() {
         session.autoUrl = params.url
@@ -22,6 +67,20 @@ class UserController {
                 user.save()
             }
             session.user = user
+
+            // write hash to cookie if rememberMe is true
+            // NOT YET USED
+            if (params.rememberMe.toString() == "true") {
+                def expirationTime = new Date() + 30 // days
+                def rememberMeHash = encrypt(params.username + ":" +
+                        expirationTime.getTime().toString() + ":" +
+                        params.password) // this is not secure at the moment!!!
+
+                def cookieName = "${grailsApplication.metadata['app.name']}-${grailsApplication.metadata['app.version']}"
+                Cookie cookie = new Cookie(cookieName, rememberMeHash.toString())
+                cookie.maxAge = 30 * (60 * 60 * 24)
+                response.addCookie(cookie)
+            }
 
             // if user settings doesn't exist
             def settings = Settings.findByUsername(params.username)
@@ -90,6 +149,28 @@ class UserController {
             isSuccess = false
         return ((resp.status >= 200 && resp.status < 300) && isSuccess)
 
+    }
+
+    def static String encrypt(String str) {
+        BASE64Encoder encoder = new BASE64Encoder()
+        byte[] salt = new byte[8];
+        Random rand = new Random((new Date()).getTime())
+        rand.nextBytes(salt)
+        return encoder.encode(salt) + encoder.encode(str.getBytes())
+    }
+
+    def static String decrypt(String str) {
+        if (str.length() > 12) {
+            String cipher = str.substring(12);
+            BASE64Decoder decoder = new BASE64Decoder();
+            try {
+                 return new String(decoder.decodeBuffer(cipher));
+            } catch (IOException e) {
+                //  throw new InvalidImplementationException(
+                //  Fail
+             }
+         }
+         return null;
     }
 
 }

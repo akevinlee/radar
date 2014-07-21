@@ -52,6 +52,7 @@ grails.project.dependency.resolution = {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
         // runtime 'mysql:mysql-connector-java:5.1.27'
         // runtime 'org.postgresql:postgresql:9.3-1100-jdbc41'
+        // Workaround to resolve dependency issue with aws-java-sdk and http-builder (dependent on httpcore:4.0)
     }
 
     plugins {
@@ -63,6 +64,7 @@ grails.project.dependency.resolution = {
         compile ':cache:1.1.7'
         compile ":fields:1.3"
         compile ":rest-client-builder:2.0.3"
+        compile ':cookie:0.51'
 
         // plugins needed at runtime but not for compilation
         runtime ":hibernate:3.6.10.9" // or ":hibernate4:4.3.4"

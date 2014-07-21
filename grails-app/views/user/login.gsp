@@ -13,9 +13,11 @@
 
         <div id="loginForm">
             <g:form id="loginForm" class="form-login" role="form" url="[controller:'user', action:'authenticate']">
-                <g:if test="${flash.message}">
-                    <div class="message" role="status">${flash.message}</div>
-                </g:if>
+                <div class="message" role="status">
+                    <g:if test="${flash.message}">
+                        ${flash.message}
+                    </g:if>
+                </div>
                 <label class="sr-only" for="url">${message(code: 'login.url.label', default: 'Automation Server URL')}</label>
                 <g:textField name="url" type="url" class="form-control" required=""
                              value="${session.autoUrl != "" ? session.autoUrl : 'http://localhost:8080/serena_ra' }"

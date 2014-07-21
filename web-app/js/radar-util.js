@@ -7,6 +7,19 @@ Handlebars.registerHelper("prettifyDate", function(timestamp) {
     return moment(new Date(timestamp)).fromNow();
 });
 
+Handlebars.registerHelper("getStatus", function(status) {
+    var cssClass = '';
+    switch (status) {
+        case "ONLINE":
+            cssClass = 'success';   break;
+        case "OFFLINE":
+            cssClass = 'danger';    break;
+        case "CONNECTED":
+            cssClass = 'warning';   break;
+    }
+    return cssClass;
+});
+
 Handlebars.registerHelper('compare', function (lvalue, operator, rvalue, options) {
 
     var operators, result;

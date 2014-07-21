@@ -23,7 +23,7 @@
                         <div class="icon">
                             <span class="glyphicon glyphicon-phone"></span>
                         </div>
-                        <a target="_blank" href="${session.sraUrl}/#main/applications" class="sraMore small-box-footer">
+                        <a href="${createLink(action:"view", controller:"applications")}" class="autoMore small-box-footer">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </div>
@@ -39,7 +39,7 @@
                         <div class="icon">
                             <span class="glyphicon glyphicon-phone"></span>
                         </div>
-                        <a target="_blank" href="${session.sraUrl}/#main/components" class="sraMore small-box-footer">
+                        <a href="${createLink(action:"view", controller:"components")}" class="autoMore small-box-footer">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </div>
@@ -57,7 +57,7 @@
                         <div class="icon">
                             <span class="glyphicon glyphicon-hdd"></span>
                         </div>
-                        <a target="_blank" href="${session.sraUrl}/#main/globalEnvironments" class="sraMore small-box-footer">
+                        <a href="${createLink(action:"view", controller:"environments")}" class="autoMore small-box-footer">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </div>
@@ -75,7 +75,7 @@
                         <div class="icon">
                             <span class="glyphicon glyphicon-tasks"></span>
                         </div>
-                        <a target="_blank" href="${session.sraUrl}/#resources" class="sraMore small-box-footer">
+                        <a href="${createLink(action:"view", controller:"resources")}" class="autoMore small-box-footer">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </div>
@@ -91,7 +91,7 @@
                         <div class="icon">
                             <span class="glyphicon glyphicon-tasks"></span>
                         </div>
-                        <a target="_blank" href="${session.sraUrl}/#agents" class="sraMore small-box-footer">
+                        <a href="${createLink(action:"view", controller:"agents")}" class="autoMore small-box-footer">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </div>
@@ -109,7 +109,7 @@
                         <div class="icon">
                             <span class="glyphicon glyphicon-tasks"></span>
                         </div>
-                        <a target="_blank" href="${session.sraUrl}/#" class="sraMore small-box-footer">
+                        <a href="${createLink(action:"view", controller:"workitems")}" class="autoMore small-box-footer">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </div>
@@ -147,7 +147,7 @@
                         <th>Resource/Environment</th>
                         <th>Version/Snapshot</th>
                         <th>Process</th>
-                        <th>Started On</th>
+                        <th>Started</th>
                         <th>By</th>
                         <th></th>
                     </tr>
@@ -158,13 +158,13 @@
             </div>
         </div>
 
-        <div class="modal sraModal">
+        <div class="modal autoModal">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                     </div>
-                    <div class="modal-body sraContent">
+                    <div class="modal-body autoContent">
                         <iframe frameborder="0"></iframe>
                     </div>
                 </div><!-- /.modal-content -->
@@ -183,7 +183,7 @@
                     <td>{{prettifyDate componentProcessRequest.submittedTime}}</td>
                     <td>{{componentProcessRequest.userName}}</td>
                     <td>
-                        <a class="sraMore small-box-footer" data-toggle="modal" data-target=".sraModal" href="${session.sraUrl}/#componentProcessRequest/{{componentProcessRequest.id}}">
+                        <a class="autoMore small-box-footer" data-toggle="modal" data-target=".autoModal" href="${session.autoUrl}/#componentProcessRequest/{{componentProcessRequest.id}}">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </td>
@@ -197,7 +197,21 @@
                     <td>{{prettifyDate applicationProcessRequest.submittedTime}}</td>
                     <td>{{applicationProcessRequest.userName}}</td>
                     <td>
-                        <a class="sraMore" data-toggle="modal" data-target=".sraModal" href="${session.sraUrl}/#applicationProcessRequest/{{applicationProcessRequest.id}}">
+                        <a class="autoMore" data-toggle="modal" data-target=".autoModal" href="${session.autoUrl}/#applicationProcessRequest/{{applicationProcessRequest.id}}">
+                            More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
+                        </a>
+                    </td>
+                {{/if}}
+                {{#if genericProcess}}
+                    <td>Generic</td>
+                    <td>{{genericProcess.name}}</td>
+                    <td>{{resource.name}}</td>
+                    <td></td>
+                    <td>{{genericProcess.name}}</td>
+                    <td>{{prettifyDate genericProcessRequest.submittedTime}}</td>
+                    <td>{{genericProcessRequest.userName}}</td>
+                    <td>
+                        <a class="autoMore" data-toggle="modal" data-target=".autoModal" href="${session.autoUrl}/#processRequest/{{genericProcessRequest.id}}">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </td>
@@ -218,11 +232,11 @@
         <script>
 
             $(document).ready(function () {
-                var sraSettings = {
+                var automationSettings = {
                     debug: true,
                     refreshInterval: ${session.refreshInterval}
                 };
-                RADAR.Dashboard.init(sraSettings);
+                RADAR.Dashboard.init(automationSettings);
             });
         </script>
 	</body>

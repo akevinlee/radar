@@ -42,7 +42,7 @@
                 <div class="icon">
                     <span class="glyphicon glyphicon-remove-circle"></span>
                 </div>
-                <a target="_blank" href="${session.autoUrl}/#main/applications" class="sraMore small-box-footer">
+                <a target="_blank" href="${session.autoUrl}/#main/applications" class="autoMore small-box-footer">
                     More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                 </a>
             </div>
@@ -60,7 +60,7 @@
                 <div class="icon">
                     <span class="glyphicon glyphicon-refresh"></span>
                 </div>
-                <a target="_blank" href="${session.autoUrl}/#main/applications" class="sraMore small-box-footer">
+                <a target="_blank" href="${session.autoUrl}/#main/applications" class="autoMore small-box-footer">
                     More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                 </a>
             </div>
@@ -78,7 +78,7 @@
                 <div class="icon">
                     <span class="glyphicon glyphicon-time"></span>
                 </div>
-                <a target="_blank" href="${session.autoUrl}/#main/applications" class="sraMore small-box-footer">
+                <a target="_blank" href="${session.autoUrl}/#main/applications" class="autoMore small-box-footer">
                     More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                 </a>
             </div>
@@ -94,7 +94,7 @@
                 <th>Description</th>
                 <th>Created by</th>
                 <th>Created</th>
-                <th>Last Status</th>
+                <th>Last Request</th>
                 <th></th>
             </tr>
             </thead>
@@ -104,13 +104,13 @@
     </div>
 </div>
 
-<div class="modal sraModal">
+<div class="modal autoModal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
             </div>
-            <div class="modal-body sraContent">
+            <div class="modal-body autoContent">
                 <iframe frameborder="0"></iframe>
             </div>
         </div><!-- /.modal-content -->
@@ -125,9 +125,9 @@
         <td>{{description}}</td>
         <td>{{user}}</td>
         <td>{{prettifyDate created}}</td>
-        <td id="{{id}}-status"></td>
+        <td id="{{id}}-request"></td>
         <td>
-            <a class="sraMore small-box-footer" data-toggle="modal" data-target=".sraModal" href="${session.autoUrl}/#application/{{id}}">
+            <a class="autoMore small-box-footer" data-toggle="modal" data-target=".autoModal" href="${session.autoUrl}/#application/{{id}}">
                 More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
             </a>
         </td>

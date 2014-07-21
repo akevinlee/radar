@@ -113,31 +113,14 @@ RADAR.Resources = {
                 self.$offResCount.text("0");
         });
 
-        /*
+
         this.autoReq.url = this.autoDepReportUrl;
         $.ajax(this.autoReq).done(function(data) {
 
             var results = data.items[0];
-            var successCount = _.size(_.uniq(_.where(results, { "status": "SUCCESS"}), "applicationRequestId"));
-            var failureCount = _.size(_.uniq(_.where(results, { "status": "FAILURE"}), "applicationRequestId"));
             var runningCount = _.size(_.uniq(_.where(results, { "status": "RUNNING"}), "applicationRequestId"));
             var scheduledCount = _.size(_.uniq(_.where(results, { "status": "SCHEDULED"}), "applicationRequestId"));
-            var approvalCount = _.size(_.uniq(_.where(results, { "status": "AWAITING_APPROVAL"}), "applicationRequestId"));
-            var rejectedCount = _.size(_.uniq(_.where(results, { "status": "APPROVAL_REJECTED"}), "applicationRequestId"));
 
-            if (self.debug) console.log("Found " + successCount + " successful, " + failureCount + " failed deployments");
-
-            var depCount = successCount + failureCount + runningCount + approvalCount;
-            if (successCount > 0) {
-                new countUp("success-count", self.$successCount.text(), successCount, 0, 2, 1.5, self.countOptions).start();
-            } else {
-                self.$successCount.text("0");
-            }
-            if (failureCount > 0) {
-                new countUp("failure-count", self.$failureCount.text(), failureCount, 0, 2, 1.5, self.countOptions).start();
-            } else {
-                self.$failureCount.text("0");
-            }
             if (runningCount > 0) {
                 new countUp("running-count", self.$runningCount.text(), runningCount, 0, 2, 1.5, self.countOptions).start();
             } else {
@@ -149,6 +132,6 @@ RADAR.Resources = {
                 self.$scheduledCount.text("0");
             }
 
-        });*/
+        });
     }
 };

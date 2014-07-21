@@ -56,20 +56,41 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li class="${controllerName.equals('dashboard') ? 'active' : '' }">
-                    <a href="${createLink(uri: '/')}">Dashboard</a>
+                    <a href="${createLink(uri: '/')}">
+                        <span class="glyphicon glyphicon-stats"></span>
+                        Dashboard
+                    </a>
                 </li>
                 <li class="${controllerName.equals('applications') ? 'active' : '' }">
-                    <a href="${createLink(action:"view", controller:"applications")}">Applications</a>
+                    <a href="${createLink(action:"view", controller:"applications")}">
+                        <span class="glyphicon glyphicon-phone"></span>
+                        Applications
+                    </a>
+                </li>
+                <li class="${controllerName.equals('environments') ? 'active' : '' }">
+                    <a href="${createLink(action:"view", controller:"environments")}">
+                        <span class="glyphicon glyphicon-hdd"></span>
+                        Environments
+                    </a>
                 </li>
                 <li class="${controllerName.equals('resources') ? 'active' : '' }">
-                    <a href="${createLink(action:"view", controller:"resources")}">Resources</a>
+                    <a href="${createLink(action:"view", controller:"resources")}">
+                        <span class="glyphicon glyphicon-tasks"></span>
+                        Resources
+                    </a>
+                </li>
+                <li class="${controllerName.equals('cloud') ? 'active' : '' }">
+                    <a href="${createLink(action:"view", controller:"cloud")}">
+                        <span class="glyphicon glyphicon-cloud"></span>
+                        Cloud
+                    </a>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <% if (session.user) { %>
                     <li>
                         <a href="${createLink(action:"view", controller:"workitems")}">
-                            <span id="my-tasks" class="badge">0</span>
+                            <span id="my-tasks-count" class="badge">0</span>
                             <span class="glyphicon glyphicon-flag"></span>
                         </a>
                     </li>
@@ -114,6 +135,18 @@
 </footer>
 
 <r:layoutResources/>
+
+<script src="${resource(dir: 'js', file: 'radar-myworkitems.js')}" type="text/javascript"></script>
+<script>
+
+    $(document).ready(function () {
+        var automationSettings = {
+            debug: true,
+            refreshInterval: ${session.refreshInterval}
+        };
+        RADAR.MyWorkItems.init(automationSettings);
+    });
+</script>
 
 </body>
 </html>
