@@ -128,6 +128,22 @@ RADAR.Util = {
         }
 
         return this.ssoToken;
+    },
+    getBaseAutomationRequest: function() {
+        // default options for SDA rest query
+        this.autoReq = {
+            cache: false,
+            contentType: "application/json",
+            dataType: "json",
+            headers: {},
+            url: this.autoPath
+        };
+        if (RADAR.Util.getSsoToken() != null) {
+            this.autoReq.headers = {
+                "ALFSSOAuthNToken": RADAR.Util.getSsoToken()
+            }
+        }
+        return this.autoReq;
     }
 };
 

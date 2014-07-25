@@ -9,12 +9,27 @@ import sun.misc.BASE64Decoder
 import sun.misc.BASE64Encoder
 
 import javax.servlet.http.Cookie
+import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.xpath.XPathFactory
 
 @Transactional(readOnly = true)
 class UserController {
     def scaffold = User
 
     def login() {
+        /*
+        // do we have an SSO token
+        if (request.getHeader("ALFSSOAuthNToken") != null) {
+            println "extracting sso user"
+            // decode it
+            def ALFSSOAuthNToken = new String(request.getHeader("ALFSSOAuthNToken").decodeBase64())
+            println ALFSSOAuthNToken
+            // to extract user
+            def ssoUser = extractXml(new XmlParser().parseText(ALFSSOAuthNToken),
+                "/saml:Assertion/saml:AuthenticationStatement/saml:Subject/saml:NameIdentifier")
+            println ssoUser
+        }*/
+
         // check if we have a cookie for we remember me authentication
         /*def cookieName = "${grailsApplication.metadata['app.name']}-${grailsApplication.metadata['app.version']}"
         String rememberMeHash = g.cookie(name: cookieName)
@@ -171,6 +186,14 @@ class UserController {
              }
          }
          return null;
+    }
+
+    def static String extractXml(String xml, String xpathQuery ) {
+        def xpath = XPathFactory.newInstance().newXPath()
+        def builder     = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+        def inputStream = new ByteArrayInputStream(xml.bytes)
+        def records     = builder.parse(inputStream).documentElement
+        xpath.evaluate(xpathQuery, records)
     }
 
 }

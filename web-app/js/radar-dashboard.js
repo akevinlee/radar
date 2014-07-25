@@ -4,22 +4,11 @@ var RADAR = RADAR || {};
 RADAR.Dashboard = {
     init: function (options) {
         this.debug = options.debug || false;
-        this.useSSO = options.useSSO || true; // assume SSO is enabled?
         this.refreshInterval = parseInt(options.refreshInterval) || 10;
 
         // all REST queries go through proxy
         this.autoPath = RADAR.Util.getBaseURL();
-
-        // default options for SDA rest query
-        this.autoReq = {
-            cache: false,
-            contentType: "application/json",
-            dataType: "json",
-            headers: {
-                "DirectSsoInteraction": (this.useSSO ? true : false)
-            },
-            url: this.autoPath
-        };
+        this.autoReq = RADAR.Util.getBaseAutomationRequest();
 
         this.autoAppsUrl = this.autoPath + "proxy/all-applications";
         this.autoCompsUrl = this.autoPath + "proxy/all-components";
@@ -72,7 +61,7 @@ RADAR.Dashboard = {
     render: function (el) {
         this._updateCounts(el);
         this._updateActivity(el);
-        this._updateStatus(el);
+        this._updateStatus(el, false);
         this.update();
     },
     update: function (el) {
@@ -81,7 +70,7 @@ RADAR.Dashboard = {
             setTimeout(function(){
                 self._updateCounts(self.el);
                 self._updateActivity(self.el);
-                self._updateStatus(self.el);
+                self._updateStatus(self.el, true);
                 dashboardUpdate();
             }, self.refreshInterval*1000);
         })();
@@ -167,18 +156,24 @@ RADAR.Dashboard = {
             });
         });
     },
-    _updateStatus: function(el) {
+    _updateStatus: function(el, updateOnly) {
         var self = this;
         this.autoReq.url = this.autoDepReportUrl;
         $.ajax(this.autoReq).done(function(data) {
 
             var results = data.items[0];
-            var successCount = _.size(_.uniq(_.where(results, { "status": "SUCCESS"}), "applicationRequestId"));
-            var failureCount = _.size(_.uniq(_.where(results, { "status": "FAILURE"}), "applicationRequestId"));
-            var runningCount = _.size(_.uniq(_.where(results, { "status": "RUNNING"}), "applicationRequestId"));
-            var scheduledCount = _.size(_.uniq(_.where(results, { "status": "SCHEDULED"}), "applicationRequestId"));
-            var approvalCount = _.size(_.uniq(_.where(results, { "status": "AWAITING_APPROVAL"}), "applicationRequestId"));
-            var rejectedCount = _.size(_.uniq(_.where(results, { "status": "APPROVAL_REJECTED"}), "applicationRequestId"));
+            var successData = _.uniq(_.where(results, { "status": "SUCCESS"}), "applicationRequestId");
+            var failureData = _.uniq(_.where(results, { "status": "FAILURE"}), "applicationRequestId");
+            var runningData = _.uniq(_.where(results, { "status": "RUNNING"}), "applicationRequestId");
+            var scheduledData = _.uniq(_.where(results, { "status": "SCHEDULED"}), "applicationRequestId");
+            var approvalData = _.uniq(_.where(results, { "status": "AWAITING_APPROVAL"}), "applicationRequestId");
+            var rejectedData = _.uniq(_.where(results, { "status": "APPROVAL_REJECTED"}), "applicationRequestId");
+            var successCount = _.size(successData);
+            var failureCount = _.size(failureData);
+            var runningCount = _.size(runningData);
+            var scheduledCount = _.size(scheduledData);
+            var approvalCount = _.size(approvalData);
+            var rejectedCount = _.size(rejectedData);
 
             if (self.debug) console.log("Found " + successCount + " successful, " + failureCount + " failed deployments");
 
@@ -223,13 +218,57 @@ RADAR.Dashboard = {
             else
                 self.$rejectedCount.text("0");
 
-            // TODO: extract top 5 only
-            var apps = _.chain(results).sortBy("application").countBy("application").value();
-            var users = _.chain(results).sortBy("user").countBy("user").value();
+            // TODO: extract top 5 applications and users only
+            var appSuccess = _.chain(successData).sortBy("application").countBy("application").value();
+            var appFailure = _.chain(failureData).sortBy("application").countBy("application").value();
+            var userSuccess = _.chain(successData).sortBy("user").countBy("user").value();
+            var userFailure = _.chain(failureData).sortBy("user").countBy("user").value();
 
-            if (_.size(data.items[0]) > 0) {
-                self._drawPieChart(self.$appStatus, apps);
-                self._drawPieChart(self.$userStatus, users);
+            if (successCount + failureCount > 0) {
+                var appCategories = [];
+                var appSuccessData = [];
+                var appFailureData = [];
+                // extract application success and failure counts
+                $.each(appSuccess, function(i, val) {
+                    if (!_.contains(appCategories, i)) appCategories.push(i);
+                    appSuccessData.push(val);
+                });
+                $.each(appFailure, function(i, val) {
+                    if (!_.contains(appCategories, i)) appCategories.push(i);
+                    appFailureData.push(val);
+                });
+                var appData = [{
+                    name: 'Failure',
+                    data: appFailureData
+                }, {
+                    name: 'Success',
+                    data: appSuccessData
+                }];
+                self._drawBarChart(self.$appStatus, "Top Applications",
+                    "Number of Deployments", appCategories, appData, updateOnly);
+
+                var userCategories = [];
+                var userSuccessData = [];
+                var userFailureData = [];
+                // extract user success and failure counts
+                $.each(userSuccess, function(i, val) {
+                    if (!_.contains(userCategories, i)) userCategories.push(i);
+                    userSuccessData.push(val);
+                });
+                $.each(userFailure, function(i, val) {
+                    if (!_.contains(userCategories, i)) userCategories.push(i);
+                    userFailureData.push(val);
+                });
+                var userData = [{
+                    name: 'Failure',
+                    data: userFailureData
+                }, {
+                    name: 'Success',
+                    data: userSuccessData
+
+                }];
+                self._drawBarChart(self.$userStatus, "Top Users",
+                    "Number of Deployments", userCategories, userData, updateOnly);
             } else {
                 if (self.debug) console.log("Found no deployments in range");
                 self.$appStatus.find(".text-muted").text("none in range");
@@ -238,37 +277,73 @@ RADAR.Dashboard = {
             }
         });
     },
-    _labelFormatter: function (label, series) {
-        return "<div style='font-size:8pt; text-align:center; padding:2px; color:white;'>" + label + "<br/>" + Math.round(series.percent) + "%</div>";
-    },
-    _drawPieChart: function(el, json) {
-        var data = [];
-        $.each(json, function(i, val) {
-            data.push({ label: i, data: val});
-        });
-        el.empty();
-        $.plot(el, data, {
-            series: {
-                pie: {
-                    show: true,
-                    radius: 1,
-                    label: {
-                        show: true,
-                        formatter: this._labelFormatter,
-                        background: {
-                            opacity: 0.5
+    _drawBarChart: function(el, title, subTitle, categories, data, updateOnly) {
+        if (updateOnly) {
+            var chart = $(el).highcharts();
+            if (chart != null) {
+                console.log("Updating data to: " + JSON.stringify(data));
+                console.log(chart.series[0].data);
+                //chart.xAxis[0].setCategories(categories, false);
+                //chart.series[0].setData(data);
+            }
+        } else {
+            $(el).highcharts({
+                chart: {
+                    type: 'bar',
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeOutBounce'
+                    }
+                },
+                colors: ['#C00000', '#00C000', '#0000C0'],
+                title: {
+                    text: title,
+                    style: {
+                        fontSize: '18px',
+                        fontFamily: '"HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif',
+                        fontWeight: 'normal',
+                        color: '#1b94c1'
+                    }
+                },
+                xAxis: {
+                    categories: categories
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: subTitle
+                    },
+                    stackLabels: {
+                        enabled: true,
+                        style: {
+                            color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
                         }
                     }
-                }
-            },
-            grid: {
-                hoverable: true,
-                clickable: false
-            },
-            legend: {
-                show: false
-            },
-            colors: ["#00c0ef", "#00a65a", "#f39c12", "#f56954", "#f012be"]
-        });
+                },
+                legend: {
+                    enabled: false
+                },
+                tooltip: {
+                    formatter: function () {
+                        return '<b>' + this.x + '</b><br/>' +
+                            this.series.name + ': ' + this.y + '<br/>' +
+                            'Total: ' + this.point.stackTotal;
+                    }
+                },
+                plotOptions: {
+                    series: {
+                        stacking: 'normal',
+                        dataLabels: {
+                            enabled: true,
+                            color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+                        }
+                    }
+                },
+                credits: {
+                    enabled: false
+                },
+                series: data
+            });
+        }
     }
 };

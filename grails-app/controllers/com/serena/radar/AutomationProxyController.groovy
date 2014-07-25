@@ -18,11 +18,19 @@ class AutomationProxyController {
             render([error: "invalid or empty REST query: ${restQuery}"] as JSON)
 
         RestBuilder rest = new RestBuilder()
-        def resp = rest.get(session.autoUrl + restQuery) {
+        def resp
+        if (request.getHeader("ALFSSOAuthNToken") != null) {
+            resp = rest.get(session.autoUrl + restQuery) {
+                header 'ALFSSOAuthNToken', request.getHeader("ALFSSOAuthNToken")
+                accept("application/json")
+                contentType("application/json")
+            }
+        } else {
+            resp = rest.get(session.autoUrl + restQuery) {
             auth(session.user.login, session.user.password)
-            header 'DirectSsoInteraction', 'true'
             accept("application/json")
             contentType("application/json")
+            }
         }
         if (resp.status == 401) {
             response.status = resp.status

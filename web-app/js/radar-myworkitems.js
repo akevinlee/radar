@@ -4,22 +4,11 @@ var RADAR = RADAR || {};
 RADAR.MyWorkItems = {
     init: function (options) {
         this.debug = options.debug || false;
-        this.useSSO = options.useSSO || true; // assume SSO is enabled
         this.refreshInterval = parseInt(options.refreshInterval) || 10;
 
         // all REST queries go through proxy
         this.autoPath = RADAR.Util.getBaseURL();
-
-        // default options for SDA rest query
-        this.autoReq = {
-            cache: false,
-            contentType: "application/json",
-            dataType: "json",
-            headers: {
-                "DirectSsoInteraction": (this.useSSO ? true : false)
-            },
-            url: this.autoPath
-        };
+        this.autoReq = RADAR.Util.getBaseAutomationRequest();
 
         this.autoWorkItemsUrl = this.autoPath + "proxy?url=/rest/approval/task/tasksForUserCount";
 
