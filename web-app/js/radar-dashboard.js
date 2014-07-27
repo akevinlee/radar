@@ -179,7 +179,12 @@ RADAR.Dashboard = {
 
             var depCount = successCount + failureCount + runningCount + approvalCount;
             if (successCount > 0) {
-                self.$depSuccess.empty();
+                self._drawDonoutChart(self.$depSuccess, "Successful Deployments",
+                    [
+                        ['Success', successCount],
+                        ['Others', depCount - successCount]
+                    ], "#00C000", updateOnly);
+                /*self.$depSuccess.empty();
                 self.$depSuccess.html(self.depTemplate({
                     id: "dep-success",
                     text: successCount,
@@ -188,12 +193,17 @@ RADAR.Dashboard = {
                     part: successCount,
                     fgcolor: "#339933", bgcolor: "#eee", fillcolor: "#ddd"
                 }));
-                $('#dep-success').circliful();
+                $('#dep-success').circliful();*/
             } else {
                 self.$depSuccess.find(".text-muted").text("none in range");
             }
             if (failureCount > 0) {
-                self.$depFailure.empty();
+                self._drawDonoutChart(self.$depFailure, "Failed Deployments",
+                    [
+                        ['Failure', failureCount],
+                        ['Others', depCount - failureCount]
+                    ], "#C00000", updateOnly);
+                /*self.$depFailure.empty();
                 self.$depFailure.html(self.depTemplate({
                     id: "dep-failure",
                     text: failureCount,
@@ -202,7 +212,7 @@ RADAR.Dashboard = {
                     part: failureCount,
                     fgcolor: "#FF0000", bgcolor: "#eee", fillcolor: "#ddd"
                 }));
-                $('#dep-failure').circliful();
+                $('#dep-failure').circliful();*/
             } else {
                 self.$depFailure.find(".text-muted").text("none in range");
             }
@@ -345,5 +355,60 @@ RADAR.Dashboard = {
                 series: data
             });
         }
-    }
+    },
+    _drawDonoutChart: function(el, title, data, color, updateOnly) {
+        if (updateOnly) {
+            var chart = $(el).highcharts();
+            if (chart != null) {
+                console.log("Updating data to: " + JSON.stringify(data));
+                console.log(chart.series[0].data);
+                //chart.xAxis[0].setCategories(categories, false);
+                //chart.series[0].setData(data);
+            }
+        } else {
+            console.log(data)
+            $(el).highcharts({
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: 0,
+                    plotShadow: false,
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeOutBounce'
+                    }
+                },
+                title: {
+                    text: title,
+                    style: {
+                        fontSize: '18px',
+                        fontFamily: '"HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif',
+                        fontWeight: 'normal',
+                        color: '#1b94c1'
+                    }
+                },
+                colors: [color, '#CCCCCC'],
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                },
+                plotOptions: {
+                    pie: {
+                        dataLabels: {
+                            enabled: false
+                        }
+                    }
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [
+                    {
+                        type: 'pie',
+                        name: title,
+                        innerSize: '60%',
+                        data: data
+                    }]
+            });
+        }
+    },
+
 };
