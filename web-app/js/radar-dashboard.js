@@ -35,7 +35,6 @@ RADAR.Dashboard = {
     },
     cacheElements: function () {
         this.activityTemplate = Handlebars.compile($('#activity-template').html());
-        this.depTemplate = Handlebars.compile($('#dep-template').html());
         this.$dashboard = $('#dashboard');
         this.$stats = this.$dashboard.find('#stats');
         this.$appStats = this.$stats.find('#app-stats');
@@ -61,7 +60,7 @@ RADAR.Dashboard = {
     render: function (el) {
         this._updateCounts(el);
         this._updateActivity(el);
-        this._updateStatus(el, false);
+        this._updateStatus(el);
         this.update();
     },
     update: function (el) {
@@ -70,7 +69,7 @@ RADAR.Dashboard = {
             setTimeout(function(){
                 self._updateCounts(self.el);
                 self._updateActivity(self.el);
-                self._updateStatus(self.el, true);
+                self._updateStatus(self.el);
                 dashboardUpdate();
             }, self.refreshInterval*1000);
         })();
@@ -156,7 +155,7 @@ RADAR.Dashboard = {
             });
         });
     },
-    _updateStatus: function(el, updateOnly) {
+    _updateStatus: function(el) {
         var self = this;
         this.autoReq.url = this.autoDepReportUrl;
         $.ajax(this.autoReq).done(function(data) {
@@ -179,40 +178,14 @@ RADAR.Dashboard = {
 
             var depCount = successCount + failureCount + runningCount + approvalCount;
             if (successCount > 0) {
-                self._drawDonoutChart(self.$depSuccess, "Successful Deployments",
-                    [
-                        ['Success', successCount],
-                        ['Others', depCount - successCount]
-                    ], "#00C000", updateOnly);
-                /*self.$depSuccess.empty();
-                self.$depSuccess.html(self.depTemplate({
-                    id: "dep-success",
-                    text: successCount,
-                    info: "Successful",
-                    total: depCount,
-                    part: successCount,
-                    fgcolor: "#339933", bgcolor: "#eee", fillcolor: "#ddd"
-                }));
-                $('#dep-success').circliful();*/
+                self._drawGauge(self.$depSuccess, "Successfull Deployments", "Success", successCount,
+                    depCount, "#339933");
             } else {
                 self.$depSuccess.find(".text-muted").text("none in range");
             }
             if (failureCount > 0) {
-                self._drawDonoutChart(self.$depFailure, "Failed Deployments",
-                    [
-                        ['Failure', failureCount],
-                        ['Others', depCount - failureCount]
-                    ], "#C00000", updateOnly);
-                /*self.$depFailure.empty();
-                self.$depFailure.html(self.depTemplate({
-                    id: "dep-failure",
-                    text: failureCount,
-                    info: "Failed",
-                    total: depCount,
-                    part: failureCount,
-                    fgcolor: "#FF0000", bgcolor: "#eee", fillcolor: "#ddd"
-                }));
-                $('#dep-failure').circliful();*/
+                self._drawGauge(self.$depFailure, "Failed Deployments", "Success", failureCount,
+                    depCount, "#FF0000");
             } else {
                 self.$depFailure.find(".text-muted").text("none in range");
             }
@@ -255,7 +228,7 @@ RADAR.Dashboard = {
                     data: appSuccessData
                 }];
                 self._drawBarChart(self.$appStatus, "Top Applications",
-                    "Number of Deployments", appCategories, appData, updateOnly);
+                    "Number of Deployments", appCategories, appData);
 
                 var userCategories = [];
                 var userSuccessData = [];
@@ -278,7 +251,7 @@ RADAR.Dashboard = {
 
                 }];
                 self._drawBarChart(self.$userStatus, "Top Users",
-                    "Number of Deployments", userCategories, userData, updateOnly);
+                    "Number of Deployments", userCategories, userData);
             } else {
                 if (self.debug) console.log("Found no deployments in range");
                 self.$appStatus.find(".text-muted").text("none in range");
@@ -287,96 +260,136 @@ RADAR.Dashboard = {
             }
         });
     },
-    _drawBarChart: function(el, title, subTitle, categories, data, updateOnly) {
-        if (updateOnly) {
-            var chart = $(el).highcharts();
-            if (chart != null) {
-                console.log("Updating data to: " + JSON.stringify(data));
-                console.log(chart.series[0].data);
-                //chart.xAxis[0].setCategories(categories, false);
-                //chart.series[0].setData(data);
+    _drawBarChart: function(el, title, subTitle, categories, data) {
+        var chart = $(el).highcharts();
+        if (chart != null) {
+            // do we need to update the chart
+            var curCategories = chart.xAxis[0].categories;
+            var curData = chart.series;
+            // TODO: make this work
+            if (_.isEqual(curCategories, categories) && (_.isEqual(curData, data))) {
+                // nothing to update
+                return;
+            } else {
+                if (self.debug) console.log("Updating chart " + title);
+                $(el).empty(); // clear element
             }
-        } else {
-            $(el).highcharts({
-                chart: {
-                    type: 'bar',
-                    animation: {
-                        duration: 1500,
-                        easing: 'easeOutBounce'
-                    }
-                },
-                colors: ['#C00000', '#00C000', '#0000C0'],
+            console.log("+++");
+        }
+        $(el).highcharts({
+            chart: {
+                type: 'bar',
+                animation: {
+                    duration: 1500,
+                    easing: 'easeOutBounce'
+                }
+            },
+            colors: ['#FF0000', '#339933', '#0000C0'],
+            title: {
+                text: title,
+                style: {
+                    fontSize: '18px',
+                    fontFamily: '"HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif',
+                    fontWeight: 'normal',
+                    color: '#1b94c1'
+                }
+            },
+            xAxis: {
+                categories: categories
+            },
+            yAxis: {
+                min: 0,
                 title: {
-                    text: title,
+                    text: subTitle
+                },
+                stackLabels: {
+                    enabled: true,
                     style: {
-                        fontSize: '18px',
-                        fontFamily: '"HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif',
-                        fontWeight: 'normal',
-                        color: '#1b94c1'
+                        color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
                     }
-                },
-                xAxis: {
-                    categories: categories
-                },
-                yAxis: {
-                    min: 0,
-                    title: {
-                        text: subTitle
-                    },
-                    stackLabels: {
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            tooltip: {
+                formatter: function () {
+                    return '<b>' + this.x + '</b><br/>' +
+                        this.series.name + ': ' + this.y + '<br/>' +
+                        'Total: ' + this.point.stackTotal;
+                }
+            },
+            plotOptions: {
+                series: {
+                    stacking: 'normal',
+                    dataLabels: {
                         enabled: true,
-                        style: {
-                            color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
-                        }
+                        color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
                     }
-                },
-                legend: {
-                    enabled: false
-                },
-                tooltip: {
-                    formatter: function () {
-                        return '<b>' + this.x + '</b><br/>' +
-                            this.series.name + ': ' + this.y + '<br/>' +
-                            'Total: ' + this.point.stackTotal;
-                    }
-                },
-                plotOptions: {
-                    series: {
-                        stacking: 'normal',
-                        dataLabels: {
-                            enabled: true,
-                            color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
-                        }
-                    }
-                },
-                credits: {
-                    enabled: false
-                },
-                series: data
-            });
-        }
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            series: data
+        });
     },
-    _drawDonoutChart: function(el, title, data, color, updateOnly) {
-        if (updateOnly) {
-            var chart = $(el).highcharts();
-            if (chart != null) {
-                console.log("Updating data to: " + JSON.stringify(data));
-                console.log(chart.series[0].data);
-                //chart.xAxis[0].setCategories(categories, false);
-                //chart.series[0].setData(data);
+    _drawGauge: function(el, title, name, count, max, color) {
+        var chart = $(el).highcharts();
+        if (chart != null) {
+            var curMax = chart.yAxis[0].max;
+            var curCount = chart.series[0].data;
+            // TODO: make this work
+            if (_.isEqual(curCount, count) && (_.isEqual(curMax, max))) {
+                // nothing to update
+                return;
+            } else {
+                if (self.debug) console.log("Updating chart " + title);
+                $(el).empty(); // clear element
             }
-        } else {
-            console.log(data)
-            $(el).highcharts({
-                chart: {
-                    plotBackgroundColor: null,
-                    plotBorderWidth: 0,
-                    plotShadow: false,
-                    animation: {
-                        duration: 1500,
-                        easing: 'easeOutBounce'
-                    }
+        }
+        $(el).highcharts({
+            chart: {
+                type: 'gauge',
+                plotBackgroundColor: null,
+                plotBackgroundImage: null,
+                plotBorderWidth: 0,
+                plotShadow: false
+            },
+            title: "",
+            pane: {
+                center: ['50%', '85%'],
+                size: '125%',
+                startAngle: -90,
+                endAngle: 90,
+                background: {
+                    backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
+                    innerRadius: '60%',
+                    outerRadius: '100%',
+                    shape: 'arc'
+                }
+            },
+            yAxis: {
+                stops: [
+                    [1, color]
+                ],
+                lineWidth: 0,
+                minorTickInterval: 'auto',
+                minorTickWidth: 1,
+                minorTickLength: 10,
+                minorTickPosition: 'inside',
+                minorTickColor: '#666',
+
+                tickPixelInterval: 30,
+                tickWidth: 2,
+                tickPosition: 'inside',
+                tickLength: 10,
+                tickColor: '#666',
+                labels: {
+                    y: 16
                 },
+                min: 0,
+                max: max,
                 title: {
                     text: title,
                     style: {
@@ -384,31 +397,35 @@ RADAR.Dashboard = {
                         fontFamily: '"HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif',
                         fontWeight: 'normal',
                         color: '#1b94c1'
+                    },
+                    y: -80
+                },
+                plotBands: [{
+                    from: 0,
+                    to: count,
+                    color: color
+                }]
+            },
+            plotOptions: {
+                gauge: {
+                    dataLabels: {
+                        y: 0,
+                        borderWidth: 0,
+                        useHTML: true
                     }
-                },
-                colors: [color, '#CCCCCC'],
-                tooltip: {
-                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-                },
-                plotOptions: {
-                    pie: {
-                        dataLabels: {
-                            enabled: false
-                        }
-                    }
-                },
-                credits: {
-                    enabled: false
-                },
-                series: [
-                    {
-                        type: 'pie',
-                        name: title,
-                        innerSize: '60%',
-                        data: data
-                    }]
-            });
-        }
-    },
-
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                name: name,
+                data: [count],
+                dataLabels: {
+                    format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                        color + '">{y}</span></div>'
+                }
+            }]
+        });
+    }
 };

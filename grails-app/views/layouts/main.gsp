@@ -20,17 +20,16 @@
     <g:layoutHead/>
     <r:layoutResources />
 
+    <script src="${resource(dir: 'js/lib', file: 'lodash.min.js')}" type="text/javascript"></script>
     <script src="${resource(dir: 'js/lib', file: 'handlebars.min.js')}" type="text/javascript"></script>
     <script src="${resource(dir: 'js/lib', file: 'moment.min.js')}" type="text/javascript"></script>
-    <script src="${resource(dir: 'js/lib', file: 'lodash.min.js')}" type="text/javascript"></script>
     <script src="${resource(dir: 'js/lib', file: 'highcharts.js')}" type="text/javascript"></script>
-    <script src="${resource(dir: 'js/lib', file: 'jquery.circliful.min.js')}" type="text/javascript"></script>
+    <script src="${resource(dir: 'js/lib', file: 'highcharts-more.js')}" type="text/javascript"></script>
     <script src="${resource(dir: 'js/lib', file: 'countUp.min.js')}" type="text/javascript"></script>
 
     <script src="${resource(dir: 'js', file: 'radar-util.js')}" type="text/javascript"></script>
     <script src="${resource(dir: 'js', file: 'application.js')}" type="text/javascript"></script>
 
-    <link rel="stylesheet" href="${resource(dir: 'css', file: 'jquery.circliful.css')}" type="text/css">
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}" type="text/css">
     <link rel="stylesheet" href="${resource(dir: 'css', file: 'mobile.css')}" type="text/css">
 </head>
