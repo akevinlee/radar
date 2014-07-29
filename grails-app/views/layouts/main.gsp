@@ -86,7 +86,7 @@
 
                                     <ul class="dropdown-menu" role="menu">
                                         <li>
-                                            <a href="${createLink(action:"create", controller:"deployment")}">Quick Deployment</a>
+                                            <a href="${createLink(action:"create", controller:"deployment")}">Application Deployment</a>
                                         </li>
                                         <li>
                                             <a href="${createLink(action:"create", controller:"process")}">Generic Process</a>
