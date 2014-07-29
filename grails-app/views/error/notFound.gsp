@@ -2,8 +2,6 @@
 <html>
     <head>
         <meta name="layout" content="basic"/>
-        <r:require modules="bootstrap"/>
-        <title>Serena Radar</title>
     </head>
     <body>
         <div id="page-body" class="content" role="main">

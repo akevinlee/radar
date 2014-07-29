@@ -1,9 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
 		<meta name="layout" content="main"/>
-        <r:require modules="bootstrap"/>
-		<title>Serena Radar</title>
 	</head>
 	<body>
 		<div id="dashboard" role="main">
@@ -158,19 +156,6 @@
             </div>
         </div>
 
-        <div class="modal autoModal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    </div>
-                    <div class="modal-body autoContent">
-                        <iframe frameborder="0"></iframe>
-                    </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
-
         <script id="activity-template" type="text/x-handlebars-template">
             {{#this}}
             <tr id="{{id}}">
@@ -220,17 +205,8 @@
             {{/this}}
         </script>
 
-        <script id="dep-template" type="text/x-handlebars-template">
-            <div style="float: none; margin: 0 auto;" id="{{id}}" data-dimension="200"
-                 data-text="{{text}}" data-info="{{info}}" data-width="30" data-fontsize="30"
-                 data-total="{{total}}" data-part="{{part}}" data-type="full"
-                 data-fgcolor="{{fgcolor}}" data-bgcolor="{{bgcolor}}"data-fill="{{fillcolor}}"
-                 data-animationstep="5"></div>
-        </script>
-
-        <script src="${resource(dir: 'js', file: 'radar-dashboard.js')}" type="text/javascript"></script>
+        <asset:javascript src="app/radar-dashboard.js"/>
         <script>
-
             $(document).ready(function () {
                 var automationSettings = {
                     debug: true,

@@ -3,7 +3,7 @@ package com.serena.radar
 class User {
 
     static constraints = {
-        login(unique:true)
+        login(unique: true)
         password()
         name()
         email()

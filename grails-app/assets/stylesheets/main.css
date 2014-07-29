@@ -1,0 +1,307 @@
+/*
+ *= require bootstrap
+ *= require mobile
+ *= require_self
+ */
+
+/* Move down content because we have a fixed navbar that is 50px tall */
+/* Margin bottom by footer height */
+body {
+    padding-top: 50px;
+    margin-bottom: 30px;
+}
+
+body > .container {
+    padding: 60px 15px 0;
+}
+.container .text-muted {
+    margin: 20px 0;
+}
+
+#radar-footer {
+    border-top: 1px solid #c0c0c0;
+    padding: 4px 10px;
+    font-size: 12px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 24px;
+    background: #f8f8f8;
+    z-index: 10000;
+}
+
+/*#footer > .container {
+    padding-right: 15px;
+    padding-left: 15px;
+}
+/*
+ * navbar
+ */
+.navbar-inverse {
+    border-color: #ccc;
+    background-color: #2591BB;
+    background-image: linear-gradient(#2998C1, #187AAA) !important;
+    vertical-align: middle;
+}
+
+.navbar-inverse .navbar-brand {
+    color: #fff;
+}
+.navbar-inverse .navbar-nav > li > a {
+    color: #fff;
+}
+a.navbar-brand {
+    font-size: 16px;
+    line-height: 25px;
+}
+.navbar-inverse .navbar-nav > li > a:hover,
+.navbar-inverse .navbar-nav > li > a:focus
+{
+    background-color: #1b94c1;
+    color: #1D5C8D;
+}
+.navbar-inverse .navbar-nav > .active > a,
+.navbar-inverse .navbar-nav > .active > a:hover,
+.navbar-inverse .navbar-nav > .active > a:focus,
+.navbar-inverse .navbar-nav > .open > a,
+.navbar-inverse .navbar-nav > .open > a:hover,
+.navbar-inverse .navbar-nav > .open > a:focus
+{
+    background-color: #5dbff0;
+}
+
+.navbar-inverse .navbar-nav > li > a > .badge {
+    color: #428bca;
+    background-color: #fff;
+}
+
+code {
+    font-size: 80%;
+}
+
+/*
+ * logos
+ */
+div.logo {
+    margin-right: 22px;
+    font-size: 14px;
+}
+div.logo img.brand {
+    display: block;
+    color: #BBB;
+    margin-bottom: 10px;
+    max-width: 125px !important;
+    max-height: 40px;
+    float: left;
+    margin-right: 10px;
+}
+
+
+/*
+ * Placeholders
+ */
+
+.placeholders {
+    margin-bottom: 10px;
+    text-align: center;
+}
+.placeholder h4 {
+    margin-bottom: 0;
+}
+.placeholder-s {
+    min-height: 100px;
+    margin-bottom: 10px;
+}
+.placeholder-m {
+    min-height: 200px;
+    margin-bottom: 10px;
+}
+.placeholder img {
+    display: inline-block;
+    border-radius: 50%;
+}
+
+/*
+ * dashboard
+ */
+.small-box {
+    position: relative;
+    display: block;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    margin-bottom: 15px;
+}
+.small-box > .inner {
+    padding: 10px;
+}
+.small-box h3 {
+    font-size: 38px;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+    white-space: nowrap;
+    padding: 0;
+    color: #fff;
+    color: rgba(255, 255, 255, 0.8);
+}
+.small-box p {
+    font-size: 15px;
+}
+.small-box .icon {
+    position: absolute;
+    top: auto;
+    bottom: 5px;
+    right: 5px;
+    z-index: 0;
+    font-size: 80px;
+    color: rgba(0, 0, 0, 0.15);
+}
+.small-box > .small-box-footer {
+    position: relative;
+    text-align: center;
+    padding: 3px 0;
+    color: #fff;
+    color: rgba(255, 255, 255, 0.8);
+    display: block;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+}
+
+/* Background colors */
+.bg-white {
+    background-color: #ffffff !important;
+}
+.bg-gray {
+    background-color: #eaeaec !important;
+}
+.bg-black {
+    background-color: #222222 !important;
+}
+.bg-red {
+    background-color: #f56954 !important;
+}
+.bg-yellow {
+    background-color: #f39c12 !important;
+}
+.bg-aqua {
+    background-color: #00c0ef !important;
+}
+.bg-blue {
+    background-color: #0073b7 !important;
+}
+.bg-light-blue {
+    background-color: #3c8dbc !important;
+}
+.bg-green {
+    background-color: #00a65a !important;
+}
+.bg-navy {
+    background-color: #001f3f !important;
+}
+.bg-teal {
+    background-color: #39cccc !important;
+}
+.bg-olive {
+    background-color: #3d9970 !important;
+}
+.bg-lime {
+    background-color: #01ff70 !important;
+}
+.bg-orange {
+    background-color: #ff851b !important;
+}
+.bg-fuchsia {
+    background-color: #f012be !important;
+}
+.bg-purple {
+    background-color: #932ab6 !important;
+}
+.bg-maroon {
+    background-color: #85144b !important;
+}
+.bg-red, .bg-yellow, .bg-aqua, .bg-blue, .bg-light-blue, .bg-green, .bg-navy, .bg-teal, .bg-olive, .bg-lime, .bg-orange, .bg-fuchsia, .bg-purple, .bg-maroon, .bg-black {
+    color: #f9f9f9 !important;
+}
+/* Text colors */
+.text-red {
+    color: #f56954 !important;
+}
+.text-yellow {
+    color: #f39c12 !important;
+}
+.text-aqua {
+    color: #00c0ef !important;
+}
+.text-blue {
+    color: #0073b7 !important;
+}
+.text-light-blue {
+    color: #3c8dbc !important;
+}
+.text-green {
+    color: #00a65a !important;
+}
+.text-navy {
+    color: #001f3f !important;
+}
+.text-teal {
+    color: #39cccc !important;
+}
+.text-olive {
+    color: #3d9970 !important;
+}
+.text-lime {
+    color: #01ff70 !important;
+}
+.text-orange {
+    color: #ff851b !important;
+}
+.text-fuchsia {
+    color: #f012be !important;
+}
+.text-purple {
+    color: #932ab6 !important;
+}
+.text-maroon {
+    color: #85144b !important;
+}
+
+/*
+ * full screen modals
+ */
+.modal {
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+.modal-dialog {
+    width: 98%;
+    height: 98%;
+    padding: 0;
+    margin: 5px auto;
+}
+.modal-content {
+    height: 100%;
+    border-radius: 0;
+}
+.modal-body {
+    height: 100%;
+    padding: 5px;
+}
+
+/*
+ * Typography overrides
+ */
+.badge {
+    min-with: 20px;
+    border-radius: 5px;
+}
+h1, h2, h3, h4, h5, h6 {
+    font-family: "HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
+    font-weight: normal;
+    color: #1b94c1;
+}
+ul.navbar-right > li {
+    margin-left:10px;
+}

@@ -5,6 +5,9 @@ class SecurityFilters {
     def filters = {
         loginCheck(controller: '*', action: '*') {
             before = {
+                if (controllerName == "assets") {
+                    return true
+                }
                 if (controllerName == "user" && (actionName == "login" || actionName == "authenticate")) {
                     return true
                 }

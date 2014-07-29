@@ -2,7 +2,6 @@
 <html>
     <head>
         <meta name="layout" content="login">
-        <r:require modules="bootstrap"/>
         <title><g:message code="login.title" default="Log In"/></title>
     </head>
     <body>
@@ -11,32 +10,48 @@
             <a href="http://www.serena.com" title="www.serena.com" target="_tab"><div class="logo" title=""></div></a>
         </div>
 
-        <div id="loginForm">
-            <g:form id="loginForm" class="form-login" role="form" url="[controller:'user', action:'authenticate']">
-                <div class="message" role="status">
-                    <g:if test="${flash.message}">
-                        ${flash.message}
-                    </g:if>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-6 panel panel-default login-panel">
+                    <g:form role="form" url="[controller:'user', action:'authenticate']" autocomplete="off">
+                        <h2>Please Sign In</h2>
+
+                        <div class="help-block">
+                            To access Serena Radar dashboards and views.
+                        </div>
+
+                        <g:if test="${flash.message}">
+                            <div class="alert alert-danger" role="status">
+                                ${flash.message}
+                            </div>
+                        </g:if>
+
+                        <div class="form-group">
+                            <label for="url">${message(code: 'login.url.label', default: 'Automation Server URL')}</label>
+                            <g:textField name="url" type="url" class="form-control" required=""
+                                         value="${session.autoUrl != "" ? session.autoUrl : 'http://localhost:8080/serena_ra' }"
+                                         placeholder="${message(code: 'login.url.focus.label', default: 'Automation Server URL')}" />
+                        </div>
+                        <div class="form-group">
+                            <label for="username">${message(code: 'login.username.label', default: 'Username')}</label>
+                            <g:textField name="username" type="username" class="form-control" required="" autofocus=""
+                                         placeholder="${message(code: 'login.username.focus.label', default: 'Username')}"
+                                         autocomplete="off"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">${message(code: 'login.password.label', default: 'Password')}</label>
+                            <g:passwordField name="password" type="password" class="form-control" required=""
+                                             placeholder="${message(code: 'login.password.focus.label', default: 'Password')}"
+                                             autocomplete="off"/>
+                        </div>
+                        <g:actionSubmit action="authenticate" class="btn btn-success pull-right"
+                                        value="${message(code: 'login.submit.button', default: 'Log In')}" />
+                        <br style="clear:both;" />
+                    </g:form>
                 </div>
-                <label class="sr-only" for="url">${message(code: 'login.url.label', default: 'Automation Server URL')}</label>
-                <g:textField name="url" type="url" class="form-control" required=""
-                             value="${session.autoUrl != "" ? session.autoUrl : 'http://localhost:8080/serena_ra' }"
-                             placeholder="${message(code: 'login.url.label', default: 'Automation Server URL')}" />
-                <label class="sr-only" for="username">${message(code: 'login.username.label', default: 'Username')}</label>
-                <g:textField name="username" type="username" class="form-control" required="" autofocus=""
-                             placeholder="${message(code: 'login.username.label', default: 'Username')}" />
-                <label class="sr-only" for="password">${message(code: 'login.password.label', default: 'Password')}</label>
-                <g:passwordField name="password" type="password" class="form-control" required=""
-                             placeholder="${message(code: 'login.password.label', default: 'Password')}" />
-                <div class="checkbox">
-                    <label>
-                        <g:checkBox name="rememberMe" checked="false"></g:checkBox> ${message(code: 'login.rememberMe.label', default: 'Remember me')}
-                    </label>
-                </div>
-                <g:actionSubmit action="authenticate" class="btn btn-lg btn-success btn-block"
-                                value="${message(code: 'login.submit.button', default: 'Log In')}" />
-            </g:form>
+                <div class="col-md-3"></div>
+            </div>
         </div>
-        <div id="loading" style="display: none;"><div class="text"></div></div>
     </body>
 </html>
