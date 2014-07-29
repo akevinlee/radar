@@ -17,54 +17,35 @@ class UserController {
     def scaffold = User
 
     def login() {
-        /*
+
         // do we have an SSO token
         if (request.getHeader("ALFSSOAuthNToken") != null) {
-            println "extracting sso user"
             // decode it
             def ALFSSOAuthNToken = new String(request.getHeader("ALFSSOAuthNToken").decodeBase64())
-            println ALFSSOAuthNToken
+            println "found SSO token ${ALFSSOAuthNToken}"
             // to extract user
             def ssoUser = extractXml(new XmlParser().parseText(ALFSSOAuthNToken),
                 "/saml:Assertion/saml:AuthenticationStatement/saml:Subject/saml:NameIdentifier")
-            println ssoUser
-        }*/
+            println "found SSO user ${ssoUser}"
 
-        // check if we have a cookie for we remember me authentication
-        /*def cookieName = "${grailsApplication.metadata['app.name']}-${grailsApplication.metadata['app.version']}"
-        String rememberMeHash = g.cookie(name: cookieName)
-        println rememberMeHash
-        if (rememberMeHash != null) {
-            def (username, expiration, password) = decrypt(rememberMeHash).toString().split(':')
-            println username
-            println expiration
-            println password
-            def user = User.findByLogin(username)
-            if (user != null) {
-                session.user = user
-                if (user.password != password) {
-                    flash.message = message(code: 'login.authentication.error', args: [username])
-                    redirect(action: "login")
-                }
-                def settings = Settings.findByUsername(username)
-                if (settings != null) {
-                    session.autoUrl = settings.autoUrl
-                    session.refreshInterval = settings.refreshInterval
+            // create temporary user
+            User user = new User(login: ssoUser, name: ssoUser, password: "")
+            session.user = user
+            session.ALFSSOAuthNToken = ALFSSOAuthNToken
 
-                    flash.message = message(code: 'login.success', args: [username])
-                    redirect(controller: "dashboard", action: "view")
-                } else {
-                    flash.message = message(code: 'login.authentication.error', args: [username])
-                    redirect(action: "login")
-                }
-            } else {
-                println "in here"
-                // delete cookie
-
-                flash.message = message(code: 'login.authentication.error', args: [username])
-                redirect(action: "login")
+            // if user settings doesn't exist
+            def settings = Settings.findByUsername(ssoUser)
+            if (settings == null) {
+                // create them
+                settings = new Settings(username: ssoUser, autoUrl: "http://localhost:8080/serena_ra", refreshInterval: 10)
+                settings.save()
             }
-        }*/
+            session.autoUrl = settings.autoUrl
+            session.refreshInterval = settings.refreshInterval
+
+            flash.message = message(code: 'login.success', args: [ssoUser])
+            redirect(controller: "dashboard", action: "view")
+        }
 
         // set default Automation Server URL
         if (session.autoUrl == null)
@@ -73,7 +54,7 @@ class UserController {
 
     def authenticate() {
         session.autoUrl = params.url
-        if (validateAutomationConnection(params.url, params.username, params.password, params.rememberMe)) {
+        if (validateAutomationConnection(params.url, params.username, params.password)) {
             // if user doesn't exist
             def user = User.findByLogin(params.username)
             if (user == null) {
@@ -82,20 +63,6 @@ class UserController {
                 user.save()
             }
             session.user = user
-
-            // write hash to cookie if rememberMe is true
-            // NOT YET USED
-            if (params.rememberMe.toString() == "true") {
-                def expirationTime = new Date() + 30 // days
-                def rememberMeHash = encrypt(params.username + ":" +
-                        expirationTime.getTime().toString() + ":" +
-                        params.password) // this is not secure at the moment!!!
-
-                def cookieName = "${grailsApplication.metadata['app.name']}-${grailsApplication.metadata['app.version']}"
-                Cookie cookie = new Cookie(cookieName, rememberMeHash.toString())
-                cookie.maxAge = 30 * (60 * 60 * 24)
-                response.addCookie(cookie)
-            }
 
             // if user settings doesn't exist
             def settings = Settings.findByUsername(params.username)
@@ -122,7 +89,7 @@ class UserController {
     }
 
     def boolean validateAutomationConnection(final String url, final String username,
-                                             final String password, final String rememberMe) {
+                                             final String password) {
         try {
             RestBuilder rest = new RestBuilder()
             def resp = rest.get(url + "/rest/state") {

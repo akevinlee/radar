@@ -21,14 +21,17 @@ RADAR.Deployment = {
     cacheElements: function () {
         this.applicationsTemplate = Handlebars.compile($('#applications-template').html());
         this.environmentsTemplate = Handlebars.compile($('#environments-template').html());
+        this.snapshotsTemplate = Handlebars.compile($('#snapshots-template').html());
         this.$deployment = $('#create-deployment');
         this.$applications = this.$deployment.find('#applications');
         this.$environments = this.$deployment.find('#environments');
-
+        this.$snapshots = this.$deployment.find('#snapshots');
     },
     bindEvents: function () {
         this.$applications.on('keyup', this.appChanged.bind(this));
         this.$applications.on('change', this.appChanged.bind(this));
+        this.$environments.on('keyup', this.envChanged.bind(this));
+        this.$environments.on('change', this.envChanged.bind(this));
     },
     render: function (el) {
         this._updateApplications(el);
@@ -54,7 +57,25 @@ RADAR.Deployment = {
                 self.$environments.empty().html(self.environmentsTemplate(data));
             }
             else
-            if (self.debug) console.log("Found no applications");
+            if (self.debug) console.log("Found no environments");
+        });
+    },
+    envChanged: function (e) {
+        var self = this;
+        var $select = $(e.target);
+        var envId = $select.val().trim();
+        if (self.debug) console.log("Environment changed to " + envId);
+        this.autoReq.url = this.autoPath + "proxy?url=" +
+            encodeURIComponent("/rest/deploy/application/" + appId +
+                "/environments/false");
+        $.ajax(this.autoReq).then(function(data) {
+            var numSnaps = _.size(data);
+            if (numSnaps > 0) {
+                if (self.debug) console.log("Found " + numSnaps + " snapshots");
+                self.$snapshots.empty().html(self.snapshotsTemplate(data));
+            }
+            else
+            if (self.debug) console.log("Found no snapshots");
         });
     },
     _updateApplications: function(el) {

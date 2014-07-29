@@ -75,6 +75,20 @@
                         </div>
                     </div>
 
+                    <div class="row">
+                        <div class="form-group col-xs-8">
+                            <div class="col-xs-3">
+                                <label for="snapshots">
+                                    <g:message code="deployment.snapshot.label" default="Snapshot"/>
+                                </label>
+                            </div>
+                            <div class="col-xs-4">
+                                <g:select id="snapshots" from="" name="snapshots" class="form-control"
+                                          noSelection="['':'-select an environmenty-']" required=""/>
+                            </div>
+                        </div>
+                    </div>
+
 
                     <div class="row">
                         <div class="col-xs-4">

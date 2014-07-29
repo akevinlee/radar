@@ -4,7 +4,7 @@ class UrlMappings {
 
 	static mappings = {
         // proxy all REST requests through the server rather than client
-        "/proxy/$method?"(controller: "automationProxy") {
+        "/proxy/$method?"(controller: "automationProxy", parseRequest: false) {
             action = [GET: "get", PUT: "put", DELETE: "delete", POST: "post"]
         }
 
