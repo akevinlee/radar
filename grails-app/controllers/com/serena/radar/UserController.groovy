@@ -18,15 +18,16 @@ class UserController {
 
     def login() {
 
+        // TODO: make this work!!!
         // do we have an SSO token
         if (request.getHeader("ALFSSOAuthNToken") != null) {
             // decode it
             def ALFSSOAuthNToken = new String(request.getHeader("ALFSSOAuthNToken").decodeBase64())
-            println "found SSO token ${ALFSSOAuthNToken}"
+            //println "found SSO token ${ALFSSOAuthNToken}"
             // to extract user
             def ssoUser = extractXml(new XmlParser().parseText(ALFSSOAuthNToken),
                 "/saml:Assertion/saml:AuthenticationStatement/saml:Subject/saml:NameIdentifier")
-            println "found SSO user ${ssoUser}"
+            //println "found SSO user ${ssoUser}"
 
             // create temporary user
             User user = new User(login: ssoUser, name: ssoUser, password: "")

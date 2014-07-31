@@ -25,6 +25,7 @@
 
         <div class="container-fluid">
             <g:layoutBody/>
+            <asset:javascript src="main.js"/>
         </div>
 
     </body>

@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<meta name="layout" content="main"/>
+        <g:if test="${fullscreen}">
+            <meta name="layout" content="basic"/>
+            <asset:stylesheet src="fullscreen.css"/>
+        </g:if>
+        <g:else>
+            <meta name="layout" content="main"/>
+        </g:else>
 	</head>
 	<body>
 		<div id="dashboard" role="main">

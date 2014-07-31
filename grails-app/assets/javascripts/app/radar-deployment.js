@@ -22,10 +22,12 @@ RADAR.Deployment = {
         this.applicationsTemplate = Handlebars.compile($('#applications-template').html());
         this.environmentsTemplate = Handlebars.compile($('#environments-template').html());
         this.snapshotsTemplate = Handlebars.compile($('#snapshots-template').html());
-        this.$deployment = $('#create-deployment');
-        this.$applications = this.$deployment.find('#applications');
-        this.$environments = this.$deployment.find('#environments');
-        this.$snapshots = this.$deployment.find('#snapshots');
+        this.processesTemplate = Handlebars.compile($('#processes-template').html());
+        this.$deployment = $('#app-deployment');
+        this.$applications = this.$deployment.find('#application');
+        this.$processes = this.$deployment.find('#process');
+        this.$environments = this.$deployment.find('#environment');
+        this.$snapshots = this.$deployment.find('#snapshot');
     },
     bindEvents: function () {
         this.$applications.on('keyup', this.appChanged.bind(this));
@@ -41,42 +43,6 @@ RADAR.Deployment = {
     },
     destroy: function (el) {
 
-    },
-    appChanged: function (e) {
-        var self = this;
-        var $select = $(e.target);
-        var appId = $select.val().trim();
-        if (self.debug) console.log("Application changed to " + appId);
-        this.autoReq.url = this.autoPath + "proxy?url=" +
-            encodeURIComponent("/rest/deploy/application/" + appId +
-            "/environments/false");
-        $.ajax(this.autoReq).then(function(data) {
-            var numEnvs = _.size(data);
-            if (numEnvs > 0) {
-                if (self.debug) console.log("Found " + numEnvs + " environments");
-                self.$environments.empty().html(self.environmentsTemplate(data));
-            }
-            else
-            if (self.debug) console.log("Found no environments");
-        });
-    },
-    envChanged: function (e) {
-        var self = this;
-        var $select = $(e.target);
-        var envId = $select.val().trim();
-        if (self.debug) console.log("Environment changed to " + envId);
-        this.autoReq.url = this.autoPath + "proxy?url=" +
-            encodeURIComponent("/rest/deploy/application/" + appId +
-                "/environments/false");
-        $.ajax(this.autoReq).then(function(data) {
-            var numSnaps = _.size(data);
-            if (numSnaps > 0) {
-                if (self.debug) console.log("Found " + numSnaps + " snapshots");
-                self.$snapshots.empty().html(self.snapshotsTemplate(data));
-            }
-            else
-            if (self.debug) console.log("Found no snapshots");
-        });
     },
     _updateApplications: function(el) {
         var self = this;
@@ -144,6 +110,55 @@ RADAR.Deployment = {
                 self.$scheduledCount.text("0");
             }
 
+        });
+    },
+    appChanged: function (e) {
+        var self = this;
+        var $select = $(e.target);
+        var appId = $select.val().trim();
+        if (self.debug) console.log("Application changed to " + appId);
+        this.autoReq.url = this.autoPath + "proxy?url=" +
+            encodeURIComponent("/rest/deploy/application/" + appId +
+                "/environments/false");
+        $.ajax(this.autoReq).then(function(data) {
+            var numEnvs = _.size(data);
+            if (numEnvs > 0) {
+                if (self.debug) console.log("Found " + numEnvs + " environments");
+                self.$environments.empty().html(self.environmentsTemplate(data));
+            }
+            else
+            if (self.debug) console.log("Found no environments");
+        });
+        this.autoReq.url = this.autoPath + "proxy?url=" +
+            encodeURIComponent("/rest/deploy/application/" + appId +
+                "/executableProcesses");
+        $.ajax(this.autoReq).then(function(data) {
+            var numProcs = _.size(data);
+            if (numProcs > 0) {
+                if (self.debug) console.log("Found " + numProcs + " processes");
+                self.$processes.empty().html(self.processesTemplate(data));
+            }
+            else
+            if (self.debug) console.log("Found no processes");
+        });
+    },
+    envChanged: function (e) {
+        var self = this;
+        var $select = $(e.target);
+        var envId = $select.val().trim();
+        var appId = self.$applications.val();
+        if (self.debug) console.log("Environment changed to " + envId);
+        this.autoReq.url = this.autoPath + "proxy?url=" +
+            encodeURIComponent("/rest/deploy/application/" + appId + "/" + envId +
+                "/snapshotsForEnvironment/false");
+        $.ajax(this.autoReq).then(function(data) {
+            var numSnaps = _.size(data);
+            if (numSnaps > 0) {
+                if (self.debug) console.log("Found " + numSnaps + " snapshots");
+                self.$snapshots.empty().html(self.snapshotsTemplate(data));
+            }
+            else
+            if (self.debug) console.log("Found no snapshots");
         });
     }
 };
