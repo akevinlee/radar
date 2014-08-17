@@ -1,4 +1,5 @@
 //= require jquery
+
 var RADAR = RADAR || {};
 
 RADAR.Dashboard = {

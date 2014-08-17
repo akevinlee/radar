@@ -297,6 +297,10 @@ div.logo img.brand {
     min-with: 20px;
     border-radius: 5px;
 }
+#my-tasks-count {
+    background-color: #ff6655;
+    color: white;
+}
 h1, h2, h3, h4, h5, h6 {
     font-family: "HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
     font-weight: normal;

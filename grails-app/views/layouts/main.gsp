@@ -81,15 +81,15 @@
                             <li>
                                 <div class="btn-group navbar-btn">
                                     <button data-toggle="dropdown" class="btn btn-success dropdown-toggle">
-                                        New <span class="caret"></span>
+                                        +&nbsp;New <span class="caret"></span>
                                     </button>
 
                                     <ul class="dropdown-menu" role="menu">
                                         <li>
-                                            <a href="${createLink(action:"create", controller:"deployment")}">Application Deployment</a>
+                                            <a href="${createLink(action:"index", controller:"deployment")}">Application Deployment</a>
                                         </li>
                                         <li>
-                                            <a href="${createLink(action:"create", controller:"process")}">Generic Process</a>
+                                            <a href="${createLink(action:"index", controller:"process")}">Generic Process</a>
                                         </li>
                                         <li class="divider"></li>
                                         <span id="configured-processes">
