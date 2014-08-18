@@ -39,13 +39,21 @@
                 <g:form class="form-horizontal" role="form" url="[controller: 'deployment', action: 'deploy']" method="POST">
 
                     <div class="form-group">
-                        <div class="col-md-offset-2 col-md-5">
+                        <div class="col-md-offset-2 col-md-2">
                             <div class="checkbox">
                                 <label>
                                     <g:checkBox id="onlyChanged" name="onlyChanged"></g:checkBox> Only changed
                                 </label>
                             </div>
                             <span class="help-block">Select to deploy only versions that have changed.</span>
+                        </div>
+                        <div class="col-md-offset-1 col-md-2">
+                            <div class="checkbox">
+                                <label>
+                                    <g:checkBox id="schedule" name="schedule"></g:checkBox> Schedule deployment
+                                </label>
+                            </div>
+                            <span class="help-block">Select to schedule the deployment.</span>
                         </div>
                     </div>
 

@@ -18,7 +18,7 @@
                         <h2>Please Sign In</h2>
 
                         <div class="help-block">
-                            To access Serena Radar dashboards and views.
+                            ${message(code: 'login.help', default: 'To access live dashboards and user portal.')}
                         </div>
 
                         <g:if test="${flash.message}">
