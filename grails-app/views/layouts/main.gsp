@@ -86,10 +86,10 @@
 
                                     <ul class="dropdown-menu" role="menu">
                                         <li>
-                                            <a href="${createLink(action:"index", controller:"deployment")}">Application Deployment</a>
+                                            <a href="${createLink(action:"snapshot", controller:"deployment")}">Snapshot Deployment</a>
                                         </li>
                                         <li>
-                                            <a href="${createLink(action:"index", controller:"process")}">Generic Process</a>
+                                            <a href="${createLink(action:"version", controller:"deployment")}">Version Deployment</a>
                                         </li>
                                         <li class="divider"></li>
                                         <span id="configured-processes">

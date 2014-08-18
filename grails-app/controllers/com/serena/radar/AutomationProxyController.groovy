@@ -28,9 +28,9 @@ class AutomationProxyController {
             }
         } else {
             resp = rest.get(session.autoUrl + restQuery) {
-            auth(session.user.login, session.user.password)
-            accept("application/json")
-            contentType("application/json")
+                auth(session.user.login, session.user.password)
+                accept("application/json")
+                contentType("application/json")
             }
         }
         if (resp.status == 401) {
@@ -39,7 +39,7 @@ class AutomationProxyController {
         } else
         if (resp.status != 200) {
             response.status = resp.status
-            render([error: "${response.status} error -  unable to execute REST query"] as JSON)
+            render([error: "${response.status} error - unable to execute REST query"] as JSON)
         }
         render(resp.json as JSON)
     }
@@ -49,45 +49,6 @@ class AutomationProxyController {
     }
 
     def post() {
-        String method = params.method
-        String restQuery // the query which has been passed or we can infer via method
-        if (method != null)
-            restQuery = getRestQuery(method)
-        else
-            restQuery = URLDecoder.decode(url, "UTF-8")
-        if (restQuery == "")
-            render([error: "invalid or empty REST query: ${restQuery}"] as JSON)
-
-        String body = request.getReader().text
-        println("post body: ${body}")
-        JSONObject bodyJson = JSON.parse(body)
-
-        RestBuilder rest = new RestBuilder()
-        def resp
-        if (session.ALFSSOAuthNToken != null) {
-            resp = rest.post(session.autoUrl + restQuery) {
-                header 'ALFSSOAuthNToken', session.ALFSSOAuthNToken
-                accept("application/json")
-                contentType("application/json")
-                json(bodyJson)
-            }
-        } else {
-            resp = rest.get(session.autoUrl + restQuery) {
-                auth(session.user.login, session.user.password)
-                accept("application/json")
-                contentType("application/json")
-                json(bodyJson)
-            }
-        }
-        if (resp.status == 401) {
-            response.status = resp.status
-            render([error: "401 error: unable to authenticate REST query"] as JSON)
-        } else
-        if (resp.status != 200) {
-            response.status = resp.status
-            render([error: "${response.status} error -  unable to execute REST query"] as JSON)
-        }
-        render(resp.json as JSON)
 
     }
 

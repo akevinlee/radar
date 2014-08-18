@@ -5,7 +5,7 @@
     </head>
     <body>
         <div id="page-body" class="content" role="main">
-            <div class="col-lg-8 col-lg-offset-2 text-center">
+            <div class="col-md-8 col-md-offset-2 text-center">
                 <div class="logo">
                     <h1>Error 404 !</h1>
                 </div>

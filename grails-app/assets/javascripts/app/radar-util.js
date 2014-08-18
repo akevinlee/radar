@@ -132,6 +132,8 @@ RADAR.Util = {
     getBaseAutomationRequest: function() {
         // default options for SDA rest query
         this.autoReq = {
+            beforeSend: function(){ $("#ajaxLoader").show(); },
+            complete: function(){ $("#ajaxLoader").hide(); },
             cache: false,
             contentType: "application/json",
             dataType: "json",

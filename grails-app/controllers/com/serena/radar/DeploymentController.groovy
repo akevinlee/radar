@@ -1,119 +1,75 @@
 package com.serena.radar
 
-import grails.converters.JSON
 import grails.plugins.rest.client.RestBuilder
 import grails.transaction.Transactional
-import groovy.json.JsonBuilder
-import groovyx.net.http.Method
-import groovyx.net.http.ContentType
 import org.codehaus.groovy.grails.web.json.JSONObject
-import groovyx.net.http.HTTPBuilder
-
-import static groovyx.net.http.Method.PUT
-import static groovyx.net.http.ContentType.JSON
 
 @Transactional(readOnly = true)
 class DeploymentController {
-
-    static allowedMethods = [submit: "POST"]
 
     def index() {
         render(view: 'index')
     }
 
-    def submit() {
-        def processId = params.process
-        def snapshotId = params.snapshot
-        def applicationId = params.application
-        def environmentId = params.environment
+    def snapshot() {
+        render(view: 'index', model: [type: "snapshot"])
+    }
+
+    def version() {
+        render(view: 'index', model: [type: "version"])
+    }
+
+    def deploy() {
+        def process = params.process
+        def processId = params.processId
+        def snapshot = params.snapshot
+        def snapshotId = params.snapshotId
+        def application = params.application
+        def applicationId = params.applicationId
+        def environment = params.environment
+        def environmentId = params.environmentId
         def properties = {}
         def versions = []
 
-        def url = "${session.autoUrl}/rest/deploy/application/${applicationId}/runProcess"
-        println url
+        log.info "Deploying ${application} snapshot ${snapshot} to ${environment}"
 
-        def depRequest = new HTTPBuilder(url)
-        //depRequest.auth.basic("admin", "admin")
-        //http.headers['Authorization'] = 'Basic '+"admin:admin".bytes.encodeBase64()
-
-        def postBody = [onlyChange: false,
-                        applicationProcessId: processId,
-                        snapshotId: snapshotId,
-                        scheduleCheckbox: false,
-                        applicationId: applicationId,
-                        environmentId: environmentId,
-                        description: "deployed from Serena Radar"
-                        ] // will be url-encoded
+        def depUrl = "${session.autoUrl}/rest/deploy/application/${applicationId}/runProcess"
+        log.debug "Deployment Automation query set to ${depUrl}; with JSON:"
 
         def jsonBuilder = new groovy.json.JsonBuilder()
         jsonBuilder (
-            onlyChanged: 'false',
-            applicationProcessId: '${processId}',
-            snapshotId: '${snapshotId}',
-            scheduleCheckbox: false,
-            applicationId: '${applicationId}',
-            environmentId: '${environmentId}',
-            description: "deployed from Serena Radar",
-            properties: {},
-            versions: []
+                onlyChanged: 'false',
+                applicationProcessId: processId,
+                snapshotId: snapshotId,
+                scheduleCheckbox: 'false',
+                applicationId: applicationId,
+                environmentId: environmentId,
+                description: "deployed from Serena Radar",
+                properties: {},
+                versions: []
         )
-        println(jsonBuilder.toPrettyString())
+        log.debug jsonBuilder.toPrettyString()
 
-        /*body(["onlyChange": false, "applicationProcessId": processId, "snapshotId": snapshotId,
-              "scheduleCheckbox": false, "applicationId": applicationId, "environmentId": environmentId,
-              "description": "", "properties": properties, "versions": versions ] as JSON) */
-
-        def builder = new JsonBuilder(properties)
-        depRequest.request(Method.PUT, ContentType.JSON) { req ->
-            headers.accept = "application/json"
-            headers.authorization = 'Basic '+"admin:admin".bytes.encodeBase64()
-            body = jsonBuilder
-
-            response.success = { resp, json ->
-                println "Success! ${resp.status}"
-                println json
-                render(view: 'status', model: [requestId: json.requestId])
-            }
-
-            response.failure = { resp ->
-                println "Request failed with status ${resp.status}"
-            }
-        }
-        /*body: postBody,
-                requestContentType: JSON ) { resp, json ->
-
-            println "POST Success: ${resp.status}"
-            if (resp.status == 401) {
-                response.status = resp.status
-                render([error: "401 error: unable to authenticate REST query"] as JSON)
-            } else
-            if (resp.status != 200) {
-                response.status = resp.status
-                render([error: "${response.status} error -  unable to execute REST query"] as JSON)
-            }
-            println(json)
-            println(json.requestId)
-            render(view: 'status', model: [requestId: json.requestId])
-        }
-        /*
         RestBuilder rest = new RestBuilder()
-        def resp = rest.post("http://localhost:8080/serena_ra/rest/deploy/application/208f4922-3dc8-4b23-aa09-e6125fe8ab7b/runProcess") {
+        def resp = rest.put(depUrl) {
             auth(session.user.login, session.user.password)
             accept("application/json")
             contentType("application/json")
-            body(["onlyChange": false, "applicationProcessId": processId, "snapshotId": snapshotId, "scheduleCheckbox": false, "applicationId": applicationId, "environmentId": environmentId, "description": "", "properties": properties, "versions": versions ] as JSON)
+            json jsonBuilder.toString()
         }
         if (resp.status == 401) {
-            response.status = resp.status
-            render([error: "401 error: unable to authenticate REST query"] as JSON)
-        } else
-        if (resp.status != 200) {
-            response.status = resp.status
-            render([error: "${response.status} error -  unable to execute REST query"] as JSON)
+            flash.error = message(code: 'deployment.authentication.error',
+                    args: [resp.status, application, process, environment])
+            redirect(action: "index")
+        } else if (resp.status != 200) {
+            flash.error = message(code: 'deployment.error',
+                    args: [resp.status, application, process, environment])
+            redirect(action: "index")
         }
-        def jsonResp = resp.json as JSON
-        println(resp)
-        println(jsonResp.requestId)*/
-        //render(view: 'status', model: [requestId: json.requestId])
+        resp.json instanceof JSONObject
+        flash.message = message(code: 'deployment.started',
+                args: [application, process, environment, resp.json.requestId])
+        redirect(controller: "dashboard", action: "view")
     }
+
 }

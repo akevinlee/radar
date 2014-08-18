@@ -6,26 +6,19 @@
 
     <body>
 
+        <h3 class="page-header">
+            <g:if test="${type == 'snapshot'}">
+                <g:message code="deployment.snapshot.title" default="Snapshot Deployment"/>
+            </g:if>
+            <g:elseif test="${type == 'version'}">
+                <g:message code="deployment.version.title" default="Version Deployment"/>
+            </g:elseif>
+            <g:else>
+                Application Deployment
+            </g:else>
+        </h3>
+
         <div id="page-body" role="main">
-
-            <div class="nav" role="navigation">
-                <h2 class="pull-left">
-                    Create Deployment
-                </h2>
-                <div class="pull-right">
-                    <div class="btn-group">
-                        <button class="btn btn-primary">
-                            Actions
-                        </button>
-                        <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu pull-right">
-
-                        </ul>
-                    </div>
-                </div>
-            </div>
 
             <div id="app-deployment" class="content" role="main">
 
@@ -43,74 +36,83 @@
                     </div>
                 </g:if>
 
-                <g:form role="form" url="[controller: 'deployment', action: 'submit']" method="POST">
+                <g:form class="form-horizontal" role="form" url="[controller: 'deployment', action: 'deploy']" method="POST">
 
-                    <div class="row">
-                        <div class="form-group col-xs-8">
-                            <div class="col-xs-3">
-                                <label for="application">
-                                    <g:message code="deployment.application.label" default="Application"/>
-                                    <span class="required-indicator">*</span>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-5">
+                            <div class="checkbox">
+                                <label>
+                                    <g:checkBox id="onlyChanged" name="onlyChanged"></g:checkBox> Only changed
                                 </label>
                             </div>
-                            <div class="col-xs-4">
-                                <g:select id="application" from="" name="application" class="form-control"
-                                          noSelection="['':'-select an application-']" required=""/>
-                            </div>
+                            <span class="help-block">Select to deploy only versions that have changed.</span>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="form-group col-xs-8">
-                            <div class="col-xs-3">
-                                <label for="process">
-                                    <g:message code="deployment.processes.label" default="Process"/>
-                                    <span class="required-indicator">*</span>
-                                </label>
-                            </div>
-                            <div class="col-xs-4">
-                                <g:select id="process" from="" name="process" class="form-control"
-                                          noSelection="['':'-select an application-']" required=""/>
-                            </div>
+                    <div class="form-group">
+                        <label for="applicationId" class="col-md-2 control-label">
+                            <g:message code="deployment.application.label" default="Application"/>
+                        </label>
+                        <div class="col-md-5">
+                            <g:select id="applicationId" from="" name="applicationId" class="form-control"
+                                      noSelection="['':'-select an application-']" required=""/>
+                            <span class="help-block">The Application that is going to be deployed.</span>
+                            <g:hiddenField id="application" name="application"/>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="form-group col-xs-8">
-                            <div class="col-xs-3">
-                                <label for="environment">
-                                    <g:message code="deployment.environment.label" default="Environment"/>
-                                    <span class="required-indicator">*</span>
-                                </label>
-                            </div>
-                            <div class="col-xs-4">
-                                <g:select id="environment" from="" name="environment" class="form-control"
-                                          noSelection="['':'-select an application-']" required=""/>
-                            </div>
+                    <div class="form-group">
+                        <label for="processId" class="col-md-2 control-label">
+                            <g:message code="deployment.processes.label" default="Process"/>
+                        </label>
+                        <div class="col-md-5">
+                            <g:select id="processId" from="" name="processId" class="form-control"
+                                      noSelection="['':'-select an application-']" required=""/>
+                            <span class="help-block">The Application Process that is going to be used for deployment.</span>
+                            <g:hiddenField id="process" name="process"/>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="form-group col-xs-8">
-                            <div class="col-xs-3">
-                                <label for="snapshot">
-                                    <g:message code="deployment.snapshot.label" default="Snapshot"/>
-                                </label>
-                            </div>
-                            <div class="col-xs-4">
-                                <g:select id="snapshot" from="" name="snapshot" class="form-control"
+                    <div class="form-group">
+                        <label for="environmentId" class="col-md-2 control-label">
+                            <g:message code="deployment.environment.label" default="Environment"/>
+                        </label>
+                        <div class="col-md-5">
+                            <g:select id="environmentId" from="" name="environmentId" class="form-control"
+                                      noSelection="['':'-select an application-']" required=""/>
+                            <span class="help-block">The Application Environment that is going to be deployed to.</span>
+                            <g:hiddenField id="environment" name="environment"/>
+                        </div>
+
+                    </div>
+
+                    <g:if test="${type == 'snapshot'}">
+
+                        <div class="form-group">
+                            <label for="snapshotId" class="col-md-2 control-label">
+                                <g:message code="deployment.snapshot.label" default="Snapshot"/>
+                            </label>
+                            <div class="col-md-5">
+                                <g:select id="snapshotId" from="" name="snapshotId" class="form-control"
                                           noSelection="['':'-select an environment-']" required=""/>
+                                <span class="help-block">The Application Snapshot that is going to be deployed.</span>
+                                <g:hiddenField id="snapshot" name="snapshot"/>
                             </div>
                         </div>
-                    </div>
+
+                    </g:if>
+                    <g:elseif test="${type == 'version'}">
 
 
-                    <div class="row">
-                        <div class="col-xs-4">
-                            <g:actionSubmit action="submit" class="save btn btn-success"
-                                            value="${message(code: 'default.button.submit.label', default: 'Submit')}"/>
+                    </g:elseif>
+
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-5">
+                            <g:actionSubmit action="deploy" class="save btn btn-success"
+                                            value="${message(code: 'default.button.deploy.label', default: 'Deploy')}"/>
                         </div>
                     </div>
+
                 </g:form>
             </div>
 

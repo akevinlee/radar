@@ -37,35 +37,35 @@
                     <g:hiddenField name="version" value="${settingsInstance?.version}"/>
 
                     <div class="row">
-                        <div class="form-group col-xs-8 ${hasErrors(bean: settingsInstance, field: 'autoUrl', 'error')} ">
-                            <div class="col-xs-3">
+                        <div class="form-group col-md-8 ${hasErrors(bean: settingsInstance, field: 'autoUrl', 'error')} ">
+                            <div class="col-md-3">
                                 <label for="autoUrl">
                                     <g:message code="setting.autoUrl.label" default="Automation Server URL"/>
                                     <span class="required-indicator">*</span>
                                 </label>
                             </div>
-                            <div class="col-xs-4">
+                            <div class="col-md-4">
                                 <g:textField name="autoUrl" value="${settingsInstance?.autoUrl}" class="form-control" required="" placeholder="URL"/>
                             </div>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="form-group col-xs-8 ${hasErrors(bean: settingsInstance, field: 'refreshInterval', 'error')} required">
-                            <div class="col-xs-3">
+                        <div class="form-group col-md-8 ${hasErrors(bean: settingsInstance, field: 'refreshInterval', 'error')} required">
+                            <div class="col-md-3">
                                 <label for="refreshInterval">
                                     <g:message code="setting.refreshInterval.label" default="Refresh Interval"/>
                                     <span class="required-indicator">*</span>
                                 </label>
                             </div>
-                            <div class="col-xs-2">
+                            <div class="col-md-2">
                                 <g:field name="refreshInterval" type="number" value="${settingsInstance.refreshInterval}" required="" class="form-control" />
                             </div>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-xs-4">
+                        <div class="col-md-4">
                             <g:actionSubmit action="update" class="save btn btn-success"
                                 value="${message(code: 'default.button.save.label', default: 'Save')}"/>
                         </div>

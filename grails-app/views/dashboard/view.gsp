@@ -11,6 +11,21 @@
 	</head>
 	<body>
 		<div id="dashboard" role="main">
+
+            <g:if test="${flash.message}">
+                <div class="alert alert-success fade in message row" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <p>${flash.message}</p>
+                </div>
+            </g:if>
+
+            <g:if test="${flash.error}">
+                <div class="alert alert-danger fade in message row" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <p>${flash.error}</p>
+                </div>
+            </g:if>
+
             <h3 class="sub-header">Statistics</small></h3>
 
             <div id="stats" class="row placeholders">
@@ -219,6 +234,9 @@
                     refreshInterval: ${session.refreshInterval}
                 };
                 RADAR.Dashboard.init(automationSettings);
+                _.delay(function () {
+                    $(".alert").alert('close');
+                }, 5000);
             });
         </script>
 	</body>
