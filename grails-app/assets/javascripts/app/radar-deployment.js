@@ -5,6 +5,7 @@ var RADAR = RADAR || {};
 RADAR.Deployment = {
     init: function (options) {
         this.debug = options.debug || false;
+        this.type = options.type || "version";
         this.refreshInterval = parseInt(options.refreshInterval) || 10;
 
         // all REST queries go through proxy
@@ -107,23 +108,64 @@ RADAR.Deployment = {
         var $select = $(e.target);
         var envId = $select.val().trim();
         var envName = $('#environmentId option:selected').text().trim();
+        var procId = self.$processId.val();
         var appId = self.$applicationId.val();
         if (self.debug) console.log("Environment changed to " + envName + "/" + envId);
 
         self.$environment.val(envName);
-        this.autoReq.url = this.autoPath + "proxy?url=" +
-            encodeURIComponent("/rest/deploy/application/" + appId + "/" + envId +
-                "/snapshotsForEnvironment/false");
-        this.autoReq.beforeSend =  function(){ self.$snapshotId.html(self.loadingHtml) };
-        $.ajax(this.autoReq).done(function(data) {
-            var numSnaps = _.size(data);
-            if (numSnaps > 0) {
-                if (self.debug) console.log("Found " + numSnaps + " snapshots");
-                self.$snapshotId.empty().html(self.snapshotsTemplate(data));
-            }
-            else
-            if (self.debug) console.log("Found no snapshots");
-        });
+
+        if (self.type == "snapshot") {
+            this.autoReq.url = this.autoPath + "proxy?url=" +
+                encodeURIComponent("/rest/deploy/application/" + appId + "/" + envId +
+                    "/snapshotsForEnvironment/false");
+            this.autoReq.beforeSend = function () {
+                self.$snapshotId.html(self.loadingHtml)
+            };
+            $.ajax(this.autoReq).done(function (data) {
+                var numSnaps = _.size(data);
+                if (numSnaps > 0) {
+                    if (self.debug) console.log("Found " + numSnaps + " snapshots");
+                    self.$snapshotId.empty().html(self.snapshotsTemplate(data));
+                }
+                else if (self.debug) console.log("Found no snapshots");
+            });
+        } else {
+            this.autoReq.url = this.autoPath + "proxy?url=" +
+                encodeURIComponent("/rest/deploy/applicationProcess/" + procId + "/-1");
+            this.autoReq.beforeSend =  function(){};
+
+            $.ajax(this.autoReq).then(function(data) {
+                var numComps = _.size(data.componentsTakingVersions);
+                $('#versions > tbody').empty();
+                if (numComps > 0) {
+                    if (self.debug) console.log("Found " + numComps + " components");
+                    $.each(data.componentsTakingVersions, function(index, component) {
+                        var compId = component.id;
+                        var compName = component.name;
+                        $('#versions > tbody:last').append('<tr><td class="name">' + compName + '</td>' +
+                            '<td id="' + compId + '">' +
+                            '<select class="version form-control" id="' + compId + '-selector" name="cver-' + compId + '">' +
+                            '<option value="latestVersion/">Latest Version</option>' +
+                            '</select>' +
+                            '</td></tr>');
+                        self.autoReq.url = self.autoPath + "proxy?url=" +
+                            encodeURIComponent("/rest/deploy/environment/" + envId + "/versions/" + compId);
+                        self.autoReq.beforeSend =  function(){};
+                        $.ajax(self.autoReq).then(function(data) {
+                            $.each(data, function(index, version) {
+                                $('#' + compId + "-selector").append($('<option>', {
+                                    value: version.id,
+                                    text : version.name
+                                }));
+                            });
+                        });
+                    });
+                } else {
+                    if (self.debug) console.log("Found no components");
+                    $('#versions > tbody:last').append('<tr><td>No components found</td></tr>');
+                }
+            });
+        }
     },
     procChanged: function (e) {
         var self = this;
@@ -131,7 +173,53 @@ RADAR.Deployment = {
         var procId = $select.val().trim();
         var procName = $('#processId option:selected').text().trim();
         if (self.debug) console.log("Process changed to " + procName + "/" + procId);
+
         self.$process.val(procName);
+        this.autoReq.url = this.autoPath + "proxy?url=" +
+            encodeURIComponent("/rest/deploy/applicationProcess/" + procId + "/-1");
+        this.autoReq.beforeSend =  function(){};
+        $.ajax(this.autoReq).done(function(data) {
+            var numProps = _.size(data.propDefs);
+            $('#properties > tbody').empty();
+            if (numProps > 0) {
+                if (self.debug) console.log("Found " + numProps + " properties");
+                //self.$snapshotId.empty().html(self.snapshotsTemplate(data));
+                $.each(data.propDefs, function (index, property) {
+                    var propField = "";
+                    switch (property.type) {
+                        case 'CHECKBOX':
+                            propField = '<input type="checkbox" id="' + property.id + '" name="prop-' + property.name + '" value="' +
+                                (property.value == true ? 'checked' : '')
+                                + '"/>';
+                            break;
+                        case 'TEXT':
+                            propField = '<input type="text" class="form-control" id="' + property.id + '" name="prop-' + property.name + '" value="' + property.value + '"/>';
+                            break;
+                        case 'SECURE':
+                            propField = '<input type="password" class="form-control" id="' + property.id + '" name="prop-' + property.name + '" value="' + property.value + '"/>';
+                            break;
+                        case 'SELECT':
+                            propField = '<select class="form-control" id="' + property.id + '" name="prop-' + property.name + '">';
+                            $.each(property.allowedValues, function (index, av) {
+                                propField += '<option value="' + av.value + '">' + av.label + '</option>';
+                            });
+                            propField += '</select>';
+                            break;
+                        default:
+                            propField = "unknown property name";
+                            break;
+                    }
+                    $('#properties > tbody:last').append('<tr><td>' + property.label + '</td>' +
+                        '<td class="value">' + propField + '</td>' +
+                        '<td class="id" style="display:none">' + property.id + '</td></tr>');
+                });
+            } else {
+                if (self.debug) console.log("Found no properties");
+                $('#properties > tbody:last').append('<tr><td class="name">No properties found</td>' +
+                    '<td class="value"></td>' +
+                    '<td class="id" style="display:none"></td></tr>');
+            }
+        });
     },
     snapChanged: function (e) {
         var self = this;

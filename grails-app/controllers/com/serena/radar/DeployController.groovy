@@ -5,7 +5,7 @@ import grails.transaction.Transactional
 import org.codehaus.groovy.grails.web.json.JSONObject
 
 @Transactional(readOnly = true)
-class DeploymentController {
+class DeployController {
 
     def index() {
         render(view: 'index')
@@ -20,6 +20,10 @@ class DeploymentController {
     }
 
     def deploy() {
+        def jsonBuilder = new groovy.json.JsonBuilder()
+
+        def onlyChanged = params.onlyChanged
+        def schedule = params.schedule
         def process = params.process
         def processId = params.processId
         def snapshot = params.snapshot
@@ -28,25 +32,52 @@ class DeploymentController {
         def applicationId = params.applicationId
         def environment = params.environment
         def environmentId = params.environmentId
-        def properties = {}
+        def description = params.description
+        def props = ""
+        def properties = ""
         def versions = []
 
-        log.info "Deploying ${application} snapshot ${snapshot} to ${environment}"
+        params.each(){
+            if (it.key.startsWith('prop-')) {
+                def propKey = it.key.minus("prop-")
+                props += '"${propKey}": "${it.value}"'
+            }
+            if (it.key.startsWith('cver-')) {
+                versions.push jsonBuilder (
+                    versionSelector: "version/${it.value}",
+                    componentId: it.key.minus("cver-")
+                )
+            }
+        }
+
+        if (props.length() > 0) {
+            properties = { props }
+        } else {
+            properties = {}
+        }
+
+        println properties.toString()
+        println versions.toString()
+
+        if (snapshot != null)
+            println "Deploying ${application} snapshot ${snapshot} to ${environment}"
+        else
+            println "Deploying ${application} component versions ${versions} to ${environment}"
 
         def depUrl = "${session.autoUrl}/rest/deploy/application/${applicationId}/runProcess"
-        log.debug "Deployment Automation query set to ${depUrl}; with JSON:"
+        println "Deployment Automation query set to ${depUrl}; with JSON:"
 
-        def jsonBuilder = new groovy.json.JsonBuilder()
+
         jsonBuilder (
-                onlyChanged: 'false',
+                onlyChanged: (onlyChanged == "on" ? "true" : "false"),
                 applicationProcessId: processId,
                 snapshotId: snapshotId,
-                scheduleCheckbox: 'false',
+                scheduleCheckbox: (schedule == "on" ? true : false),
                 applicationId: applicationId,
                 environmentId: environmentId,
-                description: "deployed from Serena Radar",
+                description: description,
                 properties: {},
-                versions: []
+                versions: versions
         )
         log.debug jsonBuilder.toPrettyString()
 
