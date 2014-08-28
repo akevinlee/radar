@@ -72,7 +72,7 @@
 
                         <div class="form-group">
                             <label for="processId" class="col-md-2 control-label">
-                                <g:message code="deployment.processes.label" default="Process"/>
+                                <g:message code="deployment.process.label" default="Process"/>
                             </label>
                             <div class="col-md-7">
                                 <g:select id="processId" from="" name="processId" class="form-control"
@@ -148,35 +148,14 @@
                 </div>
 
                 <div class="col-md-3">
-                    <h4 class="page-header">Favourites</h4>
+                    <!-- TODO: add favourites -->
                 </div>
 
             </div>
 
         </div>
 
-        <script id="applications-template" type="text/x-handlebars-template">
-            <option disabled></option>
-            {{#this}}
-            <option value="{{id}}">{{name}}</option>
-            {{/this}}
-        </script>
-
-        <script id="processes-template" type="text/x-handlebars-template">
-            <option disabled></option>
-            {{#this}}
-            <option value="{{id}}">{{name}}</option>
-            {{/this}}
-        </script>
-
-        <script id="environments-template" type="text/x-handlebars-template">
-            <option disabled></option>
-            {{#this}}
-            <option value="{{id}}">{{name}}</option>
-            {{/this}}
-        </script>
-
-        <script id="snapshots-template" type="text/x-handlebars-template">
+        <script id="options-template" type="text/x-handlebars-template">
             <option disabled></option>
             {{#this}}
             <option value="{{id}}">{{name}}</option>
@@ -189,6 +168,9 @@
                 var automationSettings = {
                     debug: true,
                     type: "${type}",
+                    applicationId: "${applicationId}",
+                    environmentId: "${environmentId}",
+                    processId: "${processesId}",
                     refreshInterval: ${session.refreshInterval}
                 };
                 RADAR.Deployment.init(automationSettings);

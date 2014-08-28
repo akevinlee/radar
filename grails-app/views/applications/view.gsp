@@ -22,7 +22,7 @@
                         <div class="icon">
                             <span class="glyphicon glyphicon-ok-circle"></span>
                         </div>
-                        <a target="_blank" href="${session.autoUrl}/#main/applications" class="sraMore small-box-footer">
+                        <a target="_blank" href="${session.autoUrl}/#reports/system/Deployment Detail" class="sraMore small-box-footer">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </div>
@@ -40,7 +40,7 @@
                         <div class="icon">
                             <span class="glyphicon glyphicon-remove-circle"></span>
                         </div>
-                        <a target="_blank" href="${session.autoUrl}/#main/applications" class="autoMore small-box-footer">
+                        <a target="_blank" href="${session.autoUrl}//#reports/system/Deployment Detail" class="autoMore small-box-footer">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </div>
@@ -58,7 +58,7 @@
                         <div class="icon">
                             <span class="glyphicon glyphicon-refresh"></span>
                         </div>
-                        <a target="_blank" href="${session.autoUrl}/#main/applications" class="autoMore small-box-footer">
+                        <a target="_blank" href="${session.autoUrl}//#reports/system/Deployment Detail" class="autoMore small-box-footer">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </div>
@@ -76,7 +76,7 @@
                         <div class="icon">
                             <span class="glyphicon glyphicon-time"></span>
                         </div>
-                        <a target="_blank" href="${session.autoUrl}/#main/applications" class="autoMore small-box-footer">
+                        <a target="_blank" href="${session.autoUrl}/#reports/system/Deployment Detail" class="autoMore small-box-footer">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </div>
@@ -93,7 +93,7 @@
                         <th>Created by</th>
                         <th>Created</th>
                         <th>Last Request</th>
-                        <th></th>
+                        <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody id="application-rows">
@@ -106,14 +106,25 @@
             {{#this}}
             <tr id="{{id}}">
                 {{#compare active true}}
-                <td>{{name}}</td>
+                <td>
+                    <a data-toggle="tooltip" title="Drill down to application in Serena DA"
+                       class="autoMore small-box-footer" target="_blank" href="${session.autoUrl}/#application/{{id}}">
+                        {{name}} <span class="glyphicon glyphicon-circle-arrow-right"></span>
+                    </a>
+                </td>
                 <td>{{description}}</td>
                 <td>{{user}}</td>
                 <td>{{prettifyDate created}}</td>
                 <td id="{{id}}-request"></td>
                 <td>
-                    <a class="autoMore small-box-footer" data-toggle="modal" data-target=".autoModal" href="${session.autoUrl}/#application/{{id}}">
-                        More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
+                    <a href="/radar/deploy/version?appId={{id}}" data-toggle="tooltip" title="Deploy version(s) to application"
+                       class="autoMore small-box-footer">
+                        <span class="glyphicon glyphicon-play-circle"></span>
+                    </a>
+                    &nbsp;
+                    <a href="/radar/deploy/snapshot?appId={{id}}" data-toggle="tooltip" title="Deploy snapshot to application"
+                       class="autoMore small-box-footer">
+                        <span class="glyphicon glyphicon-camera"></span>
                     </a>
                 </td>
                 {{/compare}}

@@ -5,7 +5,11 @@ var RADAR = RADAR || {};
 RADAR.Dashboard = {
     init: function (options) {
         this.debug = options.debug || false;
+        this.maxApps = parseInt(options.maxApps) || 5;
+        this.maxUsers = parseInt(options.maxUsers) || 5;
         this.refreshInterval = parseInt(options.refreshInterval) || 10;
+
+        this.depCount = 0; // the current number of deployments
 
         // all REST queries go through proxy
         this.autoPath = RADAR.Util.getBaseURL();
@@ -149,11 +153,7 @@ RADAR.Dashboard = {
         $.ajax(this.autoReq).done(function(data) {
             if (self.debug) console.log("Found " + _.size(data) + " active deployments");
             self.$activityRows.empty().html(self.activityTemplate(data));
-            self.$activityRows.find('a.autoMore').on('click', function(e) {
-                e.preventDefault();
-                var url = $(this).attr('href');
-                $(".autoContent").html('<iframe width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency="true" src="'+url+'"></iframe>');
-            });
+            $('[data-toggle="tooltip"]').tooltip({'placement': 'top'});
         });
     },
     _updateStatus: function(el) {
@@ -178,16 +178,23 @@ RADAR.Dashboard = {
             if (self.debug) console.log("Found " + successCount + " successful, " + failureCount + " failed deployments");
 
             // ignore running for deployment count
-            var depCount = successCount + failureCount + approvalCount + rejectedCount;
+            var newDepCount = successCount + failureCount + approvalCount + rejectedCount;
+            // has the number of deployments changes
+            if (self.depCount != newDepCount) {
+                self.depCount = newDepCount;
+            } else {
+                return;
+            }
+
             if (successCount > 0) {
                 self._drawGauge(self.$depSuccess, "Successfull Deployments", "Success", successCount,
-                    depCount, "#339933");
+                    self.depCount, "#339933");
             } else {
                 self.$depSuccess.find(".text-muted").text("none in range");
             }
             if (failureCount > 0) {
                 self._drawGauge(self.$depFailure, "Failed Deployments", "Success", failureCount,
-                    depCount, "#FF0000");
+                    self.depCount, "#FF0000");
             } else {
                 self.$depFailure.find(".text-muted").text("none in range");
             }
@@ -203,24 +210,30 @@ RADAR.Dashboard = {
             else
                 self.$rejectedCount.text("0");
 
-            // TODO: extract top 5 applications and users only
             var appSuccess = _.chain(successData).sortBy("application").countBy("application").value();
             var appFailure = _.chain(failureData).sortBy("application").countBy("application").value();
             var userSuccess = _.chain(successData).sortBy("user").countBy("user").value();
             var userFailure = _.chain(failureData).sortBy("user").countBy("user").value();
+            var count = 0;
 
             if (successCount + failureCount > 0) {
                 var appCategories = [];
                 var appSuccessData = [];
                 var appFailureData = [];
                 // extract application success and failure counts
+                count = 0;
                 $.each(appSuccess, function(i, val) {
-                    if (!_.contains(appCategories, i)) appCategories.push(i);
-                    appSuccessData.push(val);
+                    if (count++ < self.maxApps) {
+                        if (!_.contains(appCategories, i)) appCategories.push(i);
+                        appSuccessData.push(val);
+                    }
                 });
+                count = 0;
                 $.each(appFailure, function(i, val) {
-                    if (!_.contains(appCategories, i)) appCategories.push(i);
-                    appFailureData.push(val);
+                    if (count++ < self.maxApps) {
+                        if (!_.contains(appCategories, i)) appCategories.push(i);
+                        appFailureData.push(val);
+                    }
                 });
                 var appData = [{
                     name: 'Failure',
@@ -235,14 +248,20 @@ RADAR.Dashboard = {
                 var userCategories = [];
                 var userSuccessData = [];
                 var userFailureData = [];
+                count = 0;
                 // extract user success and failure counts
                 $.each(userSuccess, function(i, val) {
-                    if (!_.contains(userCategories, i)) userCategories.push(i);
-                    userSuccessData.push(val);
+                    if (count++ < self.maxUsers) {
+                        if (!_.contains(userCategories, i)) userCategories.push(i);
+                        userSuccessData.push(val);
+                    }
                 });
+                count = 0;
                 $.each(userFailure, function(i, val) {
-                    if (!_.contains(userCategories, i)) userCategories.push(i);
-                    userFailureData.push(val);
+                    if (count++ < self.maxUsers) {
+                        if (!_.contains(userCategories, i)) userCategories.push(i);
+                        userFailureData.push(val);
+                    }
                 });
                 var userData = [{
                     name: 'Failure',
@@ -264,19 +283,10 @@ RADAR.Dashboard = {
     },
     _drawBarChart: function(el, title, subTitle, categories, data) {
         var chart = $(el).highcharts();
+        // do we need to update the chart
         if (chart != null) {
-            // do we need to update the chart
-            var curCategories = chart.xAxis[0].categories;
-            var curData = chart.series;
-            // TODO: make this work
-            if (_.isEqual(curCategories, categories) && (_.isEqual(curData, data))) {
-                // nothing to update
-                return;
-            } else {
-                if (self.debug) console.log("Updating chart " + title);
-                $(el).empty(); // clear element
-            }
-            console.log("+++");
+            if (self.debug) console.log("Updating chart " + title);
+            $(el).empty(); // clear element
         }
         $(el).highcharts({
             chart: {
@@ -333,22 +343,15 @@ RADAR.Dashboard = {
             credits: {
                 enabled: false
             },
-            series: data
+            series: data,
         });
     },
     _drawGauge: function(el, title, name, count, max, color) {
         var chart = $(el).highcharts();
+        // do we need to update the chart
         if (chart != null) {
-            var curMax = chart.yAxis[0].max;
-            var curCount = chart.series[0].data;
-            // TODO: make this work
-            if (_.isEqual(curCount, count) && (_.isEqual(curMax, max))) {
-                // nothing to update
-                return;
-            } else {
-                if (self.debug) console.log("Updating chart " + title);
-                $(el).empty(); // clear element
-            }
+            if (self.debug) console.log("Updating chart " + title);
+            $(el).empty(); // clear element
         }
         $(el).highcharts({
             chart: {

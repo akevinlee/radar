@@ -26,7 +26,15 @@
 					
 						<g:sortableColumn property="name" title="${message(code: 'cloudConnector.name.label', default: 'Name')}" />
 					
-						<th><g:message code="cloudConnector.provider.label" default="Provider" /></th>
+						<g:sortableColumn property="description" title="${message(code: 'cloudConnector.description.label', default: 'Description')}" />
+					
+						<g:sortableColumn property="procCreateId" title="${message(code: 'cloudConnector.procCreateId.label', default: 'Proc Create Id')}" />
+					
+						<g:sortableColumn property="procDeleteId" title="${message(code: 'cloudConnector.procDeleteId.label', default: 'Proc Delete Id')}" />
+					
+						<g:sortableColumn property="procStartId" title="${message(code: 'cloudConnector.procStartId.label', default: 'Proc Start Id')}" />
+					
+						<g:sortableColumn property="procStopId" title="${message(code: 'cloudConnector.procStopId.label', default: 'Proc Stop Id')}" />
 					
 					</tr>
 				</thead>
@@ -36,7 +44,15 @@
 					
 						<td><g:link action="show" id="${cloudConnectorInstance.id}">${fieldValue(bean: cloudConnectorInstance, field: "name")}</g:link></td>
 					
-						<td>${fieldValue(bean: cloudConnectorInstance, field: "provider")}</td>
+						<td>${fieldValue(bean: cloudConnectorInstance, field: "description")}</td>
+					
+						<td>${fieldValue(bean: cloudConnectorInstance, field: "procCreateId")}</td>
+					
+						<td>${fieldValue(bean: cloudConnectorInstance, field: "procDeleteId")}</td>
+					
+						<td>${fieldValue(bean: cloudConnectorInstance, field: "procStartId")}</td>
+					
+						<td>${fieldValue(bean: cloudConnectorInstance, field: "procStopId")}</td>
 					
 					</tr>
 				</g:each>

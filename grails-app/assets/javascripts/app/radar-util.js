@@ -68,24 +68,6 @@ var DEBUG = true;
 var RADAR = RADAR || {};
 
 RADAR.Util = {
-    uuid: function () {
-        /*jshint bitwise:false */
-        var i, random;
-        var uuid = '';
-
-        for (i = 0; i < 32; i++) {
-            random = Math.random() * 16 | 0;
-            if (i === 8 || i === 12 || i === 16 || i === 20) {
-                uuid += '-';
-            }
-            uuid += (i === 12 ? 4 : (i === 16 ? (random & 3 | 8) : random)).toString(16);
-        }
-
-        return uuid;
-    },
-    pluralize: function (count, word) {
-        return count === 1 ? word : word + 's';
-    },
     getBaseURL: function() {
         var url = location.href;  // entire url including querystring - also: window.location.href;
         var baseURL = url.substring(0, url.indexOf('/', 14));
@@ -114,21 +96,6 @@ RADAR.Util = {
         var hash = btoa(tok);
         return "Basic " + hash;
     },
-    ssoToken: null,
-    getSsoToken: function() {
-        if (RADAR.Util.ssoToken == null || RADAR.Util.ssoToken.ssoToken == "") {
-            $.ajax({
-                url: "/tmtrack/tmtrack.dll?JSONPage&Command=getssotoken",
-                dataType: 'json',
-                async: false,
-                success: function (json) {
-                    util.ssoToken = json.result.token;
-                }
-            });
-        }
-
-        return this.ssoToken;
-    },
     getBaseAutomationRequest: function() {
         // default options for SDA rest query
         this.autoReq = {
@@ -140,11 +107,6 @@ RADAR.Util = {
             headers: {},
             url: this.autoPath
         };
-        if (RADAR.Util.getSsoToken() != null) {
-            this.autoReq.headers = {
-                "ALFSSOAuthNToken": RADAR.Util.getSsoToken()
-            }
-        }
         return this.autoReq;
     }
 };

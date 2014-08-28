@@ -15,14 +15,14 @@
             <g:if test="${flash.message}">
                 <div class="alert alert-success fade in message row" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <p>${flash.message}</p>
+                    <p class="text-center">${flash.message}</p>
                 </div>
             </g:if>
 
             <g:if test="${flash.error}">
                 <div class="alert alert-danger fade in message row" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <p>${flash.error}</p>
+                    <p class="text-center">${flash.error}</p>
                 </div>
             </g:if>
 
@@ -189,7 +189,8 @@
                     <td>{{prettifyDate componentProcessRequest.submittedTime}}</td>
                     <td>{{componentProcessRequest.userName}}</td>
                     <td>
-                        <a class="autoMore small-box-footer" data-toggle="modal" data-target=".autoModal" href="${session.autoUrl}/#componentProcessRequest/{{componentProcessRequest.id}}">
+                        <a data-toggle="tooltip" title="Drill down to process in Serena DA"
+                           class="autoMore small-box-footer" target="_blank" href="${session.autoUrl}/#componentProcessRequest/{{componentProcessRequest.id}}">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </td>
@@ -203,7 +204,8 @@
                     <td>{{prettifyDate applicationProcessRequest.submittedTime}}</td>
                     <td>{{applicationProcessRequest.userName}}</td>
                     <td>
-                        <a class="autoMore" data-toggle="modal" data-target=".autoModal" href="${session.autoUrl}/#applicationProcessRequest/{{applicationProcessRequest.id}}">
+                        <a data-toggle="tooltip" title="Drill down to process in Serena DA"
+                           class="autoMore" target="_blank" href="${session.autoUrl}/#applicationProcessRequest/{{applicationProcessRequest.id}}">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </td>
@@ -217,7 +219,8 @@
                     <td>{{prettifyDate genericProcessRequest.submittedTime}}</td>
                     <td>{{genericProcessRequest.userName}}</td>
                     <td>
-                        <a class="autoMore" data-toggle="modal" data-target=".autoModal" href="${session.autoUrl}/#processRequest/{{genericProcessRequest.id}}">
+                        <a data-toggle="tooltip" title="Drill down to process in Serena DA"
+                           class="autoMore" target="_blank" href="${session.autoUrl}/#processRequest/{{genericProcessRequest.id}}">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </td>

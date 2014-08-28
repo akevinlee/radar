@@ -1,12 +1,21 @@
 package com.serena.radar
 
-class CloudProvider {
+public enum CloudProvider {
+    AMAZON("Amazon EC2"),
+    AZURE("Microsoft Azure"),
+    VSPHERE("VMware vSphere")
 
-    static constraints = {
-        name(blank: false, unique: true)
+    private final String value
+
+    CloudProvider(String value) {
+        this.value = value;
     }
 
-    String name
-    String description
-    static hasMany = [connector:CloudConnector]
+    String toString() {
+        value
+    }
+
+    String getKey() {
+        name()
+    }
 }

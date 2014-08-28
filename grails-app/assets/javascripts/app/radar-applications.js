@@ -68,6 +68,22 @@ RADAR.Applications = {
             if (numApps > 0) {
                 if (self.debug) console.log("Found " + numApps + " applications");
                 self.$applicationRows.empty().html(self.applicationTemplate(data));
+                $('[data-toggle="tooltip"]').tooltip({'placement': 'top'});
+                self.$applicationRows.find("tr").each(function() {
+                    var appId = $(this).attr('id');
+                    if (self.debug) console.log("Getting last activity for application " + appId)
+                    this.autoActivityUrl = self.autoPath + "proxy?url=" +
+                        encodeURIComponent("/rest/deploy/applicationProcessRequest/table?rowsPerPage=1" +
+                            "&pageNumber=1&orderField=entry.scheduledDate&sortType=desc&filterFields=application.id" +
+                            "&filterValue_application.id=" + appId + "&filterType_application.id=eq&filterClass_application.id=UUID");
+                    $.ajax(this.autoActivityUrl).then(function(data) {
+                        $('#'+appId+"-request").html('<a href="' +
+                            '#applicationProcess/' + data.records[0].entry.id + '">' +
+                            data.records[0].entry.name +
+                            '</a>'
+                        );
+                    });
+                });
             }
             else
                 if (self.debug) console.log("Found no applications");

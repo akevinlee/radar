@@ -32,11 +32,56 @@
 				</li>
 				</g:if>
 			
+				<g:if test="${cloudConnectorInstance?.description}">
+				<li class="fieldcontain">
+					<span id="description-label" class="property-label"><g:message code="cloudConnector.description.label" default="Description" /></span>
+					
+						<span class="property-value" aria-labelledby="description-label"><g:fieldValue bean="${cloudConnectorInstance}" field="description"/></span>
+					
+				</li>
+				</g:if>
+			
+				<g:if test="${cloudConnectorInstance?.procCreateId}">
+				<li class="fieldcontain">
+					<span id="procCreateId-label" class="property-label"><g:message code="cloudConnector.procCreateId.label" default="Proc Create Id" /></span>
+					
+						<span class="property-value" aria-labelledby="procCreateId-label"><g:fieldValue bean="${cloudConnectorInstance}" field="procCreateId"/></span>
+					
+				</li>
+				</g:if>
+			
+				<g:if test="${cloudConnectorInstance?.procDeleteId}">
+				<li class="fieldcontain">
+					<span id="procDeleteId-label" class="property-label"><g:message code="cloudConnector.procDeleteId.label" default="Proc Delete Id" /></span>
+					
+						<span class="property-value" aria-labelledby="procDeleteId-label"><g:fieldValue bean="${cloudConnectorInstance}" field="procDeleteId"/></span>
+					
+				</li>
+				</g:if>
+			
+				<g:if test="${cloudConnectorInstance?.procStartId}">
+				<li class="fieldcontain">
+					<span id="procStartId-label" class="property-label"><g:message code="cloudConnector.procStartId.label" default="Proc Start Id" /></span>
+					
+						<span class="property-value" aria-labelledby="procStartId-label"><g:fieldValue bean="${cloudConnectorInstance}" field="procStartId"/></span>
+					
+				</li>
+				</g:if>
+			
+				<g:if test="${cloudConnectorInstance?.procStopId}">
+				<li class="fieldcontain">
+					<span id="procStopId-label" class="property-label"><g:message code="cloudConnector.procStopId.label" default="Proc Stop Id" /></span>
+					
+						<span class="property-value" aria-labelledby="procStopId-label"><g:fieldValue bean="${cloudConnectorInstance}" field="procStopId"/></span>
+					
+				</li>
+				</g:if>
+			
 				<g:if test="${cloudConnectorInstance?.provider}">
 				<li class="fieldcontain">
 					<span id="provider-label" class="property-label"><g:message code="cloudConnector.provider.label" default="Provider" /></span>
 					
-						<span class="property-value" aria-labelledby="provider-label"><g:link controller="cloudProvider" action="show" id="${cloudConnectorInstance?.provider?.id}">${cloudConnectorInstance?.provider?.encodeAsHTML()}</g:link></span>
+						<span class="property-value" aria-labelledby="provider-label"><g:fieldValue bean="${cloudConnectorInstance}" field="provider"/></span>
 					
 				</li>
 				</g:if>

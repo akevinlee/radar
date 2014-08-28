@@ -96,6 +96,7 @@ grails.hibernate.osiv.readonly = false
 environments {
     development {
         grails.logging.jul.usebridge = true
+        log4jFileName = "logs/SerenaRadar.log"
     }
     production {
         grails.logging.jul.usebridge = false
@@ -105,11 +106,23 @@ environments {
 
 // log4j configuration
 log4j = {
-    // Example of changing the log pattern for the default console appender:
-    //
     appenders {
-        console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
+        console name: "stdout",
+                layout: pattern(conversionPattern: "[%d{yyyy-MM-dd/HH:mm:ss}] %x %-5p %c{2} - %m%n")
+        environments {
+            production {
+                rollingFile name: "myAppender", maxFileSize: 1024,
+                        file: "logs/SerenaRadar.log"
+            }
+        }
     }
+
+    root {
+        //…
+    }
+
+    // Set level for all application artifacts
+    info "grails.app.controllers"
 
     error  'org.codehaus.groovy.grails.web.servlet',        // controllers
            'org.codehaus.groovy.grails.web.pages',          // GSP
@@ -122,8 +135,27 @@ log4j = {
            'org.springframework',
            'org.hibernate',
            'net.sf.ehcache.hibernate'
+
+    environments {
+        production {
+            // Override previous setting for 'grails.app.controllers'
+            error "grails.app.controllers"
+        }
+    }
 }
 
 grails.plugins.twitterbootstrap.fixtaglib = true
 grails.plugins.twitterbootstrap.defaultBundle = 'bundle_bootstrap'
 
+tomcat.deploy.username="depmgr"
+tomcat.deploy.password="depmgr"
+tomcat.deploy.url="http://localhost:8080/manager"
+
+// default Serena Business Manager URL
+radar.default.sbmURL="http://localhost/tmtrack/tmtrack.dll?"
+// default Serena Deployment Automation URL
+radar.default.autoURL="http://localhost:8080/serena_ra"
+// default refresh interval in seconds
+radar.default.refresh=10
+// set to true to use Serena Single Sign ON
+radar.useSSO=true

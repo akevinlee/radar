@@ -293,13 +293,15 @@ div.logo img.brand {
 /*
  * Typography overrides
  */
-.badge {
-    min-with: 20px;
-    border-radius: 5px;
-}
 #my-tasks-count {
-    background-color: #ff6655;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    padding: 6px 12px;
     color: white;
+    background-color: #DA4C45;
+    margin: 0;
+    border-radius: 4px;
+    text-align: center;
 }
 h1, h2, h3, h4, h5, h6 {
     font-family: "HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
@@ -308,4 +310,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 ul.navbar-right > li {
     margin-left:10px;
+}
+.alert {
+    margin: 5px 20px 5px 20px;
 }

@@ -5,6 +5,9 @@ var RADAR = RADAR || {};
 RADAR.Deployment = {
     init: function (options) {
         this.debug = options.debug || false;
+        this.applicationId = options.applicationId || "";
+        this.environmentId = options.environmentId || "";
+        this.processId = options.processId || "";
         this.type = options.type || "version";
         this.refreshInterval = parseInt(options.refreshInterval) || 10;
 
@@ -22,10 +25,7 @@ RADAR.Deployment = {
         this.render();
     },
     cacheElements: function () {
-        this.applicationsTemplate = Handlebars.compile($('#applications-template').html());
-        this.environmentsTemplate = Handlebars.compile($('#environments-template').html());
-        this.snapshotsTemplate = Handlebars.compile($('#snapshots-template').html());
-        this.processesTemplate = Handlebars.compile($('#processes-template').html());
+        this.optionsTemplate = Handlebars.compile($('#options-template').html());
         this.$deployment = $('#app-deployment');
         this.$applicationId = this.$deployment.find('#applicationId');
         this.$processId = this.$deployment.find('#processId');
@@ -60,7 +60,12 @@ RADAR.Deployment = {
             var numApps = _.size(data);
             if (numApps > 0) {
                 if (self.debug) console.log("Found " + numApps + " applications");
-                self.$applicationId.empty().html(self.applicationsTemplate(data));
+                self.$applicationId.empty().html(self.optionsTemplate(data));
+                if (self.applicationId != "") {
+                    if (self.debug) console.log("Setting default application to " + self.applicationId)
+                    self.$applicationId.val(self.applicationId);
+                    self.$applicationId.trigger("change");
+                }
             }
             else
                 if (self.debug) console.log("Found no applications");
@@ -85,7 +90,7 @@ RADAR.Deployment = {
             var numEnvs = _.size(data);
             if (numEnvs > 0) {
                 if (self.debug) console.log("Found " + numEnvs + " environments");
-                self.$environmentId.empty().html(self.environmentsTemplate(data));
+                self.$environmentId.empty().html(self.optionsTemplate(data));
             }
             else
             if (self.debug) console.log("Found no environments");
@@ -97,7 +102,7 @@ RADAR.Deployment = {
             var numProcs = _.size(data);
             if (numProcs > 0) {
                 if (self.debug) console.log("Found " + numProcs + " processes");
-                self.$processId.empty().html(self.processesTemplate(data));
+                self.$processId.empty().html(self.optionsTemplate(data));
             }
             else
             if (self.debug) console.log("Found no processes");
@@ -125,7 +130,7 @@ RADAR.Deployment = {
                 var numSnaps = _.size(data);
                 if (numSnaps > 0) {
                     if (self.debug) console.log("Found " + numSnaps + " snapshots");
-                    self.$snapshotId.empty().html(self.snapshotsTemplate(data));
+                    self.$snapshotId.empty().html(self.optionsTemplate(data));
                 }
                 else if (self.debug) console.log("Found no snapshots");
             });
@@ -183,7 +188,6 @@ RADAR.Deployment = {
             $('#properties > tbody').empty();
             if (numProps > 0) {
                 if (self.debug) console.log("Found " + numProps + " properties");
-                //self.$snapshotId.empty().html(self.snapshotsTemplate(data));
                 $.each(data.propDefs, function (index, property) {
                     var propField = "";
                     switch (property.type) {

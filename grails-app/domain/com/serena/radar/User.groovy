@@ -1,13 +1,7 @@
 package com.serena.radar
 
+// proxy User class for SDA
 class User {
-
-    static constraints = {
-        login(unique: true)
-        password()
-        name()
-        email()
-    }
 
     String login
     String password
@@ -16,5 +10,10 @@ class User {
 
     String toString() {
         name + " (" + login +")"
+    }
+
+    def isAttached()
+    {
+        return false
     }
 }

@@ -7,5 +7,13 @@ class CloudConnector {
     }
 
     String name
-    static hasOne = [provider:CloudProvider]
+    String description
+
+    CloudProvider provider
+
+    String procCreateId
+    String procDeleteId
+    String procStartId
+    String procStopId
+
 }

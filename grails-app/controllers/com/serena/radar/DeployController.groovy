@@ -12,11 +12,11 @@ class DeployController {
     }
 
     def snapshot() {
-        render(view: 'index', model: [type: "snapshot"])
+        render(view: 'index', model: [type: "snapshot", applicationId: params.appId])
     }
 
     def version() {
-        render(view: 'index', model: [type: "version"])
+        render(view: 'index', model: [type: "version", applicationId: params.appId])
     }
 
     def deploy() {
@@ -56,16 +56,16 @@ class DeployController {
             properties = {}
         }
 
-        println properties.toString()
-        println versions.toString()
+        log.debug properties.toString()
+        log.debug versions.toString()
 
         if (snapshot != null)
-            println "Deploying ${application} snapshot ${snapshot} to ${environment}"
+            log.info "deploying ${application} snapshot ${snapshot} to ${environment}"
         else
-            println "Deploying ${application} component versions ${versions} to ${environment}"
+            log.info "deploying ${application} component versions ${versions} to ${environment}"
 
         def depUrl = "${session.autoUrl}/rest/deploy/application/${applicationId}/runProcess"
-        println "Deployment Automation query set to ${depUrl}; with JSON:"
+        log.debug "deployment automation query set to ${depUrl}; with JSON:"
 
 
         jsonBuilder (
@@ -82,11 +82,22 @@ class DeployController {
         log.debug jsonBuilder.toPrettyString()
 
         RestBuilder rest = new RestBuilder()
-        def resp = rest.put(depUrl) {
-            auth(session.user.login, session.user.password)
-            accept("application/json")
-            contentType("application/json")
-            json jsonBuilder.toString()
+        def resp
+        if (session.ALFSSOAuthNToken != null) {
+            resp = rest.put(depUrl) {
+                header 'ALFSSOAuthNToken', session.ALFSSOAuthNToken
+                accept("application/json")
+                contentType("application/json")
+                json jsonBuilder.toString()
+            }
+        } else {
+            resp = rest.put(depUrl) {
+                header 'DirectSsoInteraction', 'true'
+                auth(session.user.login, session.user.password)
+                accept("application/json")
+                contentType("application/json")
+                json jsonBuilder.toString()
+            }
         }
         if (resp.status == 401) {
             flash.error = message(code: 'deployment.authentication.error',

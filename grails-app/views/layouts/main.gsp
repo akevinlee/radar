@@ -70,7 +70,6 @@
                                 Cloud <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="${createLink(action:"index", controller:"cloudProvider")}">Providers</a></li>
                                 <li><a href="${createLink(action:"index", controller:"cloudConnector")}">Connectors</a></li>
                                 <li><a href="${createLink(action:"index", controller:"cloudInstance")}">Instances</a></li>
                             </ul>
@@ -81,7 +80,7 @@
                             <li>
                                 <div class="btn-group navbar-btn">
                                     <button data-toggle="dropdown" class="btn btn-success dropdown-toggle">
-                                        +&nbsp;New <span class="caret"></span>
+                                        +&nbsp;New
                                     </button>
 
                                     <ul class="dropdown-menu" role="menu">
@@ -100,7 +99,7 @@
                             </li>
                             <li>
                                 <a href="${createLink(action:"view", controller:"workitems")}">
-                                    <span id="my-tasks-count" class="badge">0</span>
+                                    <span id="my-tasks-count">0</span>
                                 </a>
                             </li>
                             <li class="dropdown">
@@ -113,7 +112,14 @@
                                         <a href="${createLink(uri: '/settings')}">Settings</a>
                                     </li>
                                     <li>
+                                        <a href="${createLink(uri: '/about')}">About</a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li>
                                         <a href="${createLink(uri: '/help')}">Help</a>
+                                    </li>
+                                    <li>
+                                        <a target="_blank" href="http://deploy-community.serena.com/">SDA Community</a>
                                     </li>
                                     <li class="divider"></li>
                                     <li>
@@ -150,7 +156,7 @@
                     debug: true,
                     refreshInterval: ${session.refreshInterval}
                 };
-                RADAR.MyWorkItems.init(automationSettings);
+                //RADAR.MyWorkItems.init(automationSettings);
             });
         </script>
 

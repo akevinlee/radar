@@ -15,8 +15,10 @@ class AutomationProxyController {
             restQuery = getRestQuery(method)
         else
             restQuery = URLDecoder.decode(url, "UTF-8")
-        if (restQuery == "")
-            render([error: "invalid or empty REST query: ${restQuery}"] as JSON)
+        if (restQuery == "") {
+            flash.error = message(code: 'proxy.rest.query.error')
+            render(controller: "error", view: "serverError")
+        }
 
         RestBuilder rest = new RestBuilder()
         def resp
@@ -29,17 +31,18 @@ class AutomationProxyController {
         } else {
             resp = rest.get(session.autoUrl + restQuery) {
                 auth(session.user.login, session.user.password)
+                header 'DirectSsoInteraction', 'true'
                 accept("application/json")
                 contentType("application/json")
             }
         }
         if (resp.status == 401) {
-            response.status = resp.status
-            render([error: "401 error: unable to authenticate REST query"] as JSON)
+            flash.error = message(code: 'proxy.authentication.error', args: [resp.status])
+            render(controller: "error", view: "serverError")
         } else
         if (resp.status != 200) {
-            response.status = resp.status
-            render([error: "${response.status} error - unable to execute REST query"] as JSON)
+            flash.error = message(code: 'proxy.server.error', args: [resp.status])
+            render(controller: "error", view: "serverError")
         }
         render(resp.json as JSON)
     }
