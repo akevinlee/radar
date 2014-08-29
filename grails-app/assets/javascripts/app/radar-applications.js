@@ -5,6 +5,7 @@ var RADAR = RADAR || {};
 RADAR.Applications = {
     init: function (options) {
         this.debug = options.debug || false;
+        this.autoUrl = options.autoUrl || "http://localhost:8080/serena_ra"
         this.refreshInterval = parseInt(options.refreshInterval) || 10;
 
         // all REST queries go through proxy
@@ -48,9 +49,9 @@ RADAR.Applications = {
     },
     update: function (el) {
         var self = this;
+        self._updateApplications(self.el); // applications only on load
         (function applicationsUpdate(){
             setTimeout(function(){
-                self._updateApplications(self.el);
                 self._updateActivity(self.el);
                 self._updateCounts(self.el);
                 applicationsUpdate();
@@ -69,21 +70,6 @@ RADAR.Applications = {
                 if (self.debug) console.log("Found " + numApps + " applications");
                 self.$applicationRows.empty().html(self.applicationTemplate(data));
                 $('[data-toggle="tooltip"]').tooltip({'placement': 'top'});
-                self.$applicationRows.find("tr").each(function() {
-                    var appId = $(this).attr('id');
-                    if (self.debug) console.log("Getting last activity for application " + appId)
-                    this.autoActivityUrl = self.autoPath + "proxy?url=" +
-                        encodeURIComponent("/rest/deploy/applicationProcessRequest/table?rowsPerPage=1" +
-                            "&pageNumber=1&orderField=entry.scheduledDate&sortType=desc&filterFields=application.id" +
-                            "&filterValue_application.id=" + appId + "&filterType_application.id=eq&filterClass_application.id=UUID");
-                    $.ajax(this.autoActivityUrl).then(function(data) {
-                        $('#'+appId+"-request").html('<a href="' +
-                            '#applicationProcess/' + data.records[0].entry.id + '">' +
-                            data.records[0].entry.name +
-                            '</a>'
-                        );
-                    });
-                });
             }
             else
                 if (self.debug) console.log("Found no applications");
@@ -92,15 +78,59 @@ RADAR.Applications = {
     },
     _updateActivity: function(el) {
         var self = this;
-        this.autoReq.url = this.autoActivityUrl;
-        $.ajax(this.autoReq).done(function(data) {
-            if (self.debug) console.log("Found " + _.size(data) + " active deployments");
-            /*self.$activityRows.empty().html(self.activityTemplate(data));
-            self.$activityRows.find('a.autoMore').on('click', function(e) {
-                e.preventDefault();
-                var url = $(this).attr('href');
-                $(".autoContent").html('<iframe width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency="true" src="'+url+'"></iframe>');
-            });*/
+        self.$applicationRows.find("tr").each(function() {
+            var thisTr = this;
+            var appId = $(this).attr('id');
+            if (self.debug) console.log("Getting last request for application " + appId)
+            this.autoActivityUrl = self.autoPath + "proxy?url=" +
+                encodeURIComponent("/rest/deploy/applicationProcessRequest/table?rowsPerPage=1" +
+                    "&pageNumber=1&orderField=entry.scheduledDate&sortType=desc&filterFields=application.id" +
+                    "&filterValue_application.id=" + appId + "&filterType_application.id=eq&filterClass_application.id=UUID");
+            $.ajax(this.autoActivityUrl).then(function(data) {
+                if (data.totalRecords != 0) {
+                    var depReq = data.records[0];
+                    var cssClass = 'info';
+                    var icon = '';
+                    if (depReq.entry.fired == false) {
+                        cssClass = 'warning'
+                        icon = '<span title="Deployment scheduled" data-toggle="tooltip" class="glyphicon glyphicon-time"></span>'
+                    } else {
+                        if (depReq.rootTrace.state != undefined) {
+                            if (depReq.rootTrace.state == "EXECUTING") {
+                                cssClass = 'active';
+                                icon = '<span title="Deployment running" data-toggle="tooltip" class="glyphicon glyphicon-refresh icon-refresh-animate"></span>';
+                                // move row to the top
+                                self.$applicationRows.find("tr:first").parents('tbody').prepend(thisTr);
+                            } else {
+                                switch (depReq.result) {
+                                    case "SUCCEEDED":
+                                        cssClass = 'success';
+                                        break;
+                                    case "FAULTED":
+                                        cssClass = 'danger';
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                    /*$('#' + appId + "-request").html('<a data-toggle="tooltip" title="Started by '
+                            + depReq.userName + ' (' +
+                            moment(new Date(depReq.submittedTime)).calendar() + ')" ' +
+                            'target="_blank" href="' + self.autoUrl +
+                            '/#applicationProcessRequest/' + depReq.id + '">' +
+                            depReq.applicationProcess.name + '</a>&nbsp;' + icon
+                    ).removeClass().addClass(cssClass);*/
+                    $('#' + appId + "-request").html('<a data-toggle="tooltip" title="Executed process '
+                            + '(' + depReq.applicationProcess.name + ')" ' +
+                            'target="_blank" href="' + self.autoUrl +
+                            '/#applicationProcessRequest/' + depReq.id + '">' +
+                            moment(new Date(depReq.submittedTime)).calendar() +
+                            ' by ' + depReq.userName + '</a>&nbsp;' + icon
+                    ).removeClass().addClass(cssClass);
+                }
+                $('a[data-toggle="tooltip"]').tooltip({'placement': 'top'});
+                $('span[data-toggle="tooltip"]').tooltip({'placement': 'top'});
+            });
         });
     },
     _updateCounts: function(el) {

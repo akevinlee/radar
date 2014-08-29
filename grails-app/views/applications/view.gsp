@@ -85,7 +85,7 @@
 
             <h3 class="sub-header">Application Status</h3>
             <div class="table-responsive">
-                <table id="applications" class="table table-striped">
+                <table id="applications" class="table table-condensed">
                     <thead>
                     <tr>
                         <th>Name</th>
@@ -117,14 +117,22 @@
                 <td>{{prettifyDate created}}</td>
                 <td id="{{id}}-request"></td>
                 <td>
-                    <a href="/radar/deploy/version?appId={{id}}" data-toggle="tooltip" title="Deploy version(s) to application"
+                    <a href="/radar/deploy/version?appId={{id}}" data-toggle="tooltip"
+                       title="Deploy version(s) to application"
                        class="autoMore small-box-footer">
                         <span class="glyphicon glyphicon-play-circle"></span>
                     </a>
                     &nbsp;
-                    <a href="/radar/deploy/snapshot?appId={{id}}" data-toggle="tooltip" title="Deploy snapshot to application"
+                    <a href="/radar/deploy/snapshot?appId={{id}}" data-toggle="tooltip"
+                       title="Deploy snapshot to application"
                        class="autoMore small-box-footer">
                         <span class="glyphicon glyphicon-camera"></span>
+                    </a>
+                    &nbsp;
+                    <a target="_blank" href="${session.autoUrl}/#application/{{id}}/calendar" data-toggle="tooltip"
+                       title="Show application calendar"
+                       class="autoMore small-box-footer">
+                        <span class="glyphicon glyphicon-calendar"></span>
                     </a>
                 </td>
                 {{/compare}}
@@ -137,6 +145,7 @@
             $(document).ready(function () {
                 var automationSettings = {
                     debug: true,
+                    autoUrl: "${session.autoUrl}",
                     refreshInterval: ${session.refreshInterval}
                 };
                 RADAR.Applications.init(automationSettings);

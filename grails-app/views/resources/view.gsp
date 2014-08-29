@@ -110,7 +110,7 @@
                 <td class="{{getStatus status}}">{{status}}</td>
                 <td id="{{id}}-request"></td>
                 <td>
-                    <a class="autoMore small-box-footer" data-toggle="modal" data-target=".autoModal" href="${session.autoUrl}/#resource/{{id}}">
+                    <a class="autoMore small-box-footer" href="${session.autoUrl}/#resource/{{id}}">
                         More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                     </a>
                 </td>
