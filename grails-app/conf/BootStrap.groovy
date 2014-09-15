@@ -1,4 +1,4 @@
-import com.serena.radar.SettingsController
+import com.serena.radar.UserSettingController
 
 import javax.servlet.ServletContext
 

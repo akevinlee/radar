@@ -42,7 +42,7 @@
                         <div class="icon">
                             <span class="glyphicon glyphicon-phone"></span>
                         </div>
-                        <a href="${createLink(action:"view", controller:"applications")}" class="autoMore small-box-footer">
+                        <a href="${createLink(action:"view", controller:"application")}" class="autoMore small-box-footer">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </div>
@@ -94,7 +94,7 @@
                         <div class="icon">
                             <span class="glyphicon glyphicon-tasks"></span>
                         </div>
-                        <a href="${createLink(action:"view", controller:"resources")}" class="autoMore small-box-footer">
+                        <a href="${createLink(action:"view", controller:"resource")}" class="autoMore small-box-footer">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
                         </a>
                     </div>

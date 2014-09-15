@@ -150,12 +150,3 @@ grails.plugins.twitterbootstrap.defaultBundle = 'bundle_bootstrap'
 tomcat.deploy.username="depmgr"
 tomcat.deploy.password="depmgr"
 tomcat.deploy.url="http://localhost:8080/manager"
-
-// default Serena Business Manager URL
-radar.default.sbmURL="http://localhost/tmtrack/tmtrack.dll?"
-// default Serena Deployment Automation URL
-radar.default.autoURL="http://localhost:8080/serena_ra"
-// default refresh interval in seconds
-radar.default.refresh=10
-// set to true to use Serena Single Sign ON
-radar.useSSO=true

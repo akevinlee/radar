@@ -148,7 +148,6 @@
                 </div>
 
                 <div class="col-md-3">
-                    <!-- TODO: add favourites -->
                 </div>
 
             </div>

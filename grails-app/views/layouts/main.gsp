@@ -43,37 +43,39 @@
                         <li class="${controllerName.equals('dashboard') ? 'active' : '' }">
                             <a href="${createLink(uri: '/')}">
                                 <span class="glyphicon glyphicon-stats"></span>
-                                Dashboard
+                                <g:message code="radar.dashboard.menu" default="Dashboard"/>
                             </a>
                         </li>
                         <li class="${controllerName.equals('applications') ? 'active' : '' }">
-                            <a href="${createLink(action:"view", controller:"applications")}">
+                            <a href="${createLink(action:"view", controller:"application")}">
                                 <span class="glyphicon glyphicon-phone"></span>
                                 Applications
                             </a>
                         </li>
+                        <li class="${controllerName.equals('builds') ? 'active' : '' }">
+                            <a href="${createLink(action:"view", controller:"build")}">
+                                <span class="glyphicon glyphicon-cog"></span>
+                                Builds
+                            </a>
+                        </li>
+                        <li class="${controllerName.equals('releases') ? 'active' : '' }">
+                            <a href="${createLink(action:"view", controller:"release")}">
+                                <span class="glyphicon glyphicon-plane"></span>
+                                Releases
+                            </a>
+                        </li>
                         <li class="${controllerName.equals('environments') ? 'active' : '' }">
-                            <a href="${createLink(action:"view", controller:"environments")}">
+                            <a href="${createLink(action:"view", controller:"environment")}">
                                 <span class="glyphicon glyphicon-hdd"></span>
                                 Environments
                             </a>
                         </li>
                         <li class="${controllerName.equals('resources') ? 'active' : '' }">
-                            <a href="${createLink(action:"view", controller:"resources")}">
+                            <a href="${createLink(action:"view", controller:"resource")}">
                                 <span class="glyphicon glyphicon-tasks"></span>
                                 Resources
                             </a>
                         </li>
-                        <!--<li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <span class="glyphicon glyphicon-cloud"></span>
-                                Cloud <span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="${createLink(action:"index", controller:"cloudConnector")}">Connectors</a></li>
-                                <li><a href="${createLink(action:"index", controller:"cloudInstance")}">Instances</a></li>
-                            </ul>
-                        </li>-->
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <% if (session.user) { %>
@@ -109,14 +111,14 @@
                                 </a>
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
-                                        <a href="${createLink(uri: '/settings')}">Settings</a>
+                                        <a href="${createLink(action:"edit", controller:"UserSetting")}">Settings</a>
                                     </li>
                                     <li>
-                                        <a href="${createLink(uri: '/about')}">About</a>
+                                        <a href="${createLink(action:"about", controller:"Help")}">About</a>
                                     </li>
                                     <li class="divider"></li>
                                     <li>
-                                        <a href="${createLink(uri: '/help')}">Help</a>
+                                        <a href="${createLink(action:"index", controller:"Help")}">Help</a>
                                     </li>
                                     <li>
                                         <a target="_blank" href="http://deploy-community.serena.com/">SDA Community</a>

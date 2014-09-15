@@ -33,15 +33,19 @@ class UserController {
                 session.ALFSSOAuthNToken = ALFSSOAuthNToken
 
                 // if user settings doesn't exist
-                def settings = Settings.findByUsername(ssoUser)
+                def settings = UserSettings.findByUsername(ssoUser)
                 if (settings == null) {
                     // create them
                     log.info "user settings for ${ssoUser} does not exist in database, creating..."
-                    settings = new Settings(username: ssoUser,
+                    settings = new UserSettings(username: ssoUser,
                             autoUrl: grailsApplication.config.radar.default.autoURL,
                             refreshInterval: grailsApplication.config.radar.default.refresh)
                     settings.save()
                 }
+                if (settings.buildUrl) session.buildUrl = settings.buildUrl
+                if (settings.buildUsername) session.buildUsername = settings.buildUsername
+                if (settings.buildToken) session.buildToken = settings.buildToken
+
                 session.autoUrl = settings.autoUrl
                 session.refreshInterval = settings.refreshInterval
 
@@ -67,14 +71,18 @@ class UserController {
             session.user = user
 
             // if user settings doesn't exist
-            def settings = Settings.findByUsername(params.username)
+            def settings = UserSettings.findByUsername(params.username)
             if (settings == null) {
                 // create them
                 log.info "user settings for ${user} does not exist in database, creating..."
-                settings = new Settings(username: params.username, autoUrl: params.url,
+                settings = new UserSettings(username: params.username, autoUrl: params.url,
+                        sbmUrl: grailsApplication.config.radar.default.sbmUrl,
                         refreshInterval: grailsApplication.config.radar.default.refresh)
                 settings.save()
             }
+            if (settings.buildUrl) session.buildUrl = settings.buildUrl
+            if (settings.buildUsername) session.buildUsername = settings.buildUsername
+            if (settings.buildToken) session.buildToken = settings.buildToken
             session.autoUrl = settings.autoUrl
             session.refreshInterval = settings.refreshInterval
 
