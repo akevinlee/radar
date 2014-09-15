@@ -3,7 +3,6 @@ package com.serena.radar
 import grails.plugins.rest.client.RestBuilder
 import grails.converters.JSON;
 import grails.transaction.Transactional
-import org.codehaus.groovy.grails.web.json.JSONObject
 
 @Transactional(readOnly = true)
 class AutomationProxyController {

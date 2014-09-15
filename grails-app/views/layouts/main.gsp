@@ -64,7 +64,7 @@
                                 Releases
                             </a>
                         </li>
-                        <li class="${controllerName.equals('environments') ? 'active' : '' }">
+                        <!--li class="${controllerName.equals('environments') ? 'active' : '' }">
                             <a href="${createLink(action:"view", controller:"environment")}">
                                 <span class="glyphicon glyphicon-hdd"></span>
                                 Environments
@@ -75,7 +75,7 @@
                                 <span class="glyphicon glyphicon-tasks"></span>
                                 Resources
                             </a>
-                        </li>
+                        </li-->
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <% if (session.user) { %>

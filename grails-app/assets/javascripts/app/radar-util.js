@@ -68,7 +68,7 @@ var DEBUG = true;
 var RADAR = RADAR || {};
 
 RADAR.Util = {
-    getBaseURL: function() {
+    getBaseURL: function () {
         var url = location.href;  // entire url including querystring - also: window.location.href;
         var baseURL = url.substring(0, url.indexOf('/', 14));
 
@@ -86,7 +86,7 @@ RADAR.Util = {
             return baseURL + "/";
         }
     },
-    getSiteRoot: function() {
+    getSiteRoot: function () {
         var path1 = location.pathname.substr(1);
         var path2 = path1.substr(0, path1.indexOf("/"));
         return "/" + path2;
@@ -96,11 +96,15 @@ RADAR.Util = {
         var hash = btoa(tok);
         return "Basic " + hash;
     },
-    getBaseAutomationRequest: function() {
+    getBaseAutomationRequest: function () {
         // default options for SDA rest query
         this.autoReq = {
-            beforeSend: function(){ $("#ajaxLoader").show(); },
-            complete: function(){ $("#ajaxLoader").hide(); },
+            beforeSend: function () {
+                $("#ajaxLoader").show();
+            },
+            complete: function () {
+                $("#ajaxLoader").hide();
+            },
             cache: false,
             contentType: "application/json",
             dataType: "json",
@@ -108,6 +112,24 @@ RADAR.Util = {
             url: this.autoPath
         };
         return this.autoReq;
+    },
+    getBaseBuildRequest: function () {
+        // default options for Jenkins rest query
+        this.buildReq = {
+            beforeSend: function () {
+                $("#ajaxLoader").show();
+            },
+            complete: function () {
+                $("#ajaxLoader").hide();
+            },
+            cache: false,
+            contentType: "application/json",
+            dataType: "json",
+            headers: {},
+            url: this.buildPath
+        };
+        return this.buildReq;
+
     }
 };
 

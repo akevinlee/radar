@@ -90,7 +90,7 @@ class UserController {
             flash.message = message(code: 'login.success', args: [params.username])
             redirect(controller: "dashboard", action: "view")
         } else {
-            log.info "user ${user} has failed authentication, redirecting back to login page..."
+            log.info "user has failed authentication, redirecting back to login page..."
             flash.message = message(code: 'login.authentication.error', args: [params.username])
             redirect(action: "login")
         }

@@ -15,8 +15,8 @@ RADAR.Deployment = {
         this.autoPath = RADAR.Util.getBaseURL();
         this.autoReq = RADAR.Util.getBaseAutomationRequest();
 
-        this.autoAppsUrl = this.autoPath + "proxy/all-applications";
-        this.autoCompsUrl = this.autoPath + "proxy/all-components";
+        this.autoAppsUrl = this.autoPath + "autoproxy/all-applications";
+        this.autoCompsUrl = this.autoPath + "autoproxy/all-components";
 
         this.loadingHtml = "<option disabled>loading...</option>";
 
@@ -79,7 +79,7 @@ RADAR.Deployment = {
         if (self.debug) console.log("Application changed to " + appName + "/" + appId);
 
         self.$application.val(appName);
-        this.autoReq.url = this.autoPath + "proxy?url=" +
+        this.autoReq.url = this.autoPath + "autoproxy?url=" +
             encodeURIComponent("/rest/deploy/application/" + appId +
                 "/environments/false");
         this.autoReq.beforeSend =  function(){
@@ -95,7 +95,7 @@ RADAR.Deployment = {
             else
             if (self.debug) console.log("Found no environments");
         });
-        this.autoReq.url = this.autoPath + "proxy?url=" +
+        this.autoReq.url = this.autoPath + "autoproxy?url=" +
             encodeURIComponent("/rest/deploy/application/" + appId +
                 "/executableProcesses");
         $.ajax(this.autoReq).done(function(data) {
@@ -120,7 +120,7 @@ RADAR.Deployment = {
         self.$environment.val(envName);
 
         if (self.type == "snapshot") {
-            this.autoReq.url = this.autoPath + "proxy?url=" +
+            this.autoReq.url = this.autoPath + "autoproxy?url=" +
                 encodeURIComponent("/rest/deploy/application/" + appId + "/" + envId +
                     "/snapshotsForEnvironment/false");
             this.autoReq.beforeSend = function () {
@@ -135,7 +135,7 @@ RADAR.Deployment = {
                 else if (self.debug) console.log("Found no snapshots");
             });
         } else {
-            this.autoReq.url = this.autoPath + "proxy?url=" +
+            this.autoReq.url = this.autoPath + "autoproxy?url=" +
                 encodeURIComponent("/rest/deploy/applicationProcess/" + procId + "/-1");
             this.autoReq.beforeSend =  function(){};
 
@@ -153,7 +153,7 @@ RADAR.Deployment = {
                             '<option value="latestVersion/">Latest Version</option>' +
                             '</select>' +
                             '</td></tr>');
-                        self.autoReq.url = self.autoPath + "proxy?url=" +
+                        self.autoReq.url = self.autoPath + "autoproxy?url=" +
                             encodeURIComponent("/rest/deploy/environment/" + envId + "/versions/" + compId);
                         self.autoReq.beforeSend =  function(){};
                         $.ajax(self.autoReq).then(function(data) {
@@ -180,7 +180,7 @@ RADAR.Deployment = {
         if (self.debug) console.log("Process changed to " + procName + "/" + procId);
 
         self.$process.val(procName);
-        this.autoReq.url = this.autoPath + "proxy?url=" +
+        this.autoReq.url = this.autoPath + "autoproxy?url=" +
             encodeURIComponent("/rest/deploy/applicationProcess/" + procId + "/-1");
         this.autoReq.beforeSend =  function(){};
         $.ajax(this.autoReq).done(function(data) {

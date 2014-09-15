@@ -158,7 +158,7 @@
 
             <h3 class="sub-header">Current Activity</h3>
             <div class="table-responsive">
-                <table id="activity" class="table table-condensed">
+                <table id="activity" class="table table-striped table-responsive table-hover">
                     <thead>
                     <tr>
                         <th>Type</th>

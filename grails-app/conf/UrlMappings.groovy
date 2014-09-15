@@ -3,8 +3,13 @@ import grails.util.Environment
 class UrlMappings {
 
 	static mappings = {
-        // proxy all REST requests through the server rather than client
-        "/proxy/$method?"(controller: "automationProxy") {
+        // proxy all Automation REST requests through the server rather than client
+        "/autoproxy/$method?"(controller: "automationProxy") {
+            action = [GET: "get", PUT: "put", DELETE: "delete", POST: "post"]
+        }
+
+        // proxy all Build REST requests through the server rather than client
+        "/buildproxy/$method?"(controller: "buildProxy") {
             action = [GET: "get", PUT: "put", DELETE: "delete", POST: "post"]
         }
 

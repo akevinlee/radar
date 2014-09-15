@@ -85,7 +85,7 @@
 
             <h3 class="sub-header">Application Status</h3>
             <div class="table-responsive">
-                <table id="applications" class="table table-condensed">
+                <table id="applications" class="table table-striped table-responsive table-hover">
                     <thead>
                     <tr>
                         <th>Name</th>

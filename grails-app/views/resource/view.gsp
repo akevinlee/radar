@@ -85,7 +85,7 @@
 
             <h3 class="sub-header">Resource Status</h3>
             <div class="table-responsive">
-                <table id="resources" class="table table-striped">
+                <table id="resources" class="table table-striped table-responsive table-hover">
                     <thead>
                     <tr>
                         <th>Name</th>

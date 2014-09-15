@@ -85,7 +85,7 @@
 
             <h3 class="sub-header">Build Status</h3>
             <div class="table-responsive">
-                <table id="builds" class="table table-condensed">
+                <table id="builds" class="table table-hover table-striped table-responsive">
                     <thead>
                     <tr>
                         <th>Name</th>

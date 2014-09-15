@@ -15,14 +15,14 @@ RADAR.Dashboard = {
         this.autoPath = RADAR.Util.getBaseURL();
         this.autoReq = RADAR.Util.getBaseAutomationRequest();
 
-        this.autoAppsUrl = this.autoPath + "proxy/all-applications";
-        this.autoCompsUrl = this.autoPath + "proxy/all-components";
-        this.autoEnvsUrl = this.autoPath + "proxy/all-global-environments";
-        this.autoResourcesUrl = this.autoPath + "proxy/all-resources";
-        this.autoAgentsUrl = this.autoPath + "proxy/all-agents";
-        this.autoActivityUrl = this.autoPath + "proxy/current-activity";
+        this.autoAppsUrl = this.autoPath + "autoproxy/all-applications";
+        this.autoCompsUrl = this.autoPath + "autoproxy/all-components";
+        this.autoEnvsUrl = this.autoPath + "autoproxy/all-global-environments";
+        this.autoResourcesUrl = this.autoPath + "autoproxy/all-resources";
+        this.autoAgentsUrl = this.autoPath + "autoproxy/all-agents";
+        this.autoActivityUrl = this.autoPath + "autoproxy/current-activity";
         // get all recent deployments (last 30 days)
-        this.autoDepReportUrl = this.autoPath + "proxy?url=" +
+        this.autoDepReportUrl = this.autoPath + "autoproxy?url=" +
             encodeURIComponent("/rest/report/adHoc?dateRange=custom&status=" +
             "&date_low=" + moment().subtract(30, 'd').valueOf() +
             "&date_hi=" + moment().valueOf() +

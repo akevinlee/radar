@@ -44,7 +44,7 @@
                 </div>
             </g:hasErrors>
 
-            <g:form class="form-horizontal" role="form" url="[resource: userSettingsInstance, action: 'update']" method="PUT">
+            <g:form class="form-horizontal" role="form" url="[resource:userSettingsInstance, action:'update']" method="PUT" >
 
                 <g:hiddenField name="version" value="${userSettingsInstance?.version}"/>
 

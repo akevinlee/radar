@@ -10,11 +10,11 @@ RADAR.Builds = {
 
         // all REST queries go through proxy
         this.basePath = RADAR.Util.getBaseURL();
-        this.buildReq = RADAR.Util.getBaseRESTRequest();
+        this.buildReq = RADAR.Util.getBaseBuildRequest();
 
-        this.buildJobsUrl = this.basePath + "proxy/all-jobs";
+        this.buildJobsUrl = this.basePath + "buildproxy/all-jobs";
         // get all recent deployments (last 30 days)
-        this.autoDepReportUrl = this.basePath + "proxy?url=" +
+        this.autoDepReportUrl = this.basePath + "buildproxy?url=" +
             encodeURIComponent("/rest/report/adHoc?dateRange=custom&status=" +
             "&date_low=" + moment().subtract(30, 'd').valueOf() +
             "&date_hi=" + moment().valueOf() +
@@ -81,7 +81,7 @@ RADAR.Builds = {
             var thisTr = this;
             var appId = $(this).attr('id');
             if (self.debug) console.log("Getting last request for application " + appId)
-            this.autoActivityUrl = self.basePath + "proxy?url=" +
+            this.autoActivityUrl = self.basePath + "buildproxy?url=" +
                 encodeURIComponent("/rest/deploy/applicationProcessRequest/table?rowsPerPage=1" +
                     "&pageNumber=1&orderField=entry.scheduledDate&sortType=desc&filterFields=application.id" +
                     "&filterValue_application.id=" + appId + "&filterType_application.id=eq&filterClass_application.id=UUID");

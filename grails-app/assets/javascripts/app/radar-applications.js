@@ -12,10 +12,10 @@ RADAR.Applications = {
         this.autoPath = RADAR.Util.getBaseURL();
         this.autoReq = RADAR.Util.getBaseAutomationRequest();
 
-        this.autoAppsUrl = this.autoPath + "proxy/all-applications";
-        this.autoCompsUrl = this.autoPath + "proxy/all-components";
+        this.autoAppsUrl = this.autoPath + "autoproxy/all-applications";
+        this.autoCompsUrl = this.autoPath + "autoproxy/all-components";
         // get all recent deployments (last 30 days)
-        this.autoDepReportUrl = this.autoPath + "proxy?url=" +
+        this.autoDepReportUrl = this.autoPath + "autoproxy?url=" +
             encodeURIComponent("/rest/report/adHoc?dateRange=custom&status=" +
             "&date_low=" + moment().subtract(30, 'd').valueOf() +
             "&date_hi=" + moment().valueOf() +
@@ -82,7 +82,7 @@ RADAR.Applications = {
             var thisTr = this;
             var appId = $(this).attr('id');
             if (self.debug) console.log("Getting last request for application " + appId)
-            this.autoActivityUrl = self.autoPath + "proxy?url=" +
+            this.autoActivityUrl = self.autoPath + "autoproxy?url=" +
                 encodeURIComponent("/rest/deploy/applicationProcessRequest/table?rowsPerPage=1" +
                     "&pageNumber=1&orderField=entry.scheduledDate&sortType=desc&filterFields=application.id" +
                     "&filterValue_application.id=" + appId + "&filterType_application.id=eq&filterClass_application.id=UUID");

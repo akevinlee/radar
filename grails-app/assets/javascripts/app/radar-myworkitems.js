@@ -11,7 +11,7 @@ RADAR.MyWorkItems = {
         this.autoPath = RADAR.Util.getBaseURL();
         this.autoReq = RADAR.Util.getBaseAutomationRequest();
 
-        this.autoWorkItemsUrl = this.autoPath + "proxy?url=/rest/approval/task/tasksForUserCount";
+        this.autoWorkItemsUrl = this.autoPath + "autoproxy?url=/rest/approval/task/tasksForUserCount";
 
         this.countOptions = {
             useEasing : true,
