@@ -9,7 +9,6 @@ RADAR.Deployment = {
         this.environmentId = options.environmentId || "";
         this.processId = options.processId || "";
         this.type = options.type || "version";
-        this.refreshInterval = parseInt(options.refreshInterval) || 10;
 
         // all REST queries go through proxy
         this.autoPath = RADAR.Util.getBaseURL();

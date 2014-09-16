@@ -7,6 +7,14 @@ Handlebars.registerHelper("prettifyDate", function(timestamp) {
     return moment(new Date(timestamp)).fromNow();
 });
 
+Handlebars.registerHelper("prettifyBool", function(bool) {
+    return (bool == true ? "Yes" : "No")
+});
+
+Handlebars.registerHelper("previousNum", function(num) {
+    return (num - 1)
+});
+
 Handlebars.registerHelper("getStatus", function(status) {
     var cssClass = '';
     switch (status) {

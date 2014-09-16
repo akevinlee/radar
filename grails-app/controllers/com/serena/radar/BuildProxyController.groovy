@@ -19,8 +19,6 @@ class BuildProxyController {
             render(controller: "error", view: "serverError")
         }
 
-        println session.buildUrl
-        println restQuery
         RestBuilder rest = new RestBuilder()
         def resp
         resp = rest.get(session.buildUrl + restQuery) {
@@ -53,6 +51,8 @@ class BuildProxyController {
 
     static getRestQuery(final String method) {
         switch (method) {
+            case "jobs":
+                return "/api/json?tree=jobs[name]"
             case "all-jobs":
                 return "/api/json?depth=2&tree=jobs[name,description,url,buildable,nextBuildNumber]"
             default:

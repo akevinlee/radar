@@ -116,7 +116,7 @@
                 <td>{{user}}</td>
                 <td>{{prettifyDate created}}</td>
                 <td id="{{id}}-request"></td>
-                <td>
+                <td class="text-left">
                     <a href="/radar/deploy/version?appId={{id}}" data-toggle="tooltip"
                        title="Deploy version(s) to application"
                        class="autoMore small-box-footer">

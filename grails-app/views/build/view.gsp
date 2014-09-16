@@ -105,16 +105,21 @@
             {{#this}}
             <tr id="{{name}}">
                 <td>
-                    <a data-toggle="tooltip" title="Drill down to build"
+                    <a target="_blank" data-toggle="tooltip" title="Drill down to build"
                        class="autoMore small-box-footer" target="_blank" href="{{url}}">
                         {{name}} <span class="glyphicon glyphicon-circle-arrow-right"></span>
                     </a>
                 </td>
-                <td>{{buildable}}</td>
-                <td>{{nextBuild}}</td>
-                <td id="{{name}}-request"></td>
-                <td>
-                    <a href="/radar/build/job/{{name}}" data-toggle="tooltip"
+                <td>{{description}}</td>
+                <td>{{prettifyBool buildable}}</td>
+                <td id="{{name}}-request">
+                    <a href="{{url}}{{previousNum nextBuildNumber}}" data-toggle="tooltip"
+                       title="Drill down to last build"
+                       class="autoMore small-box-footer">
+                        {{previousNum nextBuildNumber}} <span class="glyphicon glyphicon-circle-arrow-right"></span>
+                </a></td>
+                <td class="text-left">
+                    <a href="/radar/build/submit?job={{name}}" data-toggle="tooltip"
                        title="Build Job"
                        class="autoMore small-box-footer">
                         <span class="glyphicon glyphicon-play-circle"></span>

@@ -5,7 +5,7 @@ import grails.transaction.Transactional
 @Transactional(readOnly = true)
 class UserSettingController {
 
-    static allowedMethods = [update: "PUT"]
+    static allowedMethods = [update:['PUT', 'POST']]
 
     def index() {
         redirect(action: 'edit')
