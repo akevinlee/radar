@@ -93,8 +93,7 @@ RADAR.Util = {
         else {
             var path1 = location.pathname.substr(1);
             var path2 = path1.substr(0, path1.indexOf("/"));
-            return "/" + path2;
-            return baseURL + "/" + path2 + "/";
+            return "/" + path2 + "/";
         }
     },
     getSiteRoot: function () {
