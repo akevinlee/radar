@@ -42,60 +42,35 @@ class BuildController {
 
         def job = params.job
 
-        //def props = ""
-        def params = "{\"parameter\": ["
+        def jobParams = []
 
-        //{"parameter": [{"name":"FILE_LOCATION_AS_SET_IN_JENKINS", "file":"file0"}]}
-
-        /*params.each(){
-            if (it.key.startsWith('prop-')) {
-                def propKey = it.key.minus("prop-")
-                props += '"${propKey}": "${it.value}"'
-            }
-            if (it.key.startsWith('cver-')) {
-                versions.push jsonBuilder (
-                        versionSelector: "version/${it.value}",
-                        componentId: it.key.minus("cver-")
+        params.each(){
+             if (it.key.startsWith('param-')) {
+                log.info it
+                jobParams.push jsonBuilder (
+                        name: it.key.minus("param-"),
+                        value: it.value
                 )
             }
         }
 
-        if (props.length() > 0) {
-            properties = { props }
-        } else {
-            properties = {}
-        }
-        */
-
-        params = params + "]}"
-
         log.info "building job ${job}"
 
-        def buildUrl = "${userSettingInstance.buildUrl}/jobs/${job}/buildWithParameters"
-        log.info "build query set to ${buildUrl}; with JSON:"
-        log.info params
+        def buildUrl = "${userSettingInstance.buildUrl}/job/${job}/buildWithParameters"
+        log.debug "build query set to ${buildUrl}; with JSON:"
 
-
-        /*jsonBuilder (
-                onlyChanged: (onlyChanged == "on" ? "true" : "false"),
-                applicationProcessId: processId,
-                snapshotId: snapshotId,
-                scheduleCheckbox: (schedule == "on" ? true : false),
-                applicationId: applicationId,
-                environmentId: environmentId,
-                description: description,
-                properties: {},
-                versions: versions
+        jsonBuilder (
+                parameter: jobParams
         )
         log.debug jsonBuilder.toPrettyString()
-        */
+
         RestBuilder rest = new RestBuilder()
         def resp
         resp = rest.post(buildUrl) {
-            auth(userSettingInstance.buildUsername, userSettingInstance.buildToken)
+            //auth(userSettingInstance.buildUsername, userSettingInstance.buildToken)
             accept("application/json")
             contentType("application/json")
-            //json jsonBuilder.toString()
+            json jsonBuilder.toString()
         }
         if (resp.status == 401) {
             flash.error = message(code: 'build.authentication.error',
@@ -109,7 +84,7 @@ class BuildController {
             resp.json instanceof JSONObject
             flash.message = message(code: 'build.started',
                     args: [job, resp.json])
-            redirect(controller: "dashboard", action: "view")
+            redirect(controller: "build", action: "view")
         }
     }
 

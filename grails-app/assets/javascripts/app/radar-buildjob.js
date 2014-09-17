@@ -58,26 +58,56 @@ RADAR.BuildJob = {
         var self = this;
         var $select = $(e.target);
         var job = $select.val().trim();
-        //var appName = $('#applicationId option:selected').text().trim();
         if (self.debug) console.log("Job changed to " + job);
 
-        /*self.$application.val(appName);
-        this.autoReq.url = this.autoPath + "autoproxy?url=" +
-            encodeURIComponent("/rest/deploy/application/" + appId +
-                "/environments/false");
-        this.autoReq.beforeSend =  function(){
-            self.$environmentId.html(self.loadingHtml);
-            self.$processId.html(self.loadingHtml)
-        };
-        $.ajax(this.autoReq).done(function(data) {
-            var numEnvs = _.size(data);
-            if (numEnvs > 0) {
-                if (self.debug) console.log("Found " + numEnvs + " environments");
-                self.$environmentId.empty().html(self.optionsTemplate(data));
+        this.buildReq.url = this.basePath + "buildproxy?url=" +
+            encodeURIComponent("/job/" + job + "/api/json?tree=property[parameterDefinitions[*]]");
+        this.buildReq.beforeSend =  function(){};
+        $.ajax(this.buildReq).done(function(data) {
+            var numParams = _.size(data.property[0].parameterDefinitions);
+            $('#parameters > tbody').empty();
+            if (numParams > 0) {
+                if (self.debug) console.log("Found " + numParams + " parameters");
+                $.each(data.property[0].parameterDefinitions, function (index, parameter) {
+                    var paramField = "";
+                    var defaultVal = "";
+                    if (typeof parameter.defaultParameterValue.value !== "undefined") {
+                        defaultVal = parameter.defaultParameterValue.value;
+                    }
+                    switch (parameter.type) {
+                        case 'BooleanParameterDefinition':
+                            defaultVal = "false";
+                            paramField = '<input type=checkbox id="' + parameter.name + '" name="param-' + parameter.name + '" value="' + defaultVal+ '"/>';
+                            break;
+                        case 'StringParameterDefinition':
+                        case 'TextParameterDefinition':
+                            paramField = '<input type=text id="' + parameter.name + '" name="param-' + parameter.name + '" value="' + defaultVal+ '"/>';
+                            break;
+                        case 'PasswordParameterDefinition':
+                            paramField = '<input type=password id="' + parameter.name+ '" name="param-' + parameter.name + '" value="' + defaultVal + '"/>';
+                            break;
+                        case 'ChoiceParameterDefinition':
+                            paramField = '<select id="' + parameter.name + '" name="param-' + parameter.name + '">';
+                            $.each(parameter.choices, function(index, choice) {
+                                paramField += '<option value="' + choice + '">' + choice + '</option>';
+                            });
+                            paramField += '</select>';
+                            break;
+                        default:
+                            paramField = "unknown property name";
+                            break;
+                    }
+                    $('#parameters > tbody:last').append('<tr><td>' + parameter.name + '</td>' +
+                        '<td class="value">' + paramField + '</td>' +
+                        '<td class="id" style="display:none">' + parameter.name + '</td></tr>');
+                });
+            } else {
+                if (self.debug) console.log("Found no parameters");
+                $('#parameters > tbody:last').append('<tr><td class="name">No parameters found</td>' +
+                    '<td class="value"></td>' +
+                    '<td class="id" style="display:none"></td></tr>');
             }
-            else
-            if (self.debug) console.log("Found no environments");
-        });*/
+        });
 
     }
 };
