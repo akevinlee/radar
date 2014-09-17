@@ -91,8 +91,10 @@ RADAR.Util = {
             return baseLocalUrl + "/";
         }
         else {
-            // Root Url for domain name
-            return baseURL + "/";
+            var path1 = location.pathname.substr(1);
+            var path2 = path1.substr(0, path1.indexOf("/"));
+            return "/" + path2;
+            return baseURL + "/" + path2;
         }
     },
     getSiteRoot: function () {
