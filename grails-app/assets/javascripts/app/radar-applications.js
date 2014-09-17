@@ -5,7 +5,7 @@ var RADAR = RADAR || {};
 RADAR.Applications = {
     init: function (options) {
         this.debug = options.debug || false;
-        this.autoUrl = options.autoUrl || "http://localhost:8080/serena_ra"
+        this.autoUrl = options.autoUrl || "http://localhost:8080/serena_ra";
         this.refreshInterval = parseInt(options.refreshInterval) || 10;
 
         // all REST queries go through proxy

@@ -58,10 +58,10 @@
                                 Builds
                             </a>
                         </li>
-                        <li class="${controllerName.equals('releases') ? 'active' : '' }">
-                            <a href="${createLink(action:"view", controller:"release")}">
-                                <span class="glyphicon glyphicon-plane"></span>
-                                Releases
+                        <li class="${controllerName.equals('infrastructure') ? 'active' : '' }">
+                            <a href="${createLink(action:"view", controller:"infrastructure")}">
+                                <span class="glyphicon glyphicon-tasks"></span>
+                                Infrastructure
                             </a>
                         </li>
                         <!--li class="${controllerName.equals('environments') ? 'active' : '' }">
@@ -102,8 +102,8 @@
                                 </div>
                             </li>
                             <li>
-                                <a href="${createLink(action:"view", controller:"workitems")}">
-                                    <span id="my-tasks-count">0</span>
+                                <a href="${createLink(action:"view", controller:"task")}">
+                                    <span id="my-task-count">0</span>
                                 </a>
                             </li>
                             <li class="dropdown">
@@ -154,13 +154,14 @@
             </div>
         </footer>
 
+        <asset:javascript src="app/radar-taskcount.js"/>
         <script>
-            $(document).ready(function () {
+            jQuery(document).ready(function () {
                 var automationSettings = {
                     debug: true,
                     refreshInterval: ${session.refreshInterval}
                 };
-                //RADAR.MyWorkItems.init(automationSettings);
+                RADAR.TaskCount.init(automationSettings);
             });
         </script>
 

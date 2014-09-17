@@ -61,17 +61,21 @@ class AutomationProxyController {
     static getRestQuery(final String method) {
         switch (method) {
             case "all-applications":
-                return "/rest/deploy/application?sortType=asc"
+                return "/rest/deploy/application?sortType=asc";
             case "all-components":
-                return "/rest/deploy/component?sortType=asc"
+                return "/rest/deploy/component?sortType=asc";
             case "all-global-environments":
-                return "/rest/deploy/globalEnvironment?sortType=asc"
+                return "/rest/deploy/globalEnvironment?sortType=asc";
             case "all-resources":
-                return "/rest/resource/resource/tree?orderField=name&sortType=asc"
+                return "/rest/resource/resource/tree?orderField=name&sortType=asc";
             case "all-agents":
-                return "/rest/agent?&orderField=name&sortType=asc"
+                return "/rest/agent?&orderField=name&sortType=asc";
             case "current-activity":
-                return "/rest/workflow/currentActivity?orderField=startDate&sortType=desc"
+                return "/rest/workflow/currentActivity?orderField=startDate&sortType=desc";
+            case "tasks-for-user-count":
+                return "/rest/approval/task/tasksForUserCount";
+            case "tasks-for-user":
+                return "/rest/approval/task/tasksForUser?orderField=startDate&sortType=desc";
             default:
                 return ""
         }

@@ -19,9 +19,12 @@ class BuildProxyController {
             render(controller: "error", view: "serverError")
         }
 
+        UserSetting userSettingInstance = UserSetting.findByUsername(session.user.name)
+        def buildUrl = userSettingInstance.buildUrl;
+
         RestBuilder rest = new RestBuilder()
         def resp
-        resp = rest.get(session.buildUrl + restQuery) {
+        resp = rest.get(buildUrl + restQuery) {
             //auth(session.user.login, session.user.password)
             accept("application/json")
             contentType("application/json")

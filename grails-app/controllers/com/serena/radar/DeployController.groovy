@@ -107,11 +107,12 @@ class DeployController {
             flash.error = message(code: 'deployment.error',
                     args: [resp.status, application, process, environment])
             redirect(action: "index")
+        } else {
+            resp.json instanceof JSONObject
+            flash.message = message(code: 'deployment.started',
+                    args: [application, process, environment, resp.json.requestId])
+            redirect(controller: "dashboard", action: "view")
         }
-        resp.json instanceof JSONObject
-        flash.message = message(code: 'deployment.started',
-                args: [application, process, environment, resp.json.requestId])
-        redirect(controller: "dashboard", action: "view")
     }
 
 }

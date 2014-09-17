@@ -6,7 +6,7 @@ import grails.test.mixin.*
 import spock.lang.*
 
 @TestFor(UserSettingController)
-@Mock(UserSettings)
+@Mock(UserSetting)
 class UserSettingControllerSpec extends Specification {
 
     def populateValidParams(params) {
@@ -37,7 +37,7 @@ class UserSettingControllerSpec extends Specification {
 
         when:"The save action is executed with an invalid instance"
             request.contentType = FORM_CONTENT_TYPE
-            def settings = new UserSettings()
+            def settings = new UserSetting()
             settings.validate()
             controller.save(settings)
 
@@ -48,14 +48,14 @@ class UserSettingControllerSpec extends Specification {
         when:"The save action is executed with a valid instance"
             response.reset()
             populateValidParams(params)
-            settings = new UserSettings(params)
+            settings = new UserSetting(params)
 
             controller.save(settings)
 
         then:"A redirect is issued to the show action"
             response.redirectedUrl == '/settings/show/1'
             controller.flash.message != null
-            UserSettings.count() == 1
+            UserSetting.count() == 1
     }
 
     void "Test that the show action returns the correct model"() {
@@ -67,7 +67,7 @@ class UserSettingControllerSpec extends Specification {
 
         when:"A domain instance is passed to the show action"
             populateValidParams(params)
-            def settings = new UserSettings(params)
+            def settings = new UserSetting(params)
             controller.show(settings)
 
         then:"A model is populated containing the domain instance"
@@ -83,7 +83,7 @@ class UserSettingControllerSpec extends Specification {
 
         when:"A domain instance is passed to the edit action"
             populateValidParams(params)
-            def settings = new UserSettings(params)
+            def settings = new UserSetting(params)
             controller.edit(settings)
 
         then:"A model is populated containing the domain instance"
@@ -102,7 +102,7 @@ class UserSettingControllerSpec extends Specification {
 
         when:"An invalid domain instance is passed to the update action"
             response.reset()
-            def settings = new UserSettings()
+            def settings = new UserSetting()
             settings.validate()
             controller.update(settings)
 
@@ -113,7 +113,7 @@ class UserSettingControllerSpec extends Specification {
         when:"A valid domain instance is passed to the update action"
             response.reset()
             populateValidParams(params)
-            settings = new UserSettings(params).save(flush: true)
+            settings = new UserSetting(params).save(flush: true)
             controller.update(settings)
 
         then:"A redirect is issues to the show action"
@@ -133,16 +133,16 @@ class UserSettingControllerSpec extends Specification {
         when:"A domain instance is created"
             response.reset()
             populateValidParams(params)
-            def settings = new UserSettings(params).save(flush: true)
+            def settings = new UserSetting(params).save(flush: true)
 
         then:"It exists"
-            UserSettings.count() == 1
+            UserSetting.count() == 1
 
         when:"The domain instance is passed to the delete action"
             controller.delete(settings)
 
         then:"The instance is deleted"
-            UserSettings.count() == 0
+            UserSetting.count() == 0
             response.redirectedUrl == '/settings/index'
             flash.message != null
     }

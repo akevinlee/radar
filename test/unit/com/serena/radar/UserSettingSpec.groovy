@@ -6,8 +6,8 @@ import spock.lang.Specification
 /**
  * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions
  */
-@TestFor(CloudConnector)
-class CloudConnectorSpec extends Specification {
+@TestFor(UserSetting)
+class UserSettingSpec extends Specification {
 
     def setup() {
     }
@@ -15,6 +15,8 @@ class CloudConnectorSpec extends Specification {
     def cleanup() {
     }
 
-    void "test something"() {
+    void testCreate() {
+        UserSetting s = new UserSetting()
+        assert s.validate()
     }
 }

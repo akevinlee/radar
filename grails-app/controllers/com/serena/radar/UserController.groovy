@@ -32,22 +32,20 @@ class UserController {
                 session.user = user
                 session.ALFSSOAuthNToken = ALFSSOAuthNToken
 
-                // if user settings doesn't exist
-                def settings = UserSettings.findByUsername(ssoUser)
-                if (settings == null) {
+                // if user setting doesn't exist
+                def setting = UserSetting.findByUsername(ssoUser)
+                if (setting == null) {
                     // create them
-                    log.info "user settings for ${ssoUser} does not exist in database, creating..."
-                    settings = new UserSettings(username: ssoUser,
+                    log.info "user setting for ${ssoUser} does not exist in database, creating..."
+                    setting = new UserSetting(username: ssoUser,
                             autoUrl: grailsApplication.config.radar.default.autoURL,
+                            buildUrl: grailsApplication.config.radar.default.buildURL,
                             refreshInterval: grailsApplication.config.radar.default.refresh)
-                    settings.save()
+                    setting.save()
                 }
-                if (settings.buildUrl) session.buildUrl = settings.buildUrl
-                if (settings.buildUsername) session.buildUsername = settings.buildUsername
-                if (settings.buildToken) session.buildToken = settings.buildToken
 
-                session.autoUrl = settings.autoUrl
-                session.refreshInterval = settings.refreshInterval
+                session.autoUrl = setting.autoUrl
+                session.refreshInterval = setting.refreshInterval
 
                 log.info "redirecting to default view..."
                 flash.message = message(code: 'login.success', args: [ssoUser])
@@ -70,21 +68,18 @@ class UserController {
             User user = new User(login: params.username, name: params.username, password: params.password)
             session.user = user
 
-            // if user settings doesn't exist
-            def settings = UserSettings.findByUsername(params.username)
-            if (settings == null) {
+            // if user setting doesn't exist
+            def setting = UserSetting.findByUsername(params.username)
+            if (setting == null) {
                 // create them
-                log.info "user settings for ${user} does not exist in database, creating..."
-                settings = new UserSettings(username: params.username, autoUrl: params.url,
-                        sbmUrl: grailsApplication.config.radar.default.sbmUrl,
+                log.info "user setting for ${user} does not exist in database, creating..."
+                setting = new UserSetting(username: params.username, autoUrl: params.url,
+                        buildUrl: grailsApplication.config.radar.default.buildURL,
                         refreshInterval: grailsApplication.config.radar.default.refresh)
-                settings.save()
+                setting.save()
             }
-            if (settings.buildUrl) session.buildUrl = settings.buildUrl
-            if (settings.buildUsername) session.buildUsername = settings.buildUsername
-            if (settings.buildToken) session.buildToken = settings.buildToken
-            session.autoUrl = settings.autoUrl
-            session.refreshInterval = settings.refreshInterval
+            session.autoUrl = setting.autoUrl
+            session.refreshInterval = setting.refreshInterval
 
             log.info "redirecting to default view..."
             flash.message = message(code: 'login.success', args: [params.username])

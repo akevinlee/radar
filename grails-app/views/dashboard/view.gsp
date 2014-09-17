@@ -126,7 +126,7 @@
                             </p>
                         </div>
                         <div class="icon">
-                            <span class="glyphicon glyphicon-tasks"></span>
+                            <span class="glyphicon glyphicon-list-alt"></span>
                         </div>
                         <a href="${createLink(action:"view", controller:"workitems")}" class="autoMore small-box-footer">
                             More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
@@ -231,14 +231,15 @@
 
         <asset:javascript src="app/radar-dashboard.js"/>
         <script>
-            $(document).ready(function () {
+            jQuery(document).ready(function () {
                 var automationSettings = {
                     debug: true,
+                    autoUrl: "${session.autoUrl}",
                     refreshInterval: ${session.refreshInterval}
                 };
                 RADAR.Dashboard.init(automationSettings);
                 _.delay(function () {
-                    $(".alert").alert('close');
+                    jQuery(".alert").alert('close');
                 }, 5000);
             });
         </script>

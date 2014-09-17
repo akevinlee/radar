@@ -1,4 +1,4 @@
-<%@ page import="com.serena.radar.BuildProvider; com.serena.radar.SBMShell; com.serena.radar.UserSettings" %>
+<%@ page import="com.serena.radar.BuildProvider; com.serena.radar.SBMShell; com.serena.radar.UserSetting" %>
 
 <!DOCTYPE html>
 <html>

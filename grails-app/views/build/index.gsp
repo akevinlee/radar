@@ -1,3 +1,5 @@
+<%@ page import="com.serena.radar.BuildProvider; com.serena.radar.UserSetting" %>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -7,7 +9,7 @@
     <body>
 
         <h3 class="page-header">
-            <g:message code="build.title" default="Build"/>
+            <g:message code="build.title" default="Build Job"/>
         </h3>
 
         <div id="page-body" role="main">
@@ -79,12 +81,12 @@
             {{/this}}
         </script>
 
-        <asset:javascript src="app/radar-buildjob.js"/>
+        <asset:javascript src="app/radar-buildjobs.js"/>
         <script>
-            $(document).ready(function () {
+            jQuery(document).ready(function () {
                 var jobSettings = {
                     debug: true,
-                    buildUrl: "${session.buildUrl}",
+                    buildUrl: "${userSettingInstance?.buildUrl}",
                     job: "${job}"
                 };
                 RADAR.BuildJob.init(jobSettings);

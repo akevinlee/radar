@@ -121,9 +121,10 @@
 
         <asset:javascript src="app/radar-resources.js"/>
         <script>
-            $(document).ready(function () {
+            jQuery(document).ready(function () {
                 var automationSettings = {
                     debug: true,
+                    autoUrl: "${session.autoUrl}",
                     refreshInterval: ${session.refreshInterval}
                 };
                 RADAR.Resources.init(automationSettings);

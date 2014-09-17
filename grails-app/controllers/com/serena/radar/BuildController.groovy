@@ -6,20 +6,46 @@ import org.codehaus.groovy.grails.web.json.JSONObject
 class BuildController {
 
     def index() {
-        render(view: "index")
+        UserSetting userSettingInstance = UserSetting.findByUsername(session.user.name)
+
+        if (userSettingInstance == null) {
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'Build.index', default: 'Build Job'), session.user.name])
+            respond view:'notFound'
+        } else {
+            //respond userSettingInstance, view:'index'
+            render(view: 'index', model: [buildUrl: userSettingInstance.buildUrl, job: params.job])
+        }
     }
 
     def view() {
-        render(view: "view")
+        UserSetting userSettingInstance = UserSetting.findByUsername(session.user.name)
+
+        if (userSettingInstance == null) {
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'Build.view', default: 'Build View'), session.user.name])
+            respond view:'notFound'
+        } else {
+            respond userSettingInstance, view:'view'
+        }
+
     }
 
     def submit() {
+
+        UserSetting userSettingInstance = UserSetting.findByUsername(session.user.name)
+
+        if (userSettingInstance == null) {
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'Build.submit', default: 'Build Submit'), session.user.name])
+            respond view:'notFound'
+        }
+
         def jsonBuilder = new groovy.json.JsonBuilder()
 
         def job = params.job
 
         //def props = ""
-        def params = ""
+        def params = "{\"parameter\": ["
+
+        //{"parameter": [{"name":"FILE_LOCATION_AS_SET_IN_JENKINS", "file":"file0"}]}
 
         /*params.each(){
             if (it.key.startsWith('prop-')) {
@@ -39,14 +65,15 @@ class BuildController {
         } else {
             properties = {}
         }
+        */
 
-        log.debug properties.toString()
-        log.debug versions.toString()*/
+        params = params + "]}"
 
         log.info "building job ${job}"
 
-        def buildUrl = "${session.buildUrl}/job/${job}/buildWithParameters"
-        log.debug "build query set to ${buildUrl}; with JSON:"
+        def buildUrl = "${userSettingInstance.buildUrl}/jobs/${job}/buildWithParameters"
+        log.info "build query set to ${buildUrl}; with JSON:"
+        log.info params
 
 
         /*jsonBuilder (
@@ -65,7 +92,7 @@ class BuildController {
         RestBuilder rest = new RestBuilder()
         def resp
         resp = rest.post(buildUrl) {
-            //auth(session.user.login, session.user.password)
+            auth(userSettingInstance.buildUsername, userSettingInstance.buildToken)
             accept("application/json")
             contentType("application/json")
             //json jsonBuilder.toString()
@@ -78,12 +105,12 @@ class BuildController {
             flash.error = message(code: 'build.error',
                     args: [resp.status, job])
             redirect(controller: "build", action: "view")
+        } else {
+            resp.json instanceof JSONObject
+            flash.message = message(code: 'build.started',
+                    args: [job, resp.json])
+            redirect(controller: "dashboard", action: "view")
         }
-
-        resp.json instanceof JSONObject
-        flash.message = message(code: 'build.started',
-                args: [job, resp.json])
-        redirect(controller: "dashboard", action: "view")
     }
 
 }

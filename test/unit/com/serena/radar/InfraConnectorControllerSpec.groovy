@@ -4,9 +4,9 @@ package com.serena.radar
 import grails.test.mixin.*
 import spock.lang.*
 
-@TestFor(CloudConnectorController)
-@Mock(CloudConnector)
-class CloudConnectorControllerSpec extends Specification {
+@TestFor(InfraConnectorController)
+@Mock(InfraConnector)
+class InfraConnectorControllerSpec extends Specification {
 
     def populateValidParams(params) {
         assert params != null
@@ -37,7 +37,7 @@ class CloudConnectorControllerSpec extends Specification {
         when: "The save action is executed with an invalid instance"
         request.contentType = FORM_CONTENT_TYPE
         request.method = 'POST'
-        def cloudConnector = new CloudConnector()
+        def cloudConnector = new InfraConnector()
         cloudConnector.validate()
         controller.save(cloudConnector)
 
@@ -48,14 +48,14 @@ class CloudConnectorControllerSpec extends Specification {
         when: "The save action is executed with a valid instance"
         response.reset()
         populateValidParams(params)
-        cloudConnector = new CloudConnector(params)
+        cloudConnector = new InfraConnector(params)
 
         controller.save(cloudConnector)
 
         then: "A redirect is issued to the show action"
         response.redirectedUrl == '/cloudConnector/show/1'
         controller.flash.message != null
-        CloudConnector.count() == 1
+        InfraConnector.count() == 1
     }
 
     void "Test that the show action returns the correct model"() {
@@ -67,7 +67,7 @@ class CloudConnectorControllerSpec extends Specification {
 
         when: "A domain instance is passed to the show action"
         populateValidParams(params)
-        def cloudConnector = new CloudConnector(params)
+        def cloudConnector = new InfraConnector(params)
         controller.show(cloudConnector)
 
         then: "A model is populated containing the domain instance"
@@ -83,7 +83,7 @@ class CloudConnectorControllerSpec extends Specification {
 
         when: "A domain instance is passed to the edit action"
         populateValidParams(params)
-        def cloudConnector = new CloudConnector(params)
+        def cloudConnector = new InfraConnector(params)
         controller.edit(cloudConnector)
 
         then: "A model is populated containing the domain instance"
@@ -103,7 +103,7 @@ class CloudConnectorControllerSpec extends Specification {
 
         when: "An invalid domain instance is passed to the update action"
         response.reset()
-        def cloudConnector = new CloudConnector()
+        def cloudConnector = new InfraConnector()
         cloudConnector.validate()
         controller.update(cloudConnector)
 
@@ -114,7 +114,7 @@ class CloudConnectorControllerSpec extends Specification {
         when: "A valid domain instance is passed to the update action"
         response.reset()
         populateValidParams(params)
-        cloudConnector = new CloudConnector(params).save(flush: true)
+        cloudConnector = new InfraConnector(params).save(flush: true)
         controller.update(cloudConnector)
 
         then: "A redirect is issues to the show action"
@@ -135,16 +135,16 @@ class CloudConnectorControllerSpec extends Specification {
         when: "A domain instance is created"
         response.reset()
         populateValidParams(params)
-        def cloudConnector = new CloudConnector(params).save(flush: true)
+        def cloudConnector = new InfraConnector(params).save(flush: true)
 
         then: "It exists"
-        CloudConnector.count() == 1
+        InfraConnector.count() == 1
 
         when: "The domain instance is passed to the delete action"
         controller.delete(cloudConnector)
 
         then: "The instance is deleted"
-        CloudConnector.count() == 0
+        InfraConnector.count() == 0
         response.redirectedUrl == '/cloudConnector/index'
         flash.message != null
     }

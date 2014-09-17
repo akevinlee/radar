@@ -163,7 +163,7 @@
 
         <asset:javascript src="app/radar-deployment.js"/>
         <script>
-            $(document).ready(function () {
+            jQuery(document).ready(function () {
                 var automationSettings = {
                     debug: true,
                     type: "${type}",

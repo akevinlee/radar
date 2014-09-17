@@ -1,12 +1,12 @@
 package com.serena.radar
 
-public enum CloudProvider {
+public enum InfraProvider {
     NONE("None"),
     AMAZON("Amazon EC2")
 
     private final String value
 
-    CloudProvider(String value) {
+    InfraProvider(String value) {
         this.value = value;
     }
 

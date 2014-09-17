@@ -5,60 +5,42 @@ import grails.transaction.Transactional
 @Transactional(readOnly = true)
 class UserSettingController {
 
-    static allowedMethods = [update:['PUT', 'POST']]
+    static allowedMethods = [update: "PUT"]
 
     def index() {
         redirect(action: 'edit')
     }
 
     def edit() {
-        UserSettings userSettingsInstance = UserSettings.findByUsername(session.user.name)
+        UserSetting userSettingInstance = UserSetting.findByUsername(session.user.name)
 
-        if (userSettingsInstance == null) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'Setting.edit', default: 'Settings'), session.user.name])
+        if (userSettingInstance == null) {
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'UserSetting.edit', default: 'Settings'), session.user.name])
             respond view:'notFound'
         } else {
-            respond userSettingsInstance, view:'edit'
+            log.debug("editing user " + userSettingInstance.username)
+            respond userSettingInstance, view:'edit'
         }
-    }
-
-    def validate(UserSettings userSettingsInstance) {
-        if (userSettingsInstance == null) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'Setting.edit', default: 'Settings'), session.user.name])
-            respond view:'notFound'
-            return
-        }
-
-        if (userSettingsInstance.hasErrors()) {
-            respond userSettingsInstance.errors, view:'edit'
-            return
-        }
-
     }
 
     @Transactional
-    def update(UserSettings userSettingsInstance) {
-        if (userSettingsInstance == null) {
-            flash.message = message(code: 'default.not.found.message', args: [message(code: 'Setting.edit', default: 'Settings'), session.user.name])
+    def update(UserSetting userSettingInstance) {
+        if (userSettingInstance == null) {
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'UserSetting.edit', default: 'Settings'), session.user.name])
             respond view:'notFound'
             return
         }
 
-        if (userSettingsInstance.hasErrors()) {
-            respond userSettingsInstance.errors, view:'edit'
+        if (userSettingInstance.hasErrors()) {
+            respond userSettingInstance.errors, view:'edit'
             return
         }
 
-        userSettingsInstance.save flush:true
+        log.debug("saving user settings for " + userSettingInstance.username)
+        userSettingInstance.save flush:true
 
-        log.info userSettingsInstance.buildUrl
-
-        if (userSettingsInstance.buildUrl) session.buildUrl = userSettingsInstance.buildUrl
-        if (userSettingsInstance.buildUsername) session.buildUsername = userSettingsInstance.buildUsername
-        if (userSettingsInstance.buildToken) session.buildToken = userSettingsInstance.buildToken
-        session.autoUrl = userSettingsInstance.autoUrl
-        if (userSettingsInstance.sbmUrl) session.sbmUrl = userSettingsInstance.sbmUrl
-        session.refreshInterval = userSettingsInstance.refreshInterval
+        session.autoUrl = userSettingInstance.autoUrl
+        session.refreshInterval = userSettingInstance.refreshInterval
 
         flash.message = message(code: 'setting.update.success')
 

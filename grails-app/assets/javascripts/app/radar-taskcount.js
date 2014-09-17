@@ -1,17 +1,17 @@
-//= require jquery
 
 var RADAR = RADAR || {};
 
-RADAR.MyWorkItems = {
+RADAR.TaskCount = {
     init: function (options) {
         this.debug = options.debug || false;
+        this.autoUrl = options.autoUrl || "http://localhost:8080/serena_ra";
         this.refreshInterval = parseInt(options.refreshInterval) || 10;
 
         // all REST queries go through proxy
         this.autoPath = RADAR.Util.getBaseURL();
         this.autoReq = RADAR.Util.getBaseAutomationRequest();
 
-        this.autoWorkItemsUrl = this.autoPath + "autoproxy?url=/rest/approval/task/tasksForUserCount";
+        this.autoWorkItemsUrl = this.autoPath + "autoproxy/tasks-for-user-count";
 
         this.countOptions = {
             useEasing : true,
@@ -43,13 +43,13 @@ RADAR.MyWorkItems = {
     },
     _updateCounts: function(el) {
         var self = this;
-        this.$myTasksCount = $('#my-tasks-count');
+        this.$myTasksCount = jQuery('#my-task-count');
         this.autoReq.url = this.autoWorkItemsUrl;
-        $.ajax(this.autoReq).done(function(data) {
-            var workItemCount = data.count;
-            if (self.debug) console.log("Found " + workItemCount + " work items for user");
-            if (workItemCount > 0) {
-                new countUp("my-tasks-count", self.$myTasksCount.text(), workItemCount, 0, 2, 1.5, self.countOptions).start();
+        jQuery.ajax(this.autoReq).done(function(data) {
+            var taskCount = data.count;
+            if (self.debug) console.log("Found " + taskCount + " tasks for user");
+            if (taskCount > 0) {
+                new countUp("my-task-count", self.$myTasksCount.text(), taskCount, 0, 2, 1.5, self.countOptions).start();
             } else {
                 self.$myTasksCount.text("0");
             }

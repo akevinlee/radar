@@ -1,3 +1,5 @@
+<%@ page import="com.serena.radar.BuildProvider; com.serena.radar.UserSetting" %>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -5,6 +7,20 @@
     </head>
     <body>
         <div id="build-dashboard" role="main">
+
+            <g:if test="${flash.message}">
+                <div class="alert alert-success fade in message row" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <p class="text-center">${flash.message}</p>
+                </div>
+            </g:if>
+
+            <g:if test="${flash.error}">
+                <div class="alert alert-danger fade in message row" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <p class="text-center">${flash.error}</p>
+                </div>
+            </g:if>
 
             <h3 class="sub-header">Statistics <small>(last 30 days)</small></h3>
 
@@ -119,7 +135,7 @@
                         {{previousNum nextBuildNumber}} <span class="glyphicon glyphicon-circle-arrow-right"></span>
                 </a></td>
                 <td class="text-left">
-                    <a href="/radar/build/submit?job={{name}}" data-toggle="tooltip"
+                    <a href="/radar/build/index?job={{name}}" data-toggle="tooltip"
                        title="Build Job"
                        class="autoMore small-box-footer">
                         <span class="glyphicon glyphicon-play-circle"></span>
@@ -132,13 +148,16 @@
 
         <asset:javascript src="app/radar-builds.js"/>
         <script>
-            $(document).ready(function () {
+            jQuery(document).ready(function () {
                 var buildSettings = {
                     debug: true,
-                    buildUrl: "${session.buildUrl}",
+                    buildUrl: "${userSettingInstance?.buildUrl}",
                     refreshInterval: ${session.refreshInterval}
                 };
                 RADAR.Builds.init(buildSettings);
+                _.delay(function () {
+                    jQuery(".alert").alert('close');
+                }, 5000);
             });
         </script>
     </body>
