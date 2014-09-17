@@ -81,7 +81,7 @@
             {{/this}}
         </script>
 
-        <asset:javascript src="app/radar-buildjobs.js"/>
+        <asset:javascript src="app/radar-buildjob.js"/>
         <script>
             jQuery(document).ready(function () {
                 var jobSettings = {
