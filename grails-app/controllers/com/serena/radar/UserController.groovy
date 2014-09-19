@@ -12,8 +12,10 @@ class UserController {
     @Transactional
     def login() {
 
-        if (grailsApplication.config.radar.useSSO) {
-            log.info "checking for SSO token"
+        def useSSO = grailsApplication.config.radar.useSSO.toBoolean()
+
+        if (useSSO) {
+            log.debug "checking for SSO token..."
 
             // do we have an SSO token
             if (request.getHeader("ALFSSOAuthNToken") != null) {
@@ -25,7 +27,7 @@ class UserController {
                 // to extract user
                 def samlAssertion = new XmlSlurper().parseText(decodedToken).declareNamespace(saml: 'urn:oasis:names:tc:SAML:1.0:assertion');
                 def ssoUser = samlAssertion.'saml:AuthenticationStatement'.'saml:Subject'.'saml:NameIdentifier'.text();
-                log.info "extracted user ${ssoUser} from SSO token"
+                log.debug "extracted user ${ssoUser} from SSO token"
 
                 // create proxy session user
                 User user = new User(login: ssoUser, name: ssoUser, password: "")
@@ -36,7 +38,7 @@ class UserController {
                 def setting = UserSetting.findByUsername(ssoUser)
                 if (setting == null) {
                     // create them
-                    log.info "user setting for ${ssoUser} does not exist in database, creating..."
+                    log.debug "user setting for ${ssoUser} does not exist in database, creating..."
                     setting = new UserSetting(username: ssoUser,
                             autoUrl: grailsApplication.config.radar.default.autoURL,
                             buildUrl: grailsApplication.config.radar.default.buildURL,
@@ -47,11 +49,11 @@ class UserController {
                 session.autoUrl = setting.autoUrl
                 session.refreshInterval = setting.refreshInterval
 
-                log.info "redirecting to default view..."
+                log.debug "redirecting to default view..."
                 flash.message = message(code: 'login.success', args: [ssoUser])
                 redirect(controller: "dashboard", action: "view")
             } else {
-                log.info "no SSO token found, redirecting to login page..."
+                log.debug "no SSO token found, redirecting to login page..."
             }
         }
 
@@ -72,7 +74,7 @@ class UserController {
             def setting = UserSetting.findByUsername(params.username)
             if (setting == null) {
                 // create them
-                log.info "user setting for ${user} does not exist in database, creating..."
+                log.debug "user setting for ${user} does not exist in database, creating..."
                 setting = new UserSetting(username: params.username, autoUrl: params.url,
                         buildUrl: grailsApplication.config.radar.default.buildURL,
                         refreshInterval: grailsApplication.config.radar.default.refresh)
@@ -81,11 +83,11 @@ class UserController {
             session.autoUrl = setting.autoUrl
             session.refreshInterval = setting.refreshInterval
 
-            log.info "redirecting to default view..."
+            log.debug "redirecting to default view..."
             flash.message = message(code: 'login.success', args: [params.username])
             redirect(controller: "dashboard", action: "view")
         } else {
-            log.info "user has failed authentication, redirecting back to login page..."
+            log.debug "user has failed authentication, redirecting back to login page..."
             flash.message = message(code: 'login.authentication.error', args: [params.username])
             redirect(action: "login")
         }
@@ -93,11 +95,11 @@ class UserController {
 
     def logout() {
         if (session.ALFSSOAuthNToken != null) {
-            log.info "logging out user ${session.user} from SSO"
+            log.debug "logging out user ${session.user} from SSO"
             session.invalidate()
             redirect(uri: "/logout-sso.jsp")
         } else {
-            log.info "logging out user ${session.user}"
+            log.debug "logging out user ${session.user}"
             flash.message = message(code: 'logout.success', args: [session.user.name])
             session.user = null
             redirect(controller: "dashboard", action: "view")

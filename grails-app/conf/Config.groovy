@@ -7,7 +7,7 @@ grails.config.locations = [ "classpath:${appName}-config.properties",
                             "file:${userHome}/.grails/${appName}-config.properties",
                             "file:${userHome}/.grails/${appName}-config.groovy",
                             "file:C:\\ProgramData\\Grails\\${appName}-config.properties",
-                            "file:C:\\ProgramData\\Grails\\c-config.groovy",
+                            "file:C:\\ProgramData\\Grails\\${appName}-config.groovy",
                             "file:/usr/local/grails/${appName}-config.properties",
                             "file:/usr/local/grails/${appName}-config.groovy"]
 
@@ -102,46 +102,51 @@ environments {
         grails.serverURL = "http://devopsme.srnademo.com:8080/radar"
     }
 }
-
-// log4j configuration
 log4j = {
     appenders {
-        console name: "stdout",
+        rollingFile name:"file", maxFileSize:(1024*1024), file:"SerenaRadar.log", maxBackupIndex:10,
                 layout: pattern(conversionPattern: "[%d{yyyy-MM-dd/HH:mm:ss}] %x %-5p %c{2} - %m%n")
         environments {
-            production {
-                rollingFile name: "myAppender", maxFileSize: 1024,
-                        file: "logs/SerenaRadar.log"
+            development {
+                console name:'stdout',
+                    layout: pattern(conversionPattern: "[%d{yyyy-MM-dd/HH:mm:ss}] %x %-5p %c{2} - %m%n")
             }
         }
     }
 
-    root {
-        //…
-    }
+    error  'org.codehaus.groovy.grails.web.servlet',        // controllers
+            'org.codehaus.groovy.grails.web.pages',          // GSP
+            'org.codehaus.groovy.grails.web.sitemesh',       // layouts
+            'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
+            'org.codehaus.groovy.grails.web.mapping',        // URL mapping
+            'org.codehaus.groovy.grails.commons',            // core / classloading
+            'org.codehaus.groovy.grails.plugins',            // plugins
+            'org.codehaus.groovy.grails.orm.hibernate',      // hibernate integration
+            'org.springframework',
+            'org.hibernate',
+            'net.sf.ehcache.hibernate'
 
-    // Set level for all application artifacts
-    info "grails.app.controllers"
-
-    debug  'org.codehaus.groovy.grails.web.servlet',        // controllers
-           'org.codehaus.groovy.grails.web.pages',          // GSP
-           'org.codehaus.groovy.grails.web.sitemesh',       // layouts
-           'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
-           'org.codehaus.groovy.grails.web.mapping',        // URL mapping
-           'org.codehaus.groovy.grails.commons',            // core / classloading
-           'org.codehaus.groovy.grails.plugins',            // plugins
-           'org.codehaus.groovy.grails.orm.hibernate',      // hibernate integration
-           'org.springframework',
-           'org.hibernate',
-           'net.sf.ehcache.hibernate'
+    warn   'org.mortbay.log'
 
     environments {
         development {
-            debug "grails.app.controllers"
+            root {
+                info 'file', 'stdout'
+            }
+            debug 'grails.app'
+
+        }//development
+        test {
+            root {
+                info 'file'
+            }
+            info  'grails.app'
         }
         production {
-            // Override previous setting for 'grails.app.controllers'
-            debug "grails.app.controllers"
+            root {
+                info 'file'
+            }
+            info  'grails.app'
         }
     }
 }

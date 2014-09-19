@@ -4,7 +4,6 @@ import grails.converters.JSON
 import grails.plugins.rest.client.RestBuilder
 import grails.transaction.Transactional
 
-@Transactional(readOnly = true)
 class BuildProxyController {
 
     def get(final String url) {

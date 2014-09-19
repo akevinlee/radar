@@ -2,9 +2,7 @@ package com.serena.radar
 
 import grails.plugins.rest.client.RestBuilder
 import grails.converters.JSON;
-import grails.transaction.Transactional
 
-@Transactional(readOnly = true)
 class AutomationProxyController {
 
     def get(final String url) {
