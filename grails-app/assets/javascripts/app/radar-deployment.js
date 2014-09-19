@@ -13,6 +13,12 @@ RADAR.Deployment = {
         // all REST queries go through proxy
         this.autoPath = RADAR.Util.getBaseURL();
         this.autoReq = RADAR.Util.getBaseAutomationRequest();
+        /*beforeSend: function () {
+         jQuery("#ajax-loader").show();
+         },
+         complete: function () {
+         jQuery("#ajax-loader").hide();
+         },*/
 
         this.autoAppsUrl = this.autoPath + "autoproxy/all-applications";
         this.autoCompsUrl = this.autoPath + "autoproxy/all-components";
@@ -24,8 +30,8 @@ RADAR.Deployment = {
         this.render();
     },
     cacheElements: function () {
-        this.optionsTemplate = Handlebars.compile($('#options-template').html());
-        this.$deployment = $('#app-deployment');
+        this.optionsTemplate = Handlebars.compile(jQuery('#options-template').html());
+        this.$deployment = jQuery('#app-deployment');
         this.$applicationId = this.$deployment.find('#applicationId');
         this.$processId = this.$deployment.find('#processId');
         this.$environmentId = this.$deployment.find('#environmentId');
@@ -55,7 +61,7 @@ RADAR.Deployment = {
         var self = this;
         this.autoReq.url = this.autoAppsUrl;
         this.autoReq.beforeSend =  function(){ self.$applicationId.html(self.loadingHtml) };
-        $.ajax(this.autoReq).done(function(data) {
+        jQuery.ajax(this.autoReq).done(function(data) {
             var numApps = _.size(data);
             if (numApps > 0) {
                 if (self.debug) console.log("Found " + numApps + " applications");
@@ -72,9 +78,9 @@ RADAR.Deployment = {
     },
     appChanged: function (e) {
         var self = this;
-        var $select = $(e.target);
+        var $select = jQuery(e.target);
         var appId = $select.val().trim();
-        var appName = $('#applicationId option:selected').text().trim();
+        var appName = jQuery('#applicationId option:selected').text().trim();
         if (self.debug) console.log("Application changed to " + appName + "/" + appId);
 
         self.$application.val(appName);
@@ -85,7 +91,7 @@ RADAR.Deployment = {
             self.$environmentId.html(self.loadingHtml);
             self.$processId.html(self.loadingHtml)
         };
-        $.ajax(this.autoReq).done(function(data) {
+        jQuery.ajax(this.autoReq).done(function(data) {
             var numEnvs = _.size(data);
             if (numEnvs > 0) {
                 if (self.debug) console.log("Found " + numEnvs + " environments");
@@ -97,7 +103,7 @@ RADAR.Deployment = {
         this.autoReq.url = this.autoPath + "autoproxy?url=" +
             encodeURIComponent("/rest/deploy/application/" + appId +
                 "/executableProcesses");
-        $.ajax(this.autoReq).done(function(data) {
+        jQuery.ajax(this.autoReq).done(function(data) {
             var numProcs = _.size(data);
             if (numProcs > 0) {
                 if (self.debug) console.log("Found " + numProcs + " processes");
@@ -109,9 +115,9 @@ RADAR.Deployment = {
     },
     envChanged: function (e) {
         var self = this;
-        var $select = $(e.target);
+        var $select = jQuery(e.target);
         var envId = $select.val().trim();
-        var envName = $('#environmentId option:selected').text().trim();
+        var envName = jQuery('#environmentId option:selected').text().trim();
         var procId = self.$processId.val();
         var appId = self.$applicationId.val();
         if (self.debug) console.log("Environment changed to " + envName + "/" + envId);
@@ -125,7 +131,7 @@ RADAR.Deployment = {
             this.autoReq.beforeSend = function () {
                 self.$snapshotId.html(self.loadingHtml)
             };
-            $.ajax(this.autoReq).done(function (data) {
+            jQuery.ajax(this.autoReq).done(function (data) {
                 var numSnaps = _.size(data);
                 if (numSnaps > 0) {
                     if (self.debug) console.log("Found " + numSnaps + " snapshots");
@@ -138,15 +144,15 @@ RADAR.Deployment = {
                 encodeURIComponent("/rest/deploy/applicationProcess/" + procId + "/-1");
             this.autoReq.beforeSend =  function(){};
 
-            $.ajax(this.autoReq).then(function(data) {
+            jQuery.ajax(this.autoReq).then(function(data) {
                 var numComps = _.size(data.componentsTakingVersions);
-                $('#versions > tbody').empty();
+                jQuery('#versions > tbody').empty();
                 if (numComps > 0) {
                     if (self.debug) console.log("Found " + numComps + " components");
-                    $.each(data.componentsTakingVersions, function(index, component) {
+                    jQuery.each(data.componentsTakingVersions, function(index, component) {
                         var compId = component.id;
                         var compName = component.name;
-                        $('#versions > tbody:last').append('<tr><td class="name">' + compName + '</td>' +
+                        jQuery('#versions > tbody:last').append('<tr><td class="name">' + compName + '</td>' +
                             '<td id="' + compId + '">' +
                             '<select class="version form-control" id="' + compId + '-selector" name="cver-' + compId + '">' +
                             '<option value="latestVersion/">Latest Version</option>' +
@@ -155,9 +161,9 @@ RADAR.Deployment = {
                         self.autoReq.url = self.autoPath + "autoproxy?url=" +
                             encodeURIComponent("/rest/deploy/environment/" + envId + "/versions/" + compId);
                         self.autoReq.beforeSend =  function(){};
-                        $.ajax(self.autoReq).then(function(data) {
-                            $.each(data, function(index, version) {
-                                $('#' + compId + "-selector").append($('<option>', {
+                        jQuery.ajax(self.autoReq).then(function(data) {
+                            jQuery.each(data, function(index, version) {
+                                jQuery('#' + compId + "-selector").append(jQuery('<option>', {
                                     value: version.id,
                                     text : version.name
                                 }));
@@ -166,28 +172,28 @@ RADAR.Deployment = {
                     });
                 } else {
                     if (self.debug) console.log("Found no components");
-                    $('#versions > tbody:last').append('<tr><td>No components found</td></tr>');
+                    jQuery('#versions > tbody:last').append('<tr><td>No components found</td></tr>');
                 }
             });
         }
     },
     procChanged: function (e) {
         var self = this;
-        var $select = $(e.target);
+        var $select = jQuery(e.target);
         var procId = $select.val().trim();
-        var procName = $('#processId option:selected').text().trim();
+        var procName = jQuery('#processId option:selected').text().trim();
         if (self.debug) console.log("Process changed to " + procName + "/" + procId);
 
         self.$process.val(procName);
         this.autoReq.url = this.autoPath + "autoproxy?url=" +
             encodeURIComponent("/rest/deploy/applicationProcess/" + procId + "/-1");
         this.autoReq.beforeSend =  function(){};
-        $.ajax(this.autoReq).done(function(data) {
+        jQuery.ajax(this.autoReq).done(function(data) {
             var numProps = _.size(data.propDefs);
-            $('#properties > tbody').empty();
+            jQuery('#properties > tbody').empty();
             if (numProps > 0) {
                 if (self.debug) console.log("Found " + numProps + " properties");
-                $.each(data.propDefs, function (index, property) {
+                jQuery.each(data.propDefs, function (index, property) {
                     var propField = "";
                     switch (property.type) {
                         case 'CHECKBOX':
@@ -203,7 +209,7 @@ RADAR.Deployment = {
                             break;
                         case 'SELECT':
                             propField = '<select class="form-control" id="' + property.id + '" name="prop-' + property.name + '">';
-                            $.each(property.allowedValues, function (index, av) {
+                            jQuery.each(property.allowedValues, function (index, av) {
                                 propField += '<option value="' + av.value + '">' + av.label + '</option>';
                             });
                             propField += '</select>';
@@ -212,13 +218,13 @@ RADAR.Deployment = {
                             propField = "unknown property name";
                             break;
                     }
-                    $('#properties > tbody:last').append('<tr><td>' + property.label + '</td>' +
+                    jQuery('#properties > tbody:last').append('<tr><td>' + property.label + '</td>' +
                         '<td class="value">' + propField + '</td>' +
                         '<td class="id" style="display:none">' + property.id + '</td></tr>');
                 });
             } else {
                 if (self.debug) console.log("Found no properties");
-                $('#properties > tbody:last').append('<tr><td class="name">No properties found</td>' +
+                jQuery('#properties > tbody:last').append('<tr><td class="name">No properties found</td>' +
                     '<td class="value"></td>' +
                     '<td class="id" style="display:none"></td></tr>');
             }
@@ -226,9 +232,9 @@ RADAR.Deployment = {
     },
     snapChanged: function (e) {
         var self = this;
-        var $select = $(e.target);
+        var $select = jQuery(e.target);
         var snapId = $select.val().trim();
-        var snapName = $('#snapshotId option:selected').text().trim();
+        var snapName = jQuery('#snapshotId option:selected').text().trim();
         if (self.debug) console.log("Snapshot changed to " + snapName + "/" + snapId);
         self.$snapshot.val(snapName);
     }

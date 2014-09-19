@@ -32,8 +32,8 @@ RADAR.Applications = {
         this.render();
     },
     cacheElements: function () {
-        this.applicationTemplate = Handlebars.compile($('#application-template').html());
-        this.$dashboard = $('#app-dashboard');
+        this.applicationTemplate = Handlebars.compile(jQuery('#application-template').html());
+        this.$dashboard = jQuery('#app-dashboard');
         this.$applications = this.$dashboard.find('#applications');
         this.$applicationRows = this.$applications.find('#application-rows');
         this.$successCount = this.$dashboard.find('#success-count');
@@ -64,12 +64,12 @@ RADAR.Applications = {
     _updateApplications: function(el) {
         var self = this;
         this.autoReq.url = this.autoAppsUrl;
-        $.ajax(this.autoReq).then(function(data) {
+        jQuery.ajax(this.autoReq).then(function(data) {
             var numApps = _.size(data);
             if (numApps > 0) {
                 if (self.debug) console.log("Found " + numApps + " applications");
                 self.$applicationRows.empty().html(self.applicationTemplate(data));
-                $('[data-toggle="tooltip"]').tooltip({'placement': 'top'});
+                jQuery('[data-toggle="tooltip"]').tooltip({'placement': 'top'});
             }
             else
                 if (self.debug) console.log("Found no applications");
@@ -80,13 +80,13 @@ RADAR.Applications = {
         var self = this;
         self.$applicationRows.find("tr").each(function() {
             var thisTr = this;
-            var appId = $(this).attr('id');
+            var appId = jQuery(this).attr('id');
             if (self.debug) console.log("Getting last request for application " + appId)
             this.autoActivityUrl = self.autoPath + "autoproxy?url=" +
                 encodeURIComponent("/rest/deploy/applicationProcessRequest/table?rowsPerPage=1" +
                     "&pageNumber=1&orderField=entry.scheduledDate&sortType=desc&filterFields=application.id" +
                     "&filterValue_application.id=" + appId + "&filterType_application.id=eq&filterClass_application.id=UUID");
-            $.ajax(this.autoActivityUrl).then(function(data) {
+            jQuery.ajax(this.autoActivityUrl).then(function(data) {
                 if (data.totalRecords != 0) {
                     var depReq = data.records[0];
                     var cssClass = 'info';
@@ -113,14 +113,7 @@ RADAR.Applications = {
                             }
                         }
                     }
-                    /*$('#' + appId + "-request").html('<a data-toggle="tooltip" title="Started by '
-                            + depReq.userName + ' (' +
-                            moment(new Date(depReq.submittedTime)).calendar() + ')" ' +
-                            'target="_blank" href="' + self.autoUrl +
-                            '/#applicationProcessRequest/' + depReq.id + '">' +
-                            depReq.applicationProcess.name + '</a>&nbsp;' + icon
-                    ).removeClass().addClass(cssClass);*/
-                    $('#' + appId + "-request").html('<a data-toggle="tooltip" title="Executed process '
+                    jQuery('#' + appId + "-request").html('<a data-toggle="tooltip" title="Executed process '
                             + '(' + depReq.applicationProcess.name + ')" ' +
                             'target="_blank" href="' + self.autoUrl +
                             '/#applicationProcessRequest/' + depReq.id + '">' +
@@ -128,15 +121,15 @@ RADAR.Applications = {
                             ' by ' + depReq.userName + '</a>&nbsp;' + icon
                     ).removeClass().addClass(cssClass);
                 }
-                $('a[data-toggle="tooltip"]').tooltip({'placement': 'top'});
-                $('span[data-toggle="tooltip"]').tooltip({'placement': 'top'});
+                jQuery('a[data-toggle="tooltip"]').tooltip({'placement': 'top'});
+                jQuery('span[data-toggle="tooltip"]').tooltip({'placement': 'top'});
             });
         });
     },
     _updateCounts: function(el) {
         var self = this;
         this.autoReq.url = this.autoDepReportUrl;
-        $.ajax(this.autoReq).done(function(data) {
+        jQuery.ajax(this.autoReq).done(function(data) {
 
             var results = data.items[0];
             var successCount = _.size(_.uniq(_.where(results, { "status": "SUCCESS"}), "applicationRequestId"));

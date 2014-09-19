@@ -21,8 +21,8 @@ RADAR.BuildJob = {
         this.render();
     },
     cacheElements: function () {
-        this.optionsTemplate = Handlebars.compile($('#options-template').html());
-        this.$jobs = $('#build-jobs');
+        this.optionsTemplate = Handlebars.compile(jQuery('#options-template').html());
+        this.$jobs = jQuery('#build-jobs');
         this.$job = this.$jobs.find('#job');
     },
     bindEvents: function () {
@@ -39,7 +39,7 @@ RADAR.BuildJob = {
         var self = this;
         this.buildReq.url = this.buildJobsUrl;
         this.buildReq.beforeSend =  function(){ self.$job.html(self.loadingHtml) };
-        $.ajax(this.buildReq).done(function(data) {
+        jQuery.ajax(this.buildReq).done(function(data) {
             var numJobs = _.size(data.jobs);
             if (numJobs > 0) {
                 if (self.debug) console.log("Found " + numJobs + " jobs");
@@ -56,19 +56,19 @@ RADAR.BuildJob = {
     },
     jobChanged: function (e) {
         var self = this;
-        var $select = $(e.target);
+        var $select = jQuery(e.target);
         var job = $select.val().trim();
         if (self.debug) console.log("Job changed to " + job);
 
         this.buildReq.url = this.basePath + "buildproxy?url=" +
             encodeURIComponent("/job/" + job + "/api/json?tree=property[parameterDefinitions[*]]");
         this.buildReq.beforeSend =  function(){};
-        $.ajax(this.buildReq).done(function(data) {
+        jQuery.ajax(this.buildReq).done(function(data) {
             var numParams = _.size(data.property[0].parameterDefinitions);
-            $('#parameters > tbody').empty();
+            jQuery('#parameters > tbody').empty();
             if (numParams > 0) {
                 if (self.debug) console.log("Found " + numParams + " parameters");
-                $.each(data.property[0].parameterDefinitions, function (index, parameter) {
+                jQuery.each(data.property[0].parameterDefinitions, function (index, parameter) {
                     var paramField = "";
                     var defaultVal = "";
                     if (typeof parameter.defaultParameterValue.value !== "undefined") {
@@ -88,7 +88,7 @@ RADAR.BuildJob = {
                             break;
                         case 'ChoiceParameterDefinition':
                             paramField = '<select id="' + parameter.name + '" name="param-' + parameter.name + '">';
-                            $.each(parameter.choices, function(index, choice) {
+                            jQuery.each(parameter.choices, function(index, choice) {
                                 paramField += '<option value="' + choice + '">' + choice + '</option>';
                             });
                             paramField += '</select>';
@@ -97,13 +97,13 @@ RADAR.BuildJob = {
                             paramField = "unknown property name";
                             break;
                     }
-                    $('#parameters > tbody:last').append('<tr><td>' + parameter.name + '</td>' +
+                    jQuery('#parameters > tbody:last').append('<tr><td>' + parameter.name + '</td>' +
                         '<td class="value">' + paramField + '</td>' +
                         '<td class="id" style="display:none">' + parameter.name + '</td></tr>');
                 });
             } else {
                 if (self.debug) console.log("Found no parameters");
-                $('#parameters > tbody:last').append('<tr><td class="name">No parameters found</td>' +
+                jQuery('#parameters > tbody:last').append('<tr><td class="name">No parameters found</td>' +
                     '<td class="value"></td>' +
                     '<td class="id" style="display:none"></td></tr>');
             }

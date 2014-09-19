@@ -31,8 +31,8 @@ RADAR.Builds = {
         this.render();
     },
     cacheElements: function () {
-        this.buildTemplate = Handlebars.compile($('#build-template').html());
-        this.$dashboard = $('#build-dashboard');
+        this.buildTemplate = Handlebars.compile(jQuery('#build-template').html());
+        this.$dashboard = jQuery('#build-dashboard');
         this.$builds = this.$dashboard.find('#builds');
         this.$buildRows = this.$builds.find('#build-rows');
         this.$successCount = this.$dashboard.find('#success-count');
@@ -63,12 +63,12 @@ RADAR.Builds = {
     _updateBuilds: function(el) {
         var self = this;
         this.buildReq.url = this.buildJobsUrl;
-        $.ajax(this.buildReq).then(function(data) {
+        jQuery.ajax(this.buildReq).then(function(data) {
             var numBuilds = _.size(data.jobs);
             if (numBuilds > 0) {
                 if (self.debug) console.log("Found " + numBuilds + " builds");
                 self.$buildRows.empty().html(self.buildTemplate(data.jobs));
-                $('[data-toggle="tooltip"]').tooltip({'placement': 'top'});
+                jQuery('[data-toggle="tooltip"]').tooltip({'placement': 'top'});
             }
             else
                 if (self.debug) console.log("Found no builds");
@@ -85,7 +85,7 @@ RADAR.Builds = {
                 encodeURIComponent("/rest/deploy/applicationProcessRequest/table?rowsPerPage=1" +
                     "&pageNumber=1&orderField=entry.scheduledDate&sortType=desc&filterFields=application.id" +
                     "&filterValue_application.id=" + appId + "&filterType_application.id=eq&filterClass_application.id=UUID");
-            $.ajax(this.autoActivityUrl).then(function(data) {
+            jQuery.ajax(this.autoActivityUrl).then(function(data) {
                 if (data.totalRecords != 0) {
                     var depReq = data.records[0];
                     var cssClass = 'info';
@@ -119,7 +119,7 @@ RADAR.Builds = {
                             '/#applicationProcessRequest/' + depReq.id + '">' +
                             depReq.applicationProcess.name + '</a>&nbsp;' + icon
                     ).removeClass().addClass(cssClass);*/
-                    $('#' + appId + "-request").html('<a data-toggle="tooltip" title="Executed process '
+                    jQuery('#' + appId + "-request").html('<a data-toggle="tooltip" title="Executed process '
                             + '(' + depReq.applicationProcess.name + ')" ' +
                             'target="_blank" href="' + self.autoUrl +
                             '/#applicationProcessRequest/' + depReq.id + '">' +
@@ -127,15 +127,15 @@ RADAR.Builds = {
                             ' by ' + depReq.userName + '</a>&nbsp;' + icon
                     ).removeClass().addClass(cssClass);
                 }
-                $('a[data-toggle="tooltip"]').tooltip({'placement': 'top'});
-                $('span[data-toggle="tooltip"]').tooltip({'placement': 'top'});
+                jQuery('a[data-toggle="tooltip"]').tooltip({'placement': 'top'});
+                jQuery('span[data-toggle="tooltip"]').tooltip({'placement': 'top'});
             });
         });
     },
     _updateCounts: function(el) {
         var self = this;
         this.buildReq.url = this.autoDepReportUrl;
-        $.ajax(this.buildReq).done(function(data) {
+        jQuery.ajax(this.buildReq).done(function(data) {
 
             var results = data.items[0];
             var successCount = _.size(_.uniq(_.where(results, { "status": "SUCCESS"}), "applicationRequestId"));

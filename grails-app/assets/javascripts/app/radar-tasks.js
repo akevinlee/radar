@@ -25,8 +25,8 @@ RADAR.Tasks = {
         this.render();
     },
     cacheElements: function () {
-        this.taskTemplate = Handlebars.compile($('#task-template').html());
-        this.$dashboard = $('#task-dashboard');
+        this.taskTemplate = Handlebars.compile(jQuery('#task-template').html());
+        this.$dashboard = jQuery('#task-dashboard');
         this.$tasks = this.$dashboard.find('#tasks');
         this.$taskRows = this.$tasks.find('#task-rows');
     },
@@ -49,7 +49,7 @@ RADAR.Tasks = {
     _updateTasks: function(el) {
         var self = this;
         this.autoReq.url = this.autoTasksUrl;
-        $.ajax(this.autoReq).then(function(data) {
+        jQuery.ajax(this.autoReq).then(function(data) {
             var numTasks = _.size(data);
             if (numTasks > 0) {
                 if (self.debug) console.log("Found " + numTasks + " tasks");

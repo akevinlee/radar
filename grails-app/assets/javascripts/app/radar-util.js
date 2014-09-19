@@ -109,12 +109,12 @@ RADAR.Util = {
     getBaseAutomationRequest: function () {
         // default options for SDA rest query
         this.autoReq = {
-            beforeSend: function () {
-                $("#ajaxLoader").show();
+            /*beforeSend: function () {
+                jQuery("#ajax-loader").show();
             },
             complete: function () {
-                $("#ajaxLoader").hide();
-            },
+                jQuery("#ajax-loader").hide();
+            },*/
             cache: false,
             contentType: "application/json",
             dataType: "json",
@@ -127,10 +127,10 @@ RADAR.Util = {
         // default options for Jenkins rest query
         this.buildReq = {
             beforeSend: function () {
-                $("#ajaxLoader").show();
+                jQuery("#ajax-loader").show();
             },
             complete: function () {
-                $("#ajaxLoader").hide();
+                jQuery("#ajax-loader").hide();
             },
             cache: false,
             contentType: "application/json",

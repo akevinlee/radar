@@ -96,11 +96,11 @@ grails.hibernate.osiv.readonly = false
 environments {
     development {
         grails.logging.jul.usebridge = true
-        log4jFileName = "logs/${appName}.log"
+        log4jFileName = "logs/SerenaRadar.log"
     }
     production {
         grails.logging.jul.usebridge = false
-        grails.serverURL = "http://devopsme.srnademo.com:8080"
+        grails.serverURL = "http://devopsme.srnademo.com:8080/radar"
     }
 }
 
@@ -112,7 +112,7 @@ log4j = {
         environments {
             production {
                 rollingFile name: "myAppender", maxFileSize: 1024,
-                        file: "logs/${appName}.log"
+                        file: "logs/SerenaRadar.log"
             }
         }
     }

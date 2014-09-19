@@ -32,8 +32,8 @@ RADAR.Resources = {
         this.render();
     },
     cacheElements: function () {
-        this.resourceTemplate = Handlebars.compile($('#resource-template').html());
-        this.$dashboard = $('#app-dashboard');
+        this.resourceTemplate = Handlebars.compile(jQuery('#resource-template').html());
+        this.$dashboard = jQuery('#app-dashboard');
         this.$resources = this.$dashboard.find('#resources');
         this.$resourceRows = this.$resources.find('#resource-rows');
         this.$onResCount = this.$dashboard.find('#online-resource-count');
@@ -64,7 +64,7 @@ RADAR.Resources = {
     _updateResources: function(el) {
         var self = this;
         this.autoReq.url = this.autoResourcesUrl;
-        $.ajax(this.autoReq).then(function(data) {
+        jQuery.ajax(this.autoReq).then(function(data) {
             var numResources = _.size(data);
             if (numResources > 0) {
                 if (self.debug) console.log("Found " + numResources + " resources");
@@ -78,7 +78,7 @@ RADAR.Resources = {
     _updateActivity: function(el) {
         var self = this;
         this.autoReq.url = this.autoActivityUrl;
-        $.ajax(this.autoReq).done(function(data) {
+        jQuery.ajax(this.autoReq).done(function(data) {
             if (self.debug) console.log("Found " + _.size(data) + " active deployments");
             /*self.$activityRows.empty().html(self.activityTemplate(data));
             self.$activityRows.find('a.autoMore').on('click', function(e) {
@@ -91,7 +91,7 @@ RADAR.Resources = {
     _updateCounts: function(el) {
         var self = this;
         this.autoReq.url = this.autoResourcesUrl;
-        $.ajax(this.autoReq).then(function(data) {
+        jQuery.ajax(this.autoReq).then(function(data) {
             var resStats = _.chain(data).sortBy("status").countBy("status").value();
             if (self.debug) console.log("Found " + resStats.ONLINE + " online / " + resStats.OFFLINE + " offline resources");
             if (resStats.ONLINE > 0)
@@ -106,7 +106,7 @@ RADAR.Resources = {
 
 
         this.autoReq.url = this.autoDepReportUrl;
-        $.ajax(this.autoReq).done(function(data) {
+        jQuery.ajax(this.autoReq).done(function(data) {
 
             var results = data.items[0];
             var runningCount = _.size(_.uniq(_.where(results, { "status": "RUNNING"}), "applicationRequestId"));

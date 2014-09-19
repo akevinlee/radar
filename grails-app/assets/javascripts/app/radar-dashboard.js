@@ -40,8 +40,8 @@ RADAR.Dashboard = {
         this.render();
     },
     cacheElements: function () {
-        this.activityTemplate = Handlebars.compile($('#activity-template').html());
-        this.$dashboard = $('#dashboard');
+        this.activityTemplate = Handlebars.compile(jQuery('#activity-template').html());
+        this.$dashboard = jQuery('#dashboard');
         this.$stats = this.$dashboard.find('#stats');
         this.$appStats = this.$stats.find('#app-stats');
         this.$compStats = this.$stats.find('#comp-stats');
@@ -89,7 +89,7 @@ RADAR.Dashboard = {
         this.$appStats.toggleClass('hidden'); this.$resStats.toggleClass('hidden');
         if (this.$appStats.hasClass("hidden")) {
             this.autoReq.url = this.autoCompsUrl;
-            $.ajax(this.autoReq).then(function(data) {
+            jQuery.ajax(this.autoReq).then(function(data) {
                 var numComps = _.size(data);
                 if (self.debug) console.log("Found " + numComps + " components");
                 if (numComps > 0)
@@ -99,7 +99,7 @@ RADAR.Dashboard = {
             });
         } else {
             this.autoReq.url = this.autoAppsUrl;
-            $.ajax(this.autoReq).then(function(data) {
+            jQuery.ajax(this.autoReq).then(function(data) {
                 var numApps = _.size(data);
                 if (self.debug) console.log("Found " + numApps + " applications");
                 if (numApps > 0)
@@ -109,7 +109,7 @@ RADAR.Dashboard = {
             });
         }
         this.autoReq.url = this.autoEnvsUrl;
-        $.ajax(this.autoReq).then(function(data) {
+        jQuery.ajax(this.autoReq).then(function(data) {
             // TODO: show application environments
             var numGlobEnvs = _.size(data);
             if (self.debug) console.log("Found " + numGlobEnvs + " global environments");
@@ -120,7 +120,7 @@ RADAR.Dashboard = {
         });
         if (this.$resStats.hasClass("hidden")) {
             this.autoReq.url = self.autoAgentsUrl;
-            $.ajax(this.autoReq).then(function(data) {
+            jQuery.ajax(this.autoReq).then(function(data) {
                 var agentStats = _.chain(data).sortBy("status").countBy("status").value();
                 if (self.debug) console.log("Found " + agentStats.ONLINE + " online / " + agentStats.OFFLINE + " offline agents");
                 if (agentStats.ONLINE > 0)
@@ -134,7 +134,7 @@ RADAR.Dashboard = {
             });
         } else {
             this.autoReq.url = this.autoResourcesUrl;
-            $.ajax(this.autoReq).then(function(data) {
+            jQuery.ajax(this.autoReq).then(function(data) {
                 var resStats = _.chain(data).sortBy("status").countBy("status").value();
                 if (self.debug) console.log("Found " + resStats.ONLINE + " online / " + resStats.OFFLINE + " offline resources");
                 if (resStats.ONLINE > 0)
@@ -151,16 +151,16 @@ RADAR.Dashboard = {
     _updateActivity: function(el) {
         var self = this;
         this.autoReq.url = this.autoActivityUrl;
-        $.ajax(this.autoReq).done(function(data) {
+        jQuery.ajax(this.autoReq).done(function(data) {
             if (self.debug) console.log("Found " + _.size(data) + " active deployments");
             self.$activityRows.empty().html(self.activityTemplate(data));
-            $('[data-toggle="tooltip"]').tooltip({'placement': 'top'});
+            jQuery('[data-toggle="tooltip"]').tooltip({'placement': 'top'});
         });
     },
     _updateStatus: function(el) {
         var self = this;
         this.autoReq.url = this.autoDepReportUrl;
-        $.ajax(this.autoReq).done(function(data) {
+        jQuery.ajax(this.autoReq).done(function(data) {
 
             var results = data.items[0];
             var successData = _.uniq(_.where(results, { "status": "SUCCESS"}), "applicationRequestId");
@@ -223,14 +223,14 @@ RADAR.Dashboard = {
                 var appFailureData = [];
                 // extract application success and failure counts
                 count = 0;
-                $.each(appSuccess, function(i, val) {
+                jQuery.each(appSuccess, function(i, val) {
                     if (count++ < self.maxApps) {
                         if (!_.contains(appCategories, i)) appCategories.push(i);
                         appSuccessData.push(val);
                     }
                 });
                 count = 0;
-                $.each(appFailure, function(i, val) {
+                jQuery.each(appFailure, function(i, val) {
                     if (count++ < self.maxApps) {
                         if (!_.contains(appCategories, i)) appCategories.push(i);
                         appFailureData.push(val);
@@ -251,14 +251,14 @@ RADAR.Dashboard = {
                 var userFailureData = [];
                 count = 0;
                 // extract user success and failure counts
-                $.each(userSuccess, function(i, val) {
+                jQuery.each(userSuccess, function(i, val) {
                     if (count++ < self.maxUsers) {
                         if (!_.contains(userCategories, i)) userCategories.push(i);
                         userSuccessData.push(val);
                     }
                 });
                 count = 0;
-                $.each(userFailure, function(i, val) {
+                jQuery.each(userFailure, function(i, val) {
                     if (count++ < self.maxUsers) {
                         if (!_.contains(userCategories, i)) userCategories.push(i);
                         userFailureData.push(val);
@@ -283,13 +283,13 @@ RADAR.Dashboard = {
         });
     },
     _drawBarChart: function(el, title, subTitle, categories, data) {
-        var chart = $(el).highcharts();
+        var chart = jQuery(el).highcharts();
         // do we need to update the chart
         if (chart != null) {
             if (self.debug) console.log("Updating chart " + title);
-            $(el).empty(); // clear element
+            jQuery(el).empty(); // clear element
         }
-        $(el).highcharts({
+        jQuery(el).highcharts({
             chart: {
                 type: 'bar',
                 animation: {
@@ -348,13 +348,13 @@ RADAR.Dashboard = {
         });
     },
     _drawGauge: function(el, title, name, count, max, color) {
-        var chart = $(el).highcharts();
+        var chart = jQuery(el).highcharts();
         // do we need to update the chart
         if (chart != null) {
             if (self.debug) console.log("Updating chart " + title);
-            $(el).empty(); // clear element
+            jQuery(el).empty(); // clear element
         }
-        $(el).highcharts({
+        jQuery(el).highcharts({
             chart: {
                 type: 'gauge',
                 plotBackgroundColor: null,
