@@ -85,10 +85,10 @@
                     <div id="resource-stats" class="hidden small-box bg-red">
                         <div class="inner">
                             <h3>
-                                <span id="online-resource-count">0</span> / <span id="offline-resource-count" class="bg-white text-red">0</span>
+                                <span id="online-resource-count">0</span> / <span id="online-connected-count">0</span> / <span id="offline-resource-count" class="bg-white text-red">0</span>
                             </h3>
                             <p>
-                                Online / <span class="bg-white text-red">Offline</span> Resources
+                                Online / Connected / <span class="bg-white text-red">Offline</span> Resources
                             </p>
                         </div>
                         <div class="icon">
@@ -101,10 +101,10 @@
                     <div id="agent-stats" class="small-box bg-maroon">
                         <div class="inner">
                             <h3>
-                                <span id="online-agent-count">0</span> / <span id="offline-agent-count" class="bg-white text-red">0</span>
+                                <span id="online-agent-count">0</span> / <span id="connected-agent-count">0</span> / <span id="offline-agent-count" class="bg-white text-red">0</span>
                             </h3>
                             <p>
-                                Online / <span class="bg-white text-red">Offline</span> Agents
+                                Online / Connected / <span class="bg-white text-red">Offline</span> Agents
                             </p>
                         </div>
                         <div class="icon">

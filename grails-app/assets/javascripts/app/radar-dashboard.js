@@ -51,8 +51,10 @@ RADAR.Dashboard = {
         this.$compCount = this.$compStats.find('#comp-count');
         this.$envCount = this.$stats.find('#env-count');
         this.$onResCount = this.$stats.find('#online-resource-count');
+        this.$connResCount = this.$stats.find('#connected-resource-count');
         this.$offResCount = this.$stats.find('#offline-resource-count');
         this.$onAgentCount = this.$stats.find('#online-agent-count');
+        this.$connAgentCount = this.$stats.find('#connected-agent-count');
         this.$offAgentCount = this.$stats.find('#offline-agent-count');
         this.$approvalCount = this.$stats.find('#approval-count');
         this.$rejectedCount = this.$stats.find('#rejected-count');
@@ -127,6 +129,10 @@ RADAR.Dashboard = {
                     new countUp("online-agent-count", self.$onAgentCount.text(), agentStats.ONLINE, 0, 2, 1.5, self.countOptions).start();
                 else
                     self.$onAgentCount.text("0");
+                if (agentStats.CONNECTED > 0)
+                    new countUp("connected-agent-count", self.$connAgentCount.text(), agentStats.CONNECTED, 0, 2, 1.5, self.countOptions).start();
+                else
+                    self.$connAgentCount.text("0");
                 if (agentStats.OFFLINE > 0)
                     new countUp("offline-agent-count", self.$offAgentCount.text(), agentStats.OFFLINE, 0, 2, 1.5, self.countOptions).start();
                 else
@@ -136,11 +142,16 @@ RADAR.Dashboard = {
             this.autoReq.url = this.autoResourcesUrl;
             jQuery.ajax(this.autoReq).then(function(data) {
                 var resStats = _.chain(data).sortBy("status").countBy("status").value();
-                if (self.debug) console.log("Found " + resStats.ONLINE + " online / " + resStats.OFFLINE + " offline resources");
+                if (self.debug) console.log("Found " + resStats.ONLINE + " online / " + resStats.CONNECTED + " connected / " +
+                    resStats.OFFLINE + " offline resources");
                 if (resStats.ONLINE > 0)
                     new countUp("online-resource-count", self.$onResCount.text(), resStats.ONLINE, 0, 2, 1.5, self.countOptions).start();
                 else
                     self.$onResCount.text("0");
+                if (resStats.CONNECTED > 0)
+                    new countUp("connected-resource-count", self.$connResCount.text(), resStats.CONNECTED, 0, 2, 1.5, self.countOptions).start();
+                else
+                    self.$connResCount.text("0");
                 if (resStats.OFFLINE > 0)
                     new countUp("offline-resource-count", self.$offResCount.text(), resStats.OFFLINE, 0, 2, 1.5, self.countOptions).start();
                 else

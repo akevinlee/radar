@@ -119,8 +119,10 @@ RADAR.Applications = {
                             }
                         }
                     }
-                    jQuery('#' + appId + "-request").html('<a data-toggle="tooltip" title="Executed process '
-                            + depReq.applicationProcess.name +
+                    jQuery('#' + appId + "-request").html('<a data-toggle="tooltip" title="' +
+                            depReq.applicationProcess.name + " " + depReq.application.name + " " +
+                            (depReq.snapshot != undefined ? depReq.snapshot.name : "") +
+                            " to " + " " + depReq.environment.name + '"' +
                             'target="_blank" href="' + self.autoUrl +
                             '/#applicationProcessRequest/' + depReq.id + '">' +
                             moment(new Date(depReq.submittedTime)).calendar() +
