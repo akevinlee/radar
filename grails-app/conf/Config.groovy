@@ -96,7 +96,6 @@ grails.hibernate.osiv.readonly = false
 environments {
     development {
         grails.logging.jul.usebridge = true
-        log4jFileName = "logs/SerenaRadar.log"
     }
     production {
         grails.logging.jul.usebridge = false
@@ -124,7 +123,7 @@ log4j = {
     // Set level for all application artifacts
     info "grails.app.controllers"
 
-    error  'org.codehaus.groovy.grails.web.servlet',        // controllers
+    debug  'org.codehaus.groovy.grails.web.servlet',        // controllers
            'org.codehaus.groovy.grails.web.pages',          // GSP
            'org.codehaus.groovy.grails.web.sitemesh',       // layouts
            'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
@@ -142,7 +141,7 @@ log4j = {
         }
         production {
             // Override previous setting for 'grails.app.controllers'
-            error "grails.app.controllers"
+            debug "grails.app.controllers"
         }
     }
 }
