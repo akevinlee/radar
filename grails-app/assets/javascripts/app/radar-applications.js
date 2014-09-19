@@ -42,7 +42,7 @@ RADAR.Applications = {
         this.$scheduledCount = this.$dashboard.find('#scheduled-count');
     },
     render: function (el) {
-        this._updateApplications(el);
+        //this._updateApplications(el);
         this._updateActivity(el);
         this._updateCounts(el);
         this.update();

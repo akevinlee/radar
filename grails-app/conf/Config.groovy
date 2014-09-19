@@ -135,7 +135,7 @@ log4j = {
             }
             debug 'grails.app'
 
-        }//development
+        }
         test {
             root {
                 info 'file'

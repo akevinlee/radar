@@ -4,7 +4,7 @@
         <meta name="layout" content="main"/>
     </head>
     <body>
-        <div id="app-dashboard" role="main">
+        <div id="resource-dashboard" role="main">
 
             <h3 class="sub-header">Statistics</h3>
 
@@ -92,7 +92,7 @@
                         <th>Description</th>
                         <th>Status</th>
                         <th>Last Request</th>
-                        <th></th>
+                        <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody id="resource-rows">
@@ -105,13 +105,26 @@
             {{#this}}
             <tr id="{{id}}">
                 {{#compare active true}}
-                <td>{{name}}</td>
+            <td>
+                <a data-toggle="tooltip" title="Drill down to resource in Serena DA"
+                   class="autoMore small-box-footer" target="_blank" href="${session.autoUrl}/#resource/{{id}}">
+                    {{name}} <span class="glyphicon glyphicon-circle-arrow-right"></span>
+                </a>
+            </td>
                 <td>{{description}}</td>
                 <td class="{{getStatus status}}">{{status}}</td>
                 <td id="{{id}}-request"></td>
-                <td>
-                    <a class="autoMore small-box-footer" href="${session.autoUrl}/#resource/{{id}}">
-                        More info <span class="glyphicon glyphicon-circle-arrow-right"></span>
+                <td class="text-left">
+                    <a href="/radar/deploy/process?resId={{id}}" data-toggle="tooltip"
+                       title="Run process on resource"
+                       class="autoMore small-box-footer">
+                        <span class="glyphicon glyphicon-play-circle"></span>
+                    </a>
+                    &nbsp;
+                    <a target="_blank" href="${session.autoUrl}/#resource/{{id}}/inventory" data-toggle="tooltip"
+                       title="Show resource inventory"
+                       class="autoMore small-box-footer">
+                        <span class="glyphicon glyphicon-book"></span>
                     </a>
                 </td>
                 {{/compare}}

@@ -17,7 +17,7 @@ class AutomationProxyController {
             render(controller: "error", view: "serverError")
         }
 
-        log.info "Automation request = ${session.autoUrl}${restQuery}"
+        log.debug "Automation request = ${session.autoUrl}${restQuery}"
 
         RestBuilder rest = new RestBuilder()
         def resp

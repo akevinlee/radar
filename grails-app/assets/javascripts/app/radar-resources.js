@@ -33,7 +33,7 @@ RADAR.Resources = {
     },
     cacheElements: function () {
         this.resourceTemplate = Handlebars.compile(jQuery('#resource-template').html());
-        this.$dashboard = jQuery('#app-dashboard');
+        this.$dashboard = jQuery('#resource-dashboard');
         this.$resources = this.$dashboard.find('#resources');
         this.$resourceRows = this.$resources.find('#resource-rows');
         this.$onResCount = this.$dashboard.find('#online-resource-count');
@@ -42,16 +42,16 @@ RADAR.Resources = {
         this.$scheduledCount = this.$dashboard.find('#scheduled-count');
     },
     render: function (el) {
-        this._updateResources(el);
+        //this._updateResources(el);
         this._updateActivity(el);
         this._updateCounts(el);
         this.update();
     },
     update: function (el) {
         var self = this;
+        self._updateResources(self.el); // resources only on load
         (function resourcesUpdate(){
             setTimeout(function(){
-                self._updateResources(self.el);
                 self._updateActivity(self.el);
                 self._updateCounts(self.el);
                 resourcesUpdate();
@@ -69,6 +69,7 @@ RADAR.Resources = {
             if (numResources > 0) {
                 if (self.debug) console.log("Found " + numResources + " resources");
                 self.$resourceRows.empty().html(self.resourceTemplate(data));
+                jQuery('[data-toggle="tooltip"]').tooltip({'placement': 'top'});
             }
             else
                 if (self.debug) console.log("Found no resources");
@@ -77,15 +78,54 @@ RADAR.Resources = {
     },
     _updateActivity: function(el) {
         var self = this;
-        this.autoReq.url = this.autoActivityUrl;
-        jQuery.ajax(this.autoReq).done(function(data) {
-            if (self.debug) console.log("Found " + _.size(data) + " active deployments");
-            /*self.$activityRows.empty().html(self.activityTemplate(data));
-            self.$activityRows.find('a.autoMore').on('click', function(e) {
-                e.preventDefault();
-                var url = $(this).attr('href');
-                $(".autoContent").html('<iframe width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency="true" src="'+url+'"></iframe>');
-            });*/
+        self.$resourceRows.find("tr").each(function() {
+            var thisTr = this;
+            var resId = jQuery(this).attr('id');
+            if (self.debug) console.log("Getting last request for resource " + resId)
+            this.autoActivityUrl = self.autoPath + "autoproxy?url=" +
+                encodeURIComponent("/rest/deploy/componentProcessRequest/table?rowsPerPage=1" +
+                    "&pageNumber=1&orderField=entry.scheduledDate&sortType=desc&filterFields=resource.id" +
+                    "&filterValue_resource.id=" + resId + "&filterType_resource.id=eq&filterClass_resource.id=UUID");
+            jQuery.ajax(this.autoActivityUrl).then(function(data) {
+                if (data.totalRecords != 0) {
+                    var depReq = data.records[0];
+                    var cssClass = 'info';
+                    var icon = '';
+                    if (depReq.entry.fired == false) {
+                        cssClass = 'warning'
+                        icon = '<span title="Deployment scheduled" data-toggle="tooltip" class="glyphicon glyphicon-time"></span>'
+                    } else {
+                        if (depReq.rootTrace.state != undefined) {
+                            if (depReq.rootTrace.state == "EXECUTING") {
+                                cssClass = 'active';
+                                icon = '<span title="Deployment running" data-toggle="tooltip" class="glyphicon glyphicon-refresh icon-refresh-animate"></span>';
+                                // move row to the top
+                                self.$resourceRows.find("tr:first").parents('tbody').prepend(thisTr);
+                            } else {
+                                switch (depReq.rootTrace.result) {
+                                    case "SUCCEEDED":
+                                        cssClass = 'success';
+                                        break;
+                                    case "FAULTED":
+                                        cssClass = 'danger';
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                    jQuery('#' + resId + "-request").html('<a data-toggle="tooltip" title="' +
+                            depReq.componentProcess.name + " " + depReq.component.name + " " +
+                            depReq.version.name + " to " + " " + depReq.environment.name + '"' +
+                            'target="_blank" href="' + self.autoUrl +
+                            '/#componentProcessRequest/' + depReq.id + '">' +
+                            moment(new Date(depReq.submittedTime)).calendar() +
+                            ' by ' + depReq.userName +
+                            '</a>&nbsp;' + icon
+                    ).removeClass().addClass(cssClass);
+                }
+                jQuery('a[data-toggle="tooltip"]').tooltip({'placement': 'top'});
+                jQuery('span[data-toggle="tooltip"]').tooltip({'placement': 'top'});
+            });
         });
     },
     _updateCounts: function(el) {
