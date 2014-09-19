@@ -82,7 +82,7 @@
                         </div>
 
                         <div class="form-group">
-                            <div class="col-md-7">
+                            <div class="col-md-offset-2 col-md-7">
                                 <div class="panel panel-default">
                                     <!-- Default panel contents -->
                                     <div class="panel-heading">Properties</div>
@@ -124,7 +124,7 @@
                         <g:elseif test="${type == 'version'}">
 
                             <div class="form-group">
-                                <div class="col-md-7">
+                                <div class="col-md-offset-2 col-md-7">
                                     <div class="panel panel-default">
                                         <div class="panel-heading">Component Versions</div>
                                         <table id="versions" class="table table-striped table-bordered">

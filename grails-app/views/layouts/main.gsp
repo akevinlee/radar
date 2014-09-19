@@ -75,14 +75,14 @@
 
                                     <ul class="dropdown-menu" role="menu">
                                         <li>
-                                            <a href="${createLink(action:"index", controller:"build")}">Build</a>
-                                        </li>
-                                        <li class="divider"></li>
-                                        <li>
                                             <a href="${createLink(action:"snapshot", controller:"deploy")}">Deployment (snapshot)</a>
                                         </li>
                                         <li>
                                             <a href="${createLink(action:"version", controller:"deploy")}">Deployment (versions)</a>
+                                        </li>
+                                        <li class="divider"></li>
+                                        <li>
+                                            <a href="${createLink(action:"index", controller:"build")}">Build Job</a>
                                         </li>
                                         <span id="configured-processes">
                                         </span>

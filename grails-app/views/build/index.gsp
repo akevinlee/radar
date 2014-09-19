@@ -45,7 +45,7 @@
                         </div>
 
                         <div class="form-group">
-                            <div class="col-md-7">
+                            <div class="col-md-offset-2 col-md-7">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">Parameters</div>
                                     <table id="parameters" class="table table-striped">

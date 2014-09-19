@@ -91,11 +91,16 @@ RADAR.Resources = {
                     var depReq = data.records[0];
                     var cssClass = 'info';
                     var icon = '';
+                    // a scheduled request
                     if (depReq.entry.fired == false) {
                         cssClass = 'warning'
-                        icon = '<span title="Deployment scheduled" data-toggle="tooltip" class="glyphicon glyphicon-time"></span>'
-                    } else {
-                        if (depReq.rootTrace.state != undefined) {
+                        icon = '<span title="Deployment scheduled" data-toggle="tooltip" class="glyphicon glyphicon-time"></span>';
+                    // an approval
+                    } else if (depReq.approval != undefined) {
+                        if (depReq.approval.finished == false) {
+                            cssClass = 'warning'
+                            icon = '<span title="Waiting approval" data-toggle="tooltip" class="glyphicon glyphicon-user"></span>'
+                        } else if (depReq.rootTrace.state != undefined) {
                             if (depReq.rootTrace.state == "EXECUTING") {
                                 cssClass = 'active';
                                 icon = '<span title="Deployment running" data-toggle="tooltip" class="glyphicon glyphicon-refresh icon-refresh-animate"></span>';

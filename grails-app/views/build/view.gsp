@@ -130,6 +130,7 @@
                 <td>{{prettifyBool buildable}}</td>
                 <td id="{{name}}-request">
                     <a href="{{url}}{{previousNum nextBuildNumber}}" data-toggle="tooltip"
+                       target="_blank"
                        title="Drill down to last build"
                        class="autoMore small-box-footer">
                         {{previousNum nextBuildNumber}} <span class="glyphicon glyphicon-circle-arrow-right"></span>
@@ -139,6 +140,13 @@
                        title="Build Job"
                        class="autoMore small-box-footer">
                         <span class="glyphicon glyphicon-play-circle"></span>
+                    </a>
+                    &nbsp;
+                    <a href="${userSettingInstance?.buildUrl}/job/{{name}}/configure" data-toggle="tooltip"
+                        target="_blank"
+                        title="Configure Job"
+                        class="autoMore small-box-footer">
+                        <span class="glyphicon glyphicon-pencil"></span>
                     </a>
                     &nbsp;
                 </td>

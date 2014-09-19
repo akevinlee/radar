@@ -91,11 +91,17 @@ RADAR.Applications = {
                     var depReq = data.records[0];
                     var cssClass = 'info';
                     var icon = '';
+                    // a scheduled request
                     if (depReq.entry.fired == false) {
                         cssClass = 'warning'
                         icon = '<span title="Deployment scheduled" data-toggle="tooltip" class="glyphicon glyphicon-time"></span>'
-                    } else {
-                        if (depReq.rootTrace.state != undefined) {
+                    }
+                    // an approval
+                    else if (depReq.approval != undefined) {
+                        if (depReq.approval.finished == false) {
+                            cssClass = 'warning'
+                            icon = '<span title="Waiting approval" data-toggle="tooltip" class="glyphicon glyphicon-user"></span>'
+                        } else if (depReq.rootTrace.state != undefined) {
                             if (depReq.rootTrace.state == "EXECUTING") {
                                 cssClass = 'active';
                                 icon = '<span title="Deployment running" data-toggle="tooltip" class="glyphicon glyphicon-refresh icon-refresh-animate"></span>';
@@ -114,7 +120,7 @@ RADAR.Applications = {
                         }
                     }
                     jQuery('#' + appId + "-request").html('<a data-toggle="tooltip" title="Executed process '
-                            + '(' + depReq.applicationProcess.name + ')" ' +
+                            + depReq.applicationProcess.name +
                             'target="_blank" href="' + self.autoUrl +
                             '/#applicationProcessRequest/' + depReq.id + '">' +
                             moment(new Date(depReq.submittedTime)).calendar() +
