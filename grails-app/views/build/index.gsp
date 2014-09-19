@@ -45,15 +45,15 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="parameters" class="col-md-2 control-label">
-                                <g:message code="build.parameters.label" default="Parameters"/>
-                            </label>
                             <div class="col-md-7">
-                                <table id="parameters" class="table table-striped table-bordered">
-                                    <tbody>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Parameters</div>
+                                    <table id="parameters" class="table table-striped">
+                                        <tbody>
                                         <tr><td>- select a job -</td></tr>
-                                    </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
 

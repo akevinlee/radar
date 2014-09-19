@@ -82,15 +82,16 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="properties" class="col-md-2 control-label">
-                                <g:message code="deployment.properties.label" default="Properties"/>
-                            </label>
                             <div class="col-md-7">
-                                <table id="properties" class="table table-striped table-bordered">
-                                    <tbody>
-                                        <tr><td>- select a process -</td></tr>
-                                    </tbody>
-                                </table>
+                                <div class="panel panel-default">
+                                    <!-- Default panel contents -->
+                                    <div class="panel-heading">Properties</div>
+                                    <table id="properties" class="table table-striped table-bordered">
+                                        <tbody>
+                                            <tr><td>- select a process -</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
 
@@ -123,15 +124,15 @@
                         <g:elseif test="${type == 'version'}">
 
                             <div class="form-group">
-                                <label for="versions" class="col-md-2 control-label">
-                                    <g:message code="deployment.versions.label" default="Versions"/>
-                                </label>
                                 <div class="col-md-7">
-                                    <table id="versions" class="table table-striped table-bordered">
-                                        <tbody>
-                                            <tr><td>- select an environment -</td></tr>
-                                        </tbody>
-                                    </table>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">Component Versions</div>
+                                        <table id="versions" class="table table-striped table-bordered">
+                                            <tbody>
+                                                <tr><td>- select an environment -</td></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
 
