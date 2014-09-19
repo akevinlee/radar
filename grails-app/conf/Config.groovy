@@ -7,9 +7,9 @@ grails.config.locations = [ "classpath:${appName}-config.properties",
                             "file:${userHome}/.grails/${appName}-config.properties",
                             "file:${userHome}/.grails/${appName}-config.groovy",
                             "file:C:\\ProgramData\\Grails\\${appName}-config.properties",
-                            "file:C:\\ProgramData\\Grails\\${appName}-config.groovy",
-                            "file:/opt/grails/${appName}-config.properties",
-                            "file:/opt/grails/${appName}-config.groovy"]
+                            "file:C:\\ProgramData\\Grails\\c-config.groovy",
+                            "file:/usr/local/grails/${appName}-config.properties",
+                            "file:/usr/local/grails/${appName}-config.groovy"]
 
 if (System.properties["${appName}.config.location"]) {
     grails.config.locations << "file:" + System.properties["${appName}.config.location"]
@@ -96,11 +96,11 @@ grails.hibernate.osiv.readonly = false
 environments {
     development {
         grails.logging.jul.usebridge = true
-        log4jFileName = "logs/SerenaRadar.log"
+        log4jFileName = "logs/${appName}.log"
     }
     production {
         grails.logging.jul.usebridge = false
-        // TODO: grails.serverURL = "http://www.changeme.com"
+        grails.serverURL = "http://devopsme.srnademo.com:8080"
     }
 }
 
@@ -112,7 +112,7 @@ log4j = {
         environments {
             production {
                 rollingFile name: "myAppender", maxFileSize: 1024,
-                        file: "logs/SerenaRadar.log"
+                        file: "logs/${appName}.log"
             }
         }
     }
@@ -137,6 +137,9 @@ log4j = {
            'net.sf.ehcache.hibernate'
 
     environments {
+        development {
+            debug "grails.app.controllers"
+        }
         production {
             // Override previous setting for 'grails.app.controllers'
             error "grails.app.controllers"
@@ -146,7 +149,3 @@ log4j = {
 
 grails.plugins.twitterbootstrap.fixtaglib = true
 grails.plugins.twitterbootstrap.defaultBundle = 'bundle_bootstrap'
-
-tomcat.deploy.username="depmgr"
-tomcat.deploy.password="depmgr"
-tomcat.deploy.url="http://localhost:8080/manager"

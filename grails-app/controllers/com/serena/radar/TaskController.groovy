@@ -49,7 +49,6 @@ class TaskController {
             }
         } else {
             resp = rest.put(depUrl) {
-                header 'DirectSsoInteraction', 'true'
                 auth(session.user.login, session.user.password)
                 accept("application/json")
                 contentType("application/json")

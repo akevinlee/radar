@@ -21,6 +21,7 @@ class BuildProxyController {
 
         UserSetting userSettingInstance = UserSetting.findByUsername(session.user.name)
         def buildUrl = userSettingInstance.buildUrl;
+        log.info "Build request = ${buildUrl}${restQuery}"
 
         RestBuilder rest = new RestBuilder()
         def resp
@@ -36,8 +37,9 @@ class BuildProxyController {
         if (resp.status != 200) {
             flash.error = message(code: 'proxy.server.error', args: [resp.status])
             render(controller: "error", view: "serverError")
+        } else {
+            render(resp.json as JSON)
         }
-        render(resp.json as JSON)
     }
 
     def put() {

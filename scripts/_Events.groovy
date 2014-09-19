@@ -13,10 +13,6 @@ eventWebXmlStart = { webXmlFile ->
 
         def tmpWebXmlFile = new File(projectWorkDir, webXmlFile)
 
-        ant.echo message: "Changing display-name for web.xml"
-        ant.replace(file: tmpWebXmlFile, token: "@grails.app.name.version@",
-                value: "${grailsAppName}-${grailsAppVersion}")
-
         if (serenaSSO == "true" || serenaSSO == "enabled" || serenaSSO == "on") {
             ant.echo message: "Enabling SSO and Changing catalina.home to ${serenaTomcatHome}"
             ant.replace(file: tmpWebXmlFile, token: "<!-- Begin Serena SSO", value: "")

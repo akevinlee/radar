@@ -87,7 +87,7 @@
 
         <asset:javascript src="app/radar-tasks.js"/>
         <script>
-            $(document).ready(function () {
+            jQuery(document).ready(function () {
                 var automationSettings = {
                     debug: true,
                     autoUrl: "${session.autoUrl}",

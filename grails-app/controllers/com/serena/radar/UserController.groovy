@@ -110,7 +110,6 @@ class UserController {
             RestBuilder rest = new RestBuilder()
             def resp = rest.get(url + "/rest/state") {
                 auth(username, password)
-                header 'DirectSsoInteraction', 'true'
                 accept("application/json")
                 contentType("application/json")
             }

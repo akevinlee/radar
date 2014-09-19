@@ -58,24 +58,12 @@
                                 Builds
                             </a>
                         </li>
-                        <li class="${controllerName.equals('infrastructure') ? 'active' : '' }">
-                            <a href="${createLink(action:"view", controller:"infrastructure")}">
-                                <span class="glyphicon glyphicon-tasks"></span>
-                                Infrastructure
-                            </a>
-                        </li>
-                        <!--li class="${controllerName.equals('environments') ? 'active' : '' }">
-                            <a href="${createLink(action:"view", controller:"environment")}">
-                                <span class="glyphicon glyphicon-hdd"></span>
-                                Environments
-                            </a>
-                        </li>
                         <li class="${controllerName.equals('resources') ? 'active' : '' }">
                             <a href="${createLink(action:"view", controller:"resource")}">
                                 <span class="glyphicon glyphicon-tasks"></span>
                                 Resources
                             </a>
-                        </li-->
+                        </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <% if (session.user) { %>

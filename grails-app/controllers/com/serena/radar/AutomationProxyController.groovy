@@ -19,18 +19,22 @@ class AutomationProxyController {
             render(controller: "error", view: "serverError")
         }
 
+        log.info "Automation request = ${session.autoUrl}${restQuery}"
+
         RestBuilder rest = new RestBuilder()
         def resp
+
         if (session.ALFSSOAuthNToken != null) {
+            log.debug "using SSO token"
             resp = rest.get(session.autoUrl + restQuery) {
                 header 'ALFSSOAuthNToken', session.ALFSSOAuthNToken
                 accept("application/json")
                 contentType("application/json")
             }
         } else {
+            log.debug "using Basic authentication: ${session.user.login}/${session.user.password}"
             resp = rest.get(session.autoUrl + restQuery) {
                 auth(session.user.login, session.user.password)
-                header 'DirectSsoInteraction', 'true'
                 accept("application/json")
                 contentType("application/json")
             }
@@ -42,8 +46,9 @@ class AutomationProxyController {
         if (resp.status != 200) {
             flash.error = message(code: 'proxy.server.error', args: [resp.status])
             render(controller: "error", view: "serverError")
+        } else {
+            render(resp.json as JSON)
         }
-        render(resp.json as JSON)
     }
 
     def put() {
